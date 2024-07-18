@@ -5,4 +5,15 @@
 {% block body %}
     <h1>{{post.title}}</h1>
     <p>{{post.description | raw}}</p>
+                {% if post.postImages|length > 0 %}
+            <div class="row">
+                {% for postImage in post.postImages %}
+                    <div class="col-md-4 mb-4">
+                        <img src="{{ asset('uploads/' ~ postImage.filename) }}" alt="Image" class="img-fluid">
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No images available for this post.</p>
+        {% endif %}
 {% endblock %}

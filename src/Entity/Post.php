@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PostRepository;
@@ -27,6 +29,17 @@ class Post
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
+    /**
+     * @var Collection<int, PostImage>
+     */
+    #[ORM\OneToMany(targetEntity: PostImage::class, mappedBy: 'post', orphanRemoval: true)]
+    private Collection $postImages;
+
+    public function __construct()
+    {
+        $this->postImages = new ArrayCollection();
+    }
 
     /**
      * init slug
@@ -107,6 +120,36 @@ class Post
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostImage>
+     */
+    public function getPostImages(): Collection
+    {
+        return $this->postImages;
+    }
+
+    public function addPostImage(PostImage $postImage): static
+    {
+        if (!$this->postImages->contains($postImage)) {
+            $this->postImages->add($postImage);
+            $postImage->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostImage(PostImage $postImage): static
+    {
+        if ($this->postImages->removeElement($postImage)) {
+            // set the owning side to null (unless already changed)
+            if ($postImage->getPost() === $this) {
+                $postImage->setPost(null);
+            }
+        }
 
         return $this;
     }

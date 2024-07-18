@@ -40,6 +40,29 @@ class PostController extends AbstractController
         //form complet et valid -> envoi bdd + message et redirection
         if($form->isSubmitted() && $form->IsValid())
         {
+            foreach ($post->getPostImages() as $image) {
+                /** @var UploadedFile $file */
+                $file = $image->getFile();
+                if ($file) {
+                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+                    try {
+                        $file->move(
+                            $this->getParameter('uploads_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        return $e->getMessage();
+                    }
+
+                    $image->setFilename($newFilename);
+                    $image->setPost($post);
+                    $manager->persist($image); 
+                }
+            }
+
             $manager->persist($post);
 
             $manager->flush();
