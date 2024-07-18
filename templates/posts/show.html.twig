@@ -3,17 +3,17 @@
 {% block title %}{{post.title}}{% endblock %}
 
 {% block body %}
-    <h1>{{post.title}}</h1>
-    <p>{{post.description | raw}}</p>
-                {% if post.postImages|length > 0 %}
-            <div class="row">
-                {% for postImage in post.postImages %}
-                    <div class="col-md-4 mb-4">
-                        <img src="{{ asset('uploads/' ~ postImage.filename) }}" alt="Image" class="img-fluid">
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>No images available for this post.</p>
-        {% endif %}
+    <div class="container">
+        <h1>{{post.title}}</h1>
+        <p>{{post.description | raw}}</p>
+        <div class="row">
+            {% for postImage in post.postImages %}
+                <div class="col-md-4 mb-4">
+                    <img src="{{ asset('uploads/' ~ postImage.filename) }}" alt="Image" class="img-fluid">
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{{path('post_pictures', {'slug':post.slug})}}" class="btn btn-primary mt-4">Edit pictures</a>
+        <a href="{{path('post_edit', {'slug':post.slug})}}" class="btn btn-warning mt-4">Edit post</a>
+    </div>
 {% endblock %}

@@ -11,6 +11,7 @@
                     <div class="card">
                         <img src="{{ asset('uploads/' ~ image.filename) }}" class="card-img-top img-fluid" alt="Image for {{ post.title }}">
                     </div>
+                    <a href="{{path('post_picture_delete', {'id':image.id})}}" class="btn btn-danger mt-4">Remove</a>
                 </div>
             {% endfor %}
         </div>
