@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,13 +22,43 @@ class PostController extends AbstractController
     #[Route('/posts', name: 'posts_index')]
     public function index(PostRepository $postRepo): Response
     {
-        $posts = $postRepo->findAll();
+        $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
 
         return $this->render('posts/index.html.twig', [
             "posts"=> $posts
         ]);
     }
 
+    #[Route("/posts/new", name:"post_create")]
+    public function create(Request $request, EntityManagerInterface $manager): Response
+    {
+        $post = new Post();
+        $form = $this->createform(PostType::class, $post);
+
+        $form->handleRequest($request);
+
+        //form complet et valid -> envoi bdd + message et redirection
+        if($form->isSubmitted() && $form->IsValid())
+        {
+            $manager->persist($post);
+
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "La fiche de <strong>".$post->getTitle()."</strong> a bien été enregistrée."
+            );
+
+            return $this->redirectToRoute('post_show', [
+                'slug'=> $post->getSlug()
+            ]);
+        }
+
+        return $this->render("posts/new.html.twig",[
+            'myForm' => $form->createView()
+        ]);
+
+    }
 
     #[Route("/posts/{slug}", name: "post_show")]
     public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
