@@ -124,5 +124,15 @@ class PostController extends AbstractController
         ]);
     }
 
+    #[Route("/posts/{slug}/pictures", name: "post_pictures")]
+    public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
+    {
+        $images = $post->getPostImages();
+
+        return $this->render("posts/display_pictures.html.twig", [
+            'post' => $post,
+            'images' => $images
+        ]);
+    }
     
 }
