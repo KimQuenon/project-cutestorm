@@ -45,7 +45,9 @@ class AppFixtures extends Fixture
                 ->setCountry($faker->country())
                 ->setEmail($faker->email())
                 ->setPassword($hash)
-                ->setBio('<p>'.join('<p></p>',$faker->paragraphs(1)).'</p>');
+                ->setBio('<p>'.join('<p></p>',$faker->paragraphs(1)).'</p>')
+                ->setAvatar('https://picsum.photos/seed/picsum/500/500')
+                ->setBanner('https://picsum.photos/seed/picsum/500/500');
 
                 $manager->persist($user);
 
