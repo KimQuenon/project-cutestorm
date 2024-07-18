@@ -18,7 +18,10 @@ class PostType extends ApplicationType
         $builder
             ->add('title', TextType::class, $this->getConfiguration("Title of the frame:", 'Exemple : Giulia'))
             ->add('description', TextareaType::class, $this->getConfiguration("Description:", 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'))
-            ->add('postImages', CollectionType::class, [
+        ;
+        //add this field except on edit mode
+        if (!$options['is_edit']) {
+            $builder->add('postImages', CollectionType::class, [
                 'entry_type' => PostImageType::class,
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
@@ -26,13 +29,14 @@ class PostType extends ApplicationType
                 'by_reference' => false,
                 'prototype' => true,
             ]);
-        ;
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
+            'is_edit' => false,
         ]);
     }
 }

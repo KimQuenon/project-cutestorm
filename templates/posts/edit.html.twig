@@ -1,0 +1,33 @@
+
+{% extends "base.html.twig" %}
+
+
+{% block title %}Edition mode{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+
+    <div class="container mt-4">
+        <h1>Edit : {{post.title}}</strong></h1>
+        {{form_start(myForm)}}
+            {{form_widget(myForm)}}
+            <button type="submit" class="btn btn-warning mt-3">Edit</button>
+        {{form_end(myForm)}}
+    </div>
+
+{% endblock %}
+
+{% block form_row %}
+    <div class="form-group mt-2">
+        <div class="row">
+            <div class="col-6">
+                {{form_label(form)}}
+            </div>
+            <div class="col-6">
+                {{form_widget(form)}}
+                {{form_errors(form)}}
+            </div>
+        </div>
+    </div>
+{% endblock %}

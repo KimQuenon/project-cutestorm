@@ -90,4 +90,39 @@ class PostController extends AbstractController
             'post' => $post,
         ]);
     }
+
+    #[Route("/posts/{slug}/edit", name: "post_edit")]
+    public function edit(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(PostType::class, $post, [
+            'is_edit' => true
+        ]);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            // $artwork->setCoverImage($fileName);
+            $manager->persist($post);
+
+            $manager->flush();
+
+            $this->addFlash(
+            'success',
+            "<strong>".$post->getTitle()."</strong> edited successfully !"
+            );
+
+            return $this->redirectToRoute('post_show',[
+            'slug' => $post->getSlug()
+            ]);
+
+        }
+
+        return $this->render("posts/edit.html.twig", [
+            "post" => $post,
+            "myForm"=> $form->createView()
+        ]);
+    }
+
+    
 }
