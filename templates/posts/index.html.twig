@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Publications{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-4">
+            {% for post in posts %}
+                {% set url = path('post_show', {'slug':post.slug}) %}
+                <div class="col-md-4">
+                    <div class="card bg-light mb-3">
+                        <div class="card-header text-center">
+                            <h4 class="card-title">{{post.title}}</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{post.description | raw}}</p>
+                            <a href={{url}} class="btn btn-secondary">Learn more</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
