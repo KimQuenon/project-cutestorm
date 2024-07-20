@@ -39,6 +39,10 @@ class Post
     #[ORM\OneToMany(targetEntity: PostImage::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $postImages;
 
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->postImages = new ArrayCollection();
@@ -153,6 +157,18 @@ class Post
                 $postImage->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }

@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
     
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('fr_FR');
+        $faker = Factory::create('en_EN');
 
         $users = []; //array to stock users
 
@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
                 ->setLastname($faker->lastName())
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
                 ->setAddress($faker->streetAddress())
-                ->setPostalcode($faker->postcode())
+                ->setPostalcode(intval($faker->postcode()))
                 ->setCity($faker->city())
                 ->setCountry($faker->country())
                 ->setEmail($faker->email())
@@ -59,8 +59,9 @@ class AppFixtures extends Fixture
             $post = new Post();
 
             $post->setTitle($faker->sentence())
-                ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(5)).'</p>')
-                ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'));
+                ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(2)).'</p>')
+                ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+                ->setAuthor($users[rand(0, count($users)-1)]);
             $manager->persist($post);
         }
 

@@ -73,6 +73,8 @@ class PostController extends AbstractController
                 }
             }
 
+            $post->setTitle(ucwords($post->getTitle()));
+            $post->setAuthor($this->getUser());
             $manager->persist($post);
 
             $manager->flush();
