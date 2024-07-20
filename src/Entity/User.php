@@ -62,6 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $address = null;
 
     #[ORM\Column]
+    #[Assert\Range(min: 1000, max: 999999, notInRangeMessage: "Postal code must be between 1000 and 999999.")]
     private ?int $postalcode = null;
 
     #[ORM\Column(length: 255)]
@@ -69,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Country is required.")]
     private ?string $country = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
