@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Entity\PostImage;
+use App\Form\PostImageType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +42,14 @@ class PostController extends AbstractController
         //form complet et valid -> envoi bdd + message et redirection
         if($form->isSubmitted() && $form->IsValid())
         {
+            if (count($post->getPostImages()) < 1) {
+                $this->addFlash('danger', 'A post must have at least one image.');
+
+                return $this->render("posts/new.html.twig", [
+                    'myForm' => $form->createView()
+                ]);
+            }
+
             foreach ($post->getPostImages() as $image) {
                 /** @var UploadedFile $file */
                 $file = $image->getFile();
@@ -136,35 +145,83 @@ class PostController extends AbstractController
         ]);
     }
 
-/**
- * Delete picture
- *
- * @param EntityManagerInterface $manager
- * @return Response
- */
-#[Route("picture-delete/{id}", name: "post_picture_delete")]
-public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] PostImage $postImage, EntityManagerInterface $manager): Response
-{
-    // Get the associated post before deleting the image
-    $post = $postImage->getPost();
-    
-    // Remove the image file if it exists
-    if (!empty($postImage->getFilename())) {
-        unlink($this->getParameter('uploads_directory') . '/' . $postImage->getFilename());
-    }
-    
-    // Remove the image entity from the database
-    $manager->remove($postImage);
-    $manager->flush();
-    
-    // Add a flash message
-    $this->addFlash('success', 'Picture deleted!');
-    
-    // Redirect back to the post's pictures page
-    return $this->redirectToRoute('post_pictures', [
-        'slug' => $post->getSlug(),
-    ]);
-}
+    #[Route("/posts/{slug}/add-image", name: "post_add_image")]
+    public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
+    {
+        if (count($post->getPostImages()) >= 5) {
+            $this->addFlash('danger', 'Limit of 5 pictures reached. Please delete one before adding a new image.');
+            return $this->redirectToRoute('post_pictures', ['slug' => $post->getSlug()]);
+        }
 
-    
+        $postImage = new PostImage();
+        $form = $this->createForm(PostImageType::class, $postImage);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $file */
+            $file = $postImage->getFile();
+            if ($file) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    return $e->getMessage();
+                }
+
+                $postImage->setFilename($newFilename);
+                $postImage->setPost($post);
+                $manager->persist($postImage);
+                $manager->flush();
+
+                $this->addFlash('success', 'New image added successfully!');
+                return $this->redirectToRoute('post_pictures', ['slug' => $post->getSlug()]);
+            }
+        }
+
+        return $this->render('posts/add_image.html.twig', [
+            'post' => $post,
+            'myForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Delete picture
+     *
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route("picture-delete/{id}", name: "post_picture_delete")]
+    public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] PostImage $postImage, EntityManagerInterface $manager): Response
+    {
+        // Get the associated post before deleting the image
+        $post = $postImage->getPost();
+
+        if (count($post->getPostImages()) <= 1) {
+            $this->addFlash('danger', 'A post must have at least one image. Add another image first before deleting this one.');
+            return $this->redirectToRoute('post_pictures', [
+                'slug' => $post->getSlug(),
+            ]);
+        }
+        
+        // Remove the image file if it exists
+        if (!empty($postImage->getFilename())) {
+            unlink($this->getParameter('uploads_directory') . '/' . $postImage->getFilename());
+            $manager->remove($postImage);
+        }
+        
+        $manager->flush();
+        
+        $this->addFlash('success', 'Picture deleted!');
+        
+        return $this->redirectToRoute('post_pictures', [
+            'slug' => $post->getSlug(),
+        ]);
+    }
 }

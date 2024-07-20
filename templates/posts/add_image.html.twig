@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Image to {{ post.title }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Add Image to {{ post.title }}</h1>
+        {{form_start(myForm)}}
+            {{form_widget(myForm)}}
+            <button type="submit" class="btn btn-primary mt-4">Add</button>
+        {{form_end(myForm)}}
+        <a href="{{ path('post_pictures', {'slug': post.slug}) }}" class="btn btn-secondary mt-4">Back to Images</a>
+    </div>
+{% endblock %}

@@ -16,7 +16,7 @@
                 {% for postImage in myForm.postImages %}
                     <div class="image-form row mb-3">
                         <div class="col">
-                            {{ form_widget(imageForm) }}
+                            {{ form_widget(postImage) }}
                         </div>
                         <div class="col-auto">
                             <button type="button" class="remove-image btn btn-danger mt-2">X</button>
@@ -35,10 +35,11 @@
     <div class="form-group mt-2">
         <div class="row">
             <div class="col-6">
-                {{form_label(form)}}
+                {{ form_label(form) }}
             </div>
             <div class="col-6">
-                {{form_widget(form)}}
+                {{ form_widget(form) }}
+                {{ form_errors(form)}}
             </div>
         </div>
     </div>
@@ -50,42 +51,65 @@
             let index = {{ myForm.postImages|length }};
             const imagesWrapper = document.getElementById('images-wrapper');
             const prototype = imagesWrapper.dataset.prototype;
-            document.getElementById('add-image').addEventListener('click', function() {
-                const newForm = prototype.replace(/__name__/g, index);
-                const div = document.createElement('div');
-                div.classList.add('image-form', 'row', 'mb-3');
-                div.innerHTML = '<div class="col">' + newForm + '</div><div class="col-auto"><button type="button" class="edit-image btn btn-warning mt-2 me-2" style="display: none;">Edit</button><button type="button" class="remove-image btn btn-danger mt-2">X</button></div>';
-                imagesWrapper.appendChild(div);
-                index++;
-                handleButtons();
+            const addImageButton = document.getElementById('add-image');
+
+            const updateAddImageButtonState = () => {
+                if (index >= 5) {
+                    addImageButton.disabled = true;
+                } else {
+                    addImageButton.disabled = false;
+                }
+            };
+
+            addImageButton.addEventListener('click', function() {
+                if (index < 5) {
+                    const newForm = prototype.replace(/__name__/g, index);
+                    const div = document.createElement('div');
+                    div.classList.add('image-form', 'row', 'mb-3');
+                    div.innerHTML = '<div class="col">' + newForm + '</div><div class="col-auto"><button type="button" class="edit-image btn btn-warning mt-2 me-2" style="display: none;">Edit</button><button type="button" class="remove-image btn btn-danger mt-2">X</button></div>';
+                    imagesWrapper.appendChild(div);
+                    index++;
+                    updateAddImageButtonState();
+                    handleButtons();
+                }
             });
+
             imagesWrapper.addEventListener('click', function(e) {
                 if (e.target && e.target.classList.contains('remove-image')) {
                     e.target.closest('.image-form').remove();
+                    index--;
+                    updateAddImageButtonState();
                 }
             });
+
             const handleButtons = () => {
                 document.querySelectorAll('.remove-image').forEach(button => {
                     button.removeEventListener('click', handleRemoveButton);
                     button.addEventListener('click', handleRemoveButton);
                 });
-                
+
                 document.querySelectorAll('.edit-image').forEach(button => {
                     button.removeEventListener('click', handleEditButton);
                     button.addEventListener('click', handleEditButton);
                 });
+
                 document.querySelectorAll('input[type="file"]').forEach(input => {
                     input.removeEventListener('change', handleFileSelect);
                     input.addEventListener('change', handleFileSelect);
                 });
             };
+
             const handleRemoveButton = (e) => {
                 e.target.closest('.image-form').remove();
+                index--;
+                updateAddImageButtonState();
             };
+
             const handleEditButton = (e) => {
                 const input = e.target.closest('.image-form').querySelector('input[type="file"]');
                 input.click();
             };
+
             const handleFileSelect = (e) => {
                 const editButton = e.target.closest('.image-form').querySelector('.edit-image');
                 if (e.target.files.length > 0) {
@@ -94,7 +118,9 @@
                     editButton.style.display = 'none';
                 }
             };
+
             handleButtons();
+            updateAddImageButtonState();
         });
     </script>
 {% endblock %}
