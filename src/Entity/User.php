@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min:8, max:255, minMessage: "Your password must be at least 8 characters.", maxMessage:"Your password should not be longer than 255 characters.")]
     private ?string $password = null;
 
-    #[Assert\EqualTo(propertyPath:"password", message:"Unconfimred password")]
+    #[Assert\EqualTo(propertyPath:"password", message:"Unconfirmed password")]
     public ?string $passwordConfirm = null;
 
     #[ORM\Column(length: 255)]

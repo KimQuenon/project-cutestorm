@@ -1,16 +1,62 @@
+{# templates/account/registration.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block title %}Registration{% endblock %}
 
 {% block stylesheets %}
+<style>
+.step { display: none; }
+.step.active { display: block; }
+</style>
 {% endblock %}
-{% block body %}
-    <div class="container full">
-        <h1>Registration</h1>
-        {{form_start(myForm)}}
 
-            {{form_widget(myForm)}}
-            <button type="submit" class="btn btn-success">Subscribe</button>
-        {{form_end(myForm)}}
+{% block body %}
+<div class="container full">
+    <h1>Registration</h1>
+    {{ form_start(myForm) }}
+    
+    <div id="step1" class="step active">
+        {{ form_row(myForm.email) }}
+        {{ form_row(myForm.password) }}
+        {{ form_row(myForm.passwordConfirm) }}
+        <button type="button" onclick="nextStep(2)">Next</button>
     </div>
+    
+    <div id="step2" class="step">
+        {{ form_row(myForm.pseudo) }}
+        {{ form_row(myForm.firstname) }}
+        {{ form_row(myForm.lastname) }}
+        {{ form_row(myForm.address) }}
+        <button type="button" onclick="previousStep(1)">Previous</button>
+        <button type="button" onclick="nextStep(3)">Next</button>
+    </div>
+    
+    <div id="step3" class="step">
+        {{ form_row(myForm.postalcode) }}
+        {{ form_row(myForm.city) }}
+        {{ form_row(myForm.country) }}
+        {{ form_row(myForm.bio) }}
+        {{ form_row(myForm.avatar) }}
+        {{ form_row(myForm.banner) }}
+        <button type="button" onclick="previousStep(2)">Previous</button>
+        <button type="submit" class="btn">Submit</button>
+    </div>
+    {{ form_end(myForm) }}
+</div>
+
+<script>
+function nextStep(step) {
+    document.querySelectorAll('.step').forEach(function (stepDiv) {
+        stepDiv.classList.remove('active');
+    });
+    document.getElementById('step' + step).classList.add('active');
+}
+
+function previousStep(step) {
+    document.querySelectorAll('.step').forEach(function (stepDiv) {
+        stepDiv.classList.remove('active');
+    });
+    document.getElementById('step' + step).classList.add('active');
+}
+</script>
 {% endblock %}
