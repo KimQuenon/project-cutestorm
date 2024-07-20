@@ -10,10 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields:['email'], message:"An account is already associated with this email address, please modify it.")]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['pseudo'], message: "This pseudo is already taken, please choose another one.")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -22,6 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\Email(message: "Invalid email address")]
     private ?string $email = null;
 
     /**
@@ -34,24 +39,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\Length(min:8, max:255, minMessage: "Your password must be at least 8 characters.", maxMessage:"Your password should not be longer than 255 characters.")]
     private ?string $password = null;
 
+    #[Assert\EqualTo(propertyPath:"password", message:"Unconfimred password")]
+    public ?string $passwordConfirm = null;
+
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 5, max:50, minMessage:"This field must be at least 5 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 2, max:50, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 2, max:50, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 10, max:100, minMessage:"This field must be at least 10 characters long.", maxMessage: "This file can't be longer than 100 characters.")]
     private ?string $address = null;
 
     #[ORM\Column]
     private ?int $postalcode = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 2, max:100, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 100 characters.")]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
@@ -64,12 +78,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(min: 5, minMessage:"The description must be at least 5 characters long.")]
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(mimeTypes:['image/png','image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage:"Upload a jpg, jpeg, png or gif file")]
+    #[Assert\File(maxSize:"1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $avatar = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(mimeTypes:['image/png','image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage:"Upload a jpg, jpeg, png or gif file")]
+    #[Assert\File(maxSize:"1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $banner = null;
 
     /**
