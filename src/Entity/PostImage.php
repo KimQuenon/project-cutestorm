@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PostImageRepository;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostImageRepository::class)]
 class PostImage
@@ -21,6 +22,8 @@ class PostImage
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post = null;
 
+    #[Assert\Image(mimeTypes:['image/png','image/jpeg', 'image/jpg', 'image/webp'], mimeTypesMessage:"Upload a jpg, jpeg, png or webp file")]
+    #[Assert\File(maxSize:"1024k", maxSizeMessage: "This file is too large to be uploaded.")]
     private ?File $file = null;
 
     public function getId(): ?int

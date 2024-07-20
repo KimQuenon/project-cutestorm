@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PostController extends AbstractController
@@ -32,6 +34,7 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/new", name:"post_create")]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $manager): Response
     {
         $post = new Post();
@@ -104,6 +107,11 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}/edit", name: "post_edit")]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
+        subject: new Expression('args["post"].getAuthor()'),
+        message: "You are not allowed to delete someone else's post."
+    )]
     public function edit(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(PostType::class, $post, [
@@ -136,7 +144,42 @@ class PostController extends AbstractController
         ]);
     }
 
+    #[Route("/posts/{slug}/delete", name:"post_delete")]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
+        subject: new Expression('args["post"].getAuthor()'),
+        message: "You are not allowed to delete someone else's post."
+    )]
+
+    public function delete(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager): Response
+    {       
+            // Supprimer toutes les images associées au post
+            foreach ($post->getPostImages() as $image) {
+                // Supprimer le fichier de l'image
+                if (!empty($image->getFilename())) {
+                    $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+
+                // Supprimer l'image de la base de données
+                $manager->remove($image);
+            }
+
+            $manager->remove($post);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "<strong>".$post->getTitle()."</strong> deleted successfully !"
+                );
+    
+            return $this->redirectToRoute('posts_index');
+    }
+
     #[Route("/posts/{slug}/pictures", name: "post_pictures")]
+    #[IsGranted('ROLE_USER')]
     public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
     {
         $images = $post->getPostImages();
@@ -148,6 +191,7 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}/add-image", name: "post_add_image")]
+    #[IsGranted('ROLE_USER')]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
     {
         if (count($post->getPostImages()) >= 5) {
@@ -200,6 +244,7 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route("picture-delete/{id}", name: "post_picture_delete")]
+    #[IsGranted('ROLE_USER')]
     public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] PostImage $postImage, EntityManagerInterface $manager): Response
     {
         // Get the associated post before deleting the image

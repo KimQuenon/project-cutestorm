@@ -57,6 +57,9 @@ class AccountController extends AbstractController
             $hash = $hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
 
+            $user->setFirstname(ucwords($user->getFirstname()));
+            $user->setLastname(ucwords($user->getLastname()));
+
             $manager->persist($user);
             $manager->flush();
 
