@@ -111,11 +111,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
 
+    /**
+     * @var Collection<int, Following>
+     */
+    #[ORM\OneToMany(targetEntity: Following::class, mappedBy: 'follower', orphanRemoval: true)]
+    private Collection $followings;
+
+    /**
+     * @var Collection<int, Following>
+     */
+    #[ORM\OneToMany(targetEntity: Following::class, mappedBy: 'followed', orphanRemoval: true)]
+    private Collection $followeds;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->followings = new ArrayCollection();
+        $this->followeds = new ArrayCollection();
     }
 
     /**
@@ -458,6 +472,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($notification->getUser() === $this) {
                 $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Following>
+     */
+    public function getFollowings(): Collection
+    {
+        return $this->followings;
+    }
+
+    public function addFollowing(Following $following): static
+    {
+        if (!$this->followings->contains($following)) {
+            $this->followings->add($following);
+            $following->setFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(Following $following): static
+    {
+        if ($this->followings->removeElement($following)) {
+            // set the owning side to null (unless already changed)
+            if ($following->getFollower() === $this) {
+                $following->setFollower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Following>
+     */
+    public function getFolloweds(): Collection
+    {
+        return $this->followeds;
+    }
+
+    public function addFollowed(Following $followed): static
+    {
+        if (!$this->followeds->contains($followed)) {
+            $this->followeds->add($followed);
+            $followed->setFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowed(Following $followed): static
+    {
+        if ($this->followeds->removeElement($followed)) {
+            // set the owning side to null (unless already changed)
+            if ($followed->getFollowed() === $this) {
+                $followed->setFollowed(null);
             }
         }
 

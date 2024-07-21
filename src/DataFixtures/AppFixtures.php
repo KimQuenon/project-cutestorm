@@ -6,33 +6,29 @@ use Faker\Factory;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\Following;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $passwordHasher;
 
-    private $passwordHasher;
-
-    /**
-     * Hash password
-     *
-     * @param UserPasswordHasherInterface $passwordHasher
-     */
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->passwordHasher = $passwordHasher;
     }
-    
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('en_EN');
 
-        $users = []; //array to stock users
+        $users = []; // Array to store users
+        $userCount = 10; // Number of users to create
 
-        for($u = 1; $u <= 10; $u++)
-        {
+        // Create users
+        for ($u = 1; $u <= $userCount; $u++) {
             $user = new User();
             $hash = $this->passwordHasher->hashPassword($user, 'password');
 
@@ -46,46 +42,57 @@ class AppFixtures extends Fixture
                 ->setCountry($faker->country())
                 ->setEmail($faker->email())
                 ->setPassword($hash)
-                ->setBio('<p>'.join('<p></p>',$faker->paragraphs(1)).'</p>')
+                ->setBio('<p>'.join('<p></p>', $faker->paragraphs(1)).'</p>')
                 ->setAvatar('https://picsum.photos/seed/picsum/500/500')
                 ->setBanner('https://picsum.photos/seed/picsum/500/500');
 
-                $manager->persist($user);
-
-                $users[] = $user; //ajouter un user au tableau pour les annonces
+            $manager->persist($user);
+            $users[] = $user; // Add user to the array
         }
 
+        // Create posts
         $posts = [];
-
-        for($i=1; $i<=30; $i++)
-        {
-
+        for ($i = 1; $i <= 30; $i++) {
             $post = new Post();
-
             $post->setTitle($faker->sentence())
                 ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(2)).'</p>')
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
-                ->setAuthor($users[rand(0, count($users)-1)]);
+                ->setAuthor($users[array_rand($users)]); // Random author
             $manager->persist($post);
-
             $posts[] = $post;
         }
 
+        // Create likes
         foreach ($posts as $post) {
-            // Filter out the author from the list of potential likers
             $postAuthor = $post->getAuthor();
-            $potentialLikers = array_filter($users, function($user) use ($postAuthor) {
-                return $user !== $postAuthor;
-            });
-
-            $potentialLikers = array_values($potentialLikers); // Reindex the array
+            $potentialLikers = array_filter($users, fn($user) => $user !== $postAuthor);
+            $potentialLikers = array_values($potentialLikers);
 
             for ($l = 0; $l < rand(1, 10); $l++) { // Each post gets between 1 to 10 likes
                 $like = new Like();
-                $like->setUser($potentialLikers[rand(0, count($potentialLikers) - 1)])
+                $like->setUser($potentialLikers[array_rand($potentialLikers)])
                      ->setPost($post);
-
                 $manager->persist($like);
+            }
+        }
+
+        // Create followings (follower and followed relationships)
+        for ($u = 0; $u < $userCount; $u++) {
+            $follower = $users[$u];
+            $followingCount = rand(1, 5); // Number of followings for this user
+
+            // Ensure the user does not follow themselves
+            $followedUsers = array_filter($users, fn($user) => $user !== $follower);
+
+            // Shuffle and slice to ensure randomness
+            shuffle($followedUsers);
+            $followedUsers = array_slice($followedUsers, 0, $followingCount);
+
+            foreach ($followedUsers as $followed) {
+                $following = new Following();
+                $following->setFollowerUser($follower)
+                          ->setFollowedUser($followed);
+                $manager->persist($following);
             }
         }
 
