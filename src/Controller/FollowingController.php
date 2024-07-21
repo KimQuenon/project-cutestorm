@@ -32,6 +32,8 @@ class FollowingController extends AbstractController
                     'success',
                     "You have unfollowed ".$userToToggle->getPseudo()."."
                 );
+
+                return $this->redirectToRoute('posts_index');
             } else {
                 // If the user is not following, then follow
                 $following = new Following();
@@ -44,6 +46,8 @@ class FollowingController extends AbstractController
                     'success',
                     "You are now following ".$userToToggle->getPseudo()."!"
                 );
+
+                return $this->redirectToRoute('profile_show', ['slug' => $userToToggle->getSlug()]);
             }
         } else {
             $this->addFlash(
@@ -52,6 +56,6 @@ class FollowingController extends AbstractController
             );
         }
 
-        return $this->redirectToRoute('profile_show', ['slug' => $userToToggle->getSlug()]);
+        
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,12 +14,23 @@ class ProfileController extends AbstractController
 {
     #[Route('/feed', name: 'profile_feed')]
     #[IsGranted('ROLE_USER')]
-    public function feed(): Response
+    public function feed(PostRepository $postRepo, LikeRepository $likeRepo): Response
     {
         $user = $this->getUser();
-
+    
+        // Obtenir les posts des utilisateurs suivis
+        $posts = $postRepo->findPostsByFollowedUsers($user);
+    
+        // Obtenir les slugs des posts que l'utilisateur a aimés
+        $likedPosts = $likeRepo->findBy(['user' => $user]);
+        $likedPostSlugs = array_map(function($like) {
+            return $like->getPost()->getSlug();
+        }, $likedPosts);
+    
         return $this->render('profile/feed.html.twig', [
-            'user'=>$user,
+            'user' => $user,
+            'posts' => $posts,
+            'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,6 +27,41 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    
+    public function findPostsByFollowedUsers(User $user): array
+    {
+        // Récupérer les utilisateurs suivis par l'utilisateur
+        $followedUsers = $user->getFollowings()->map(fn($f) => $f->getFollowedUser())->toArray();
+    
+        // Créer la requête principale pour trouver les posts des utilisateurs suivis
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->leftJoin('p.likes', 'l')
+            ->where('p.author IN (:followedUsers)')
+            ->setParameter('followedUsers', $followedUsers)
+            ->andWhere('p.id NOT IN (:likedPosts)')
+            ->setParameter('likedPosts', $this->getLikedPostIds($user))
+            ->orderBy('p.timestamp', 'DESC')
+            ->getQuery();
+    
+        return $queryBuilder->getResult();
+    }
+    
+    private function getLikedPostIds(User $user): array
+    {
+        $likedPosts = $this->createQueryBuilder('p')
+            ->select('IDENTITY(l.post)')
+            ->leftJoin('p.likes', 'l')
+            ->where('l.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getScalarResult();
+    
+        // Convertir le tableau de résultats scalaires en tableau d'identifiants de posts
+        return array_column($likedPosts, 1); // Si le résultat est un tableau de tableaux
+    }
+    
+
     //    /**
     //     * @return Post[] Returns an array of Post objects
     //     */
