@@ -1,21 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Your Feed{% endblock %}
+{% block title %}Your Feed{{ user.pseudo }}{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1 class="mb-4">{{ user.pseudo }}'s Feed</h1>
-
-        <div class="row">
-            {% for post in posts %}
-                {% include "partials/_cardPost.html.twig" with {'post': post} %}
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info" role="alert">
-                        No posts available.
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                        <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
                     </div>
                 </div>
-            {% endfor %}
+
+                {% for post in posts %}
+                    {% include "partials/_cardPost.html.twig" with {'post': post} %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            No posts available.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
