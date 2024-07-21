@@ -1,4 +1,18 @@
-.liked {
-    border: 2px solid red; /* Bordure rouge pour les posts likés */
-    background-color: #f8d7da; /* Fond léger rouge pour la carte */
+.like-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 12px; /* Adjust size if needed */
+}
+
+.like-button.not-liked .fa-heart {
+    color: gray; /* Color of the icon when not liked */
+}
+
+.like-button.liked .fa-heart {
+    color: red; /* Color of the icon when liked */
+}
+
+.like-count {
+    font-size: 1rem;
 }
