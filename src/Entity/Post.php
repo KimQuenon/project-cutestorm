@@ -50,10 +50,17 @@ class Post
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $likes;
 
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'post', orphanRemoval: true)]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->postImages = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -86,10 +93,6 @@ class Post
         }
     }
 
-    public function getLikesCount(): int
-    {
-        return $this->likes->count();
-    }
 
     public function isLikedByUser(?User $user): bool
 {

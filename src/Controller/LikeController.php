@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Repository\LikeRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,12 +15,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class LikeController extends AbstractController
 {
+    private $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+    
     #[Route('/posts/{slug}/like', name: 'post_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function addLike(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager, LikeRepository $likeRepo): JsonResponse
     {
         $user = $this->getUser();
-        
+
         if ($post->getAuthor() === $user) {
             return new JsonResponse(['error' => 'Cannot like your own post'], Response::HTTP_FORBIDDEN);
         }
@@ -39,6 +47,15 @@ class LikeController extends AbstractController
             $manager->persist($like);
             $manager->flush();
             $liked = true;
+
+            // Add notification
+            if ($post->getAuthor() !== $user) {
+                $this->notificationService->addNotification(
+                    'like',
+                    $user,
+                    $post
+                );
+            }
         }
 
         // Get the updated like count
