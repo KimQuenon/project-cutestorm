@@ -15,6 +15,18 @@
                         <div class="card-header text-center">
                             <h4 class="card-title">{{ post.title }}</h4>
                             <h5>By <a href="{{ path('profile_show', {'slug': post.author.slug})  }}">{{post.author.pseudo}}</a></h5>
+
+                                    {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == post.author.id) %}
+
+                                    <form action="{{ path('toggle_follow', {'slug': post.author.slug}) }}" method="post">
+                                        <button type="submit">
+                                            {% if isFollowing|length > 0 %}
+                                                Unfollow
+                                            {% else %}
+                                                Follow
+                                            {% endif %}
+                                        </button>
+                                    </form>
                         </div>
                         <div class="card-body">
                             <p class="card-text">{{ post.description | raw }}</p>

@@ -23,11 +23,14 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/profile/{slug}', name: 'profile_show')]
-    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, PostRepository $postRepo): Response
+    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo): Response
     {
-        $posts = $postRepo->sortPostsByUser($user);
+        $posts = $postRepo->sortPostsByUser($profileUser);
+
+        $user = $this->getUser();
 
         return $this->render('profile/show.html.twig', [
+            'profileUser'=>$profileUser,
             'user'=>$user,
             'posts'=>$posts
         ]);

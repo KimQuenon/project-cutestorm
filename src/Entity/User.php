@@ -111,17 +111,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
 
-    /**
-     * @var Collection<int, Following>
-     */
-    #[ORM\OneToMany(targetEntity: Following::class, mappedBy: 'follower', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'followerUser', targetEntity: Following::class)]
     private Collection $followings;
 
-    /**
-     * @var Collection<int, Following>
-     */
-    #[ORM\OneToMany(targetEntity: Following::class, mappedBy: 'followed', orphanRemoval: true)]
-    private Collection $followeds;
+    #[ORM\OneToMany(mappedBy: 'followedUser', targetEntity: Following::class)]
+    private Collection $followedByUsers;
 
     public function __construct()
     {
@@ -129,7 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->likes = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->followings = new ArrayCollection();
-        $this->followeds = new ArrayCollection();
+        $this->followedByUsers = new ArrayCollection();
     }
 
     /**

@@ -1,10 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profile of {{user.pseudo}}{% endblock %}
+{% block title %}Profile of {{ profileUser.pseudo }}{% endblock %}
 
 {% block body %}
-    {{user.pseudo}}
+    <h1>{{ profileUser.pseudo }}</h1>
+
+        {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == profileUser.id) %}
+
+        <form action="{{ path('toggle_follow', {'slug': profileUser.slug}) }}" method="post">
+            <button type="submit">
+                {% if isFollowing|length > 0 %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+            </button>
+        </form>
+
     {% for post in posts %}
-        <p>{{post.title}}</p>
+        <p>{{ post.title }}</p>
     {% endfor %}
 {% endblock %}
