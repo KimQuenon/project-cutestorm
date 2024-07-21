@@ -6,19 +6,66 @@
     <div class="container">
         <div class="row mt-4">
             {% for post in posts %}
-                {% set url = path('post_show', {'slug':post.slug}) %}
+                {% set postUrl = path('post_show', {'slug': post.slug}) %}
+                {% set isLiked = post.slug in likedPostSlugs %}
                 <div class="col-md-4">
                     <div class="card bg-light mb-3">
                         <div class="card-header text-center">
-                            <h4 class="card-title">{{post.title}}</h4>
+                            <h4 class="card-title">{{ post.title }}</h4>
                         </div>
                         <div class="card-body">
-                            <p class="card-text">{{post.description | raw}}</p>
-                            <a href={{url}} class="btn btn-secondary">Learn more</a>
+                            <p class="card-text">{{ post.description | raw }}</p>
+                            <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
+                            <button class="btn like-button {% if isLiked %}btn-danger{% else %}btn-secondary{% endif %}" 
+                                    data-post-slug="{{ post.slug }}">
+                                {% if isLiked %}Liked{% else %}Like{% endif %}
+                                (<span class="like-count">{{ post.likes|length }}</span>)
+                            </button>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.like-button');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const postSlug = button.getAttribute('data-post-slug');
+            const likeCountElement = button.querySelector('.like-count');
+
+            fetch(`/posts/${postSlug}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'include' // Include cookies for authenticated requests
+            })
+            .then(response => response.json())
+            .then(data => {
+                likeCountElement.textContent = data.likeCount;
+
+                if (data.liked) {
+                    button.classList.add('btn-danger'); // Change button to red
+                    button.classList.remove('btn-secondary'); // Remove default color
+                    button.textContent = 'Liked ';
+                } else {
+                    button.classList.add('btn-secondary'); // Change button back to default color
+                    button.classList.remove('btn-danger'); // Remove red color
+                    button.textContent = 'Like ';
+                }
+                button.appendChild(likeCountElement);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+
+    </script>
 {% endblock %}

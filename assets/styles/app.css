@@ -1,3 +1,4 @@
-body {
-    background-color: skyblue;
+.liked {
+    border: 2px solid red; /* Bordure rouge pour les posts likés */
+    background-color: #f8d7da; /* Fond léger rouge pour la carte */
 }

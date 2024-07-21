@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
@@ -54,8 +55,11 @@ class AppFixtures extends Fixture
                 $users[] = $user; //ajouter un user au tableau pour les annonces
         }
 
+        $posts = [];
+
         for($i=1; $i<=30; $i++)
         {
+
             $post = new Post();
 
             $post->setTitle($faker->sentence())
@@ -63,6 +67,26 @@ class AppFixtures extends Fixture
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
                 ->setAuthor($users[rand(0, count($users)-1)]);
             $manager->persist($post);
+
+            $posts[] = $post;
+        }
+
+        foreach ($posts as $post) {
+            // Filter out the author from the list of potential likers
+            $postAuthor = $post->getAuthor();
+            $potentialLikers = array_filter($users, function($user) use ($postAuthor) {
+                return $user !== $postAuthor;
+            });
+
+            $potentialLikers = array_values($potentialLikers); // Reindex the array
+
+            for ($l = 0; $l < rand(1, 10); $l++) { // Each post gets between 1 to 10 likes
+                $like = new Like();
+                $like->setUser($potentialLikers[rand(0, count($potentialLikers) - 1)])
+                     ->setPost($post);
+
+                $manager->persist($like);
+            }
         }
 
         $manager->flush();

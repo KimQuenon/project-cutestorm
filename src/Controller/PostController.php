@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Entity\PostImage;
 use App\Form\PostImageType;
+use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +25,21 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route('/posts', name: 'posts_index')]
-    public function index(PostRepository $postRepo): Response
+    public function list(PostRepository $postRepo, LikeRepository $likeRepo): Response
     {
+        $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
+        
+        // Get the posts liked by the current user
+        $likedPosts = $likeRepo->findBy(['user' => $user]);
+
+        $likedPostSlugs = array_map(function ($like) {
+            return $like->getPost()->getSlug();
+        }, $likedPosts);
 
         return $this->render('posts/index.html.twig', [
-            "posts"=> $posts
+            'posts' => $posts,
+            'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
 
@@ -150,7 +160,6 @@ class PostController extends AbstractController
         subject: new Expression('args["post"].getAuthor()'),
         message: "You are not allowed to delete someone else's post."
     )]
-
     public function delete(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager): Response
     {       
             // Supprimer toutes les images associées au post
