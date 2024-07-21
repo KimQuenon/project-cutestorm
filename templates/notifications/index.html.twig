@@ -1,9 +1,13 @@
-{# notifications/index.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>Notifications</h1>
+    {% if unreadCount > 0 %}
+        ({{ unreadCount }})
+    {% else %}
+        (0)
+    {% endif %}
+
     <a href="{{ path('notifications_mark_read') }}" class="btn btn-primary">Mark all as read</a>
     <ul>
         {% for notification in notifications %}

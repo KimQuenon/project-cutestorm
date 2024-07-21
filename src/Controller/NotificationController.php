@@ -20,8 +20,8 @@ class NotificationController extends AbstractController
         $posts = $postRepo->findBy(['author' => $user]);
         $notifications = $notificationRepo->findByPosts($posts);
 
-        // Compter les notifications non lues
-        $unreadCount = $notificationRepo->findUnreadCountByUser($user);
+        // Compter les notifications non lues pour les posts de l'utilisateur
+        $unreadCount = $notificationRepo->findUnreadCountByUserPosts($user);
 
         return $this->render('notifications/index.html.twig', [
             'notifications' => $notifications,
