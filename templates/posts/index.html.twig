@@ -14,6 +14,7 @@
                     <div class="card bg-light mb-3">
                         <div class="card-header text-center">
                             <h4 class="card-title">{{ post.title }}</h4>
+                            <h5>By <a href="{{ path('profile_show', {'slug': post.author.slug})  }}">{{post.author.pseudo}}</a></h5>
                         </div>
                         <div class="card-body">
                             <p class="card-text">{{ post.description | raw }}</p>

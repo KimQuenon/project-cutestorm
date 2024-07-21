@@ -40,7 +40,6 @@ class AccountController extends AbstractController
     #[Route('/logout', name: 'account_logout')]
     public function logout(): Void
     {
-
     }
 
     
