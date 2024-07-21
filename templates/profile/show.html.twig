@@ -4,4 +4,7 @@
 
 {% block body %}
     {{user.pseudo}}
+    {% for post in posts %}
+        <p>{{post.title}}</p>
+    {% endfor %}
 {% endblock %}

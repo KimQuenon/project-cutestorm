@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -22,10 +23,13 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/profile/{slug}', name: 'profile_show')]
-    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $user): Response
+    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, PostRepository $postRepo): Response
     {
+        $posts = $postRepo->sortPostsByUser($user);
+
         return $this->render('profile/show.html.twig', [
             'user'=>$user,
+            'posts'=>$posts
         ]);
     }
 }

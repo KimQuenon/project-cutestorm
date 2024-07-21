@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Post;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -16,6 +17,15 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
+    public function sortPostsByUser(User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy('p.timestamp', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Post[] Returns an array of Post objects
     //     */
