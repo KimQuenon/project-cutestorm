@@ -20,6 +20,7 @@ class NotificationService
         $notification->setType($type);
         $notification->setUser($user);
         $notification->setPost($post);
+        $notification->setRead(false);
 
         $this->entityManager->persist($notification);
         $this->entityManager->flush();

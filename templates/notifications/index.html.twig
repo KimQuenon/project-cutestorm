@@ -1,14 +1,18 @@
+{# notifications/index.html.twig #}
+
 {% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>Notifications</h1>
+    <a href="{{ path('notifications_mark_read') }}" class="btn btn-primary">Mark all as read</a>
     <ul>
         {% for notification in notifications %}
             <li>
+                {% if not notification.isRead %}
+                    <span class="notification-indicator"></span>
+                {% endif %}
                 <strong>
-                    {# <a href="{{ path('user_profile', {'id': notification.user.id}) }}"> #}
-                        {{ notification.user.pseudo }}
-                    {# </a> #}
+                    {{ notification.user.pseudo }}
                 </strong> has liked 
                 <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
                     {{ notification.post.title }}

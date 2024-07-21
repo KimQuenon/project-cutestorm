@@ -48,14 +48,10 @@ class LikeController extends AbstractController
             $manager->flush();
             $liked = true;
 
-            // Add notification
             if ($post->getAuthor() !== $user) {
-                $this->notificationService->addNotification(
-                    'like',
-                    $user,
-                    $post
-                );
+                $this->notificationService->addNotification('like', $user, $post);
             }
+
         }
 
         // Get the updated like count

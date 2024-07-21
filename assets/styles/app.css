@@ -16,3 +16,14 @@
 .like-count {
     font-size: 1rem;
 }
+
+/* styles.css */
+
+.notification-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: blue;
+    border-radius: 50%;
+    margin-right: 10px;
+}

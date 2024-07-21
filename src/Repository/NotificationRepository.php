@@ -29,7 +29,29 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
+
+    public function findUnreadCountByUser($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->where('n.user = :user')
+            ->andWhere('n.isRead = false')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function markNotificationsAsReadForPosts(array $posts)
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', 'true')
+            ->where('n.post IN (:posts)')
+            ->setParameter('posts', $posts)
+            ->getQuery()
+            ->execute();
+    }
+
     //    /**
     //     * @return Notification[] Returns an array of Notification objects
     //     */
