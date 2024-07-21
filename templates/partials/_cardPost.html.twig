@@ -1,0 +1,20 @@
+{% set postUrl = path('post_show', {'slug': post.slug}) %}
+
+<div class="col-md-4">
+    <div class="card bg-light mb-3">
+        <div class="card-header text-center">
+            <h4 class="card-title">{{ post.title }}</h4>
+            <h5>By <a href="{{ path('profile_show', {'slug': post.author.slug})  }}">{{post.author.pseudo}}</a></h5>
+            {% include "partials/_follow.html.twig" with {'user': post.author} %}
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ post.description | raw }}</p>
+            <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
+            {% include "partials/_like.html.twig" with {'post': post} %}
+            {% if app.user == post.author %}
+                <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

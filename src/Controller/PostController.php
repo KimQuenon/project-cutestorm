@@ -109,10 +109,17 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo): Response
     {
+        $user = $this->getUser();
+        $likedPosts = $likeRepo->findBy(['user' => $user]);
+        $likedPostSlugs = array_map(function ($like) {
+            return $like->getPost()->getSlug();
+        }, $likedPosts);
+    
         return $this->render("posts/show.html.twig", [
             'post' => $post,
+            'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
 

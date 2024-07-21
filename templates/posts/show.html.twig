@@ -4,6 +4,8 @@
 
 {% block body %}
     <div class="container">
+        {% include "partials/_like.html.twig" with {'post': post} %}
+        {% include "partials/_follow.html.twig" with {'user': post.author} %}
         <h1>{{post.title}}</h1>
         <p>{{post.description | raw}}</p>
         <div class="row">
@@ -13,10 +15,14 @@
                 </div>
             {% endfor %}
         </div>
-        {% if app.user %}
+        {% if app.user == post.author %}
             <a href="{{path('post_pictures', {'slug':post.slug})}}" class="btn btn-primary mt-4">Edit pictures</a>
             <a href="{{path('post_edit', {'slug':post.slug})}}" class="btn btn-warning mt-4">Edit post</a>
             <a href="{{path('post_delete', {'slug':post.slug})}}" class="btn btn-danger mt-4">Delete post</a>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{encore_entry_script_tags('like')}}
 {% endblock %}
