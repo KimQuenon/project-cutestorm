@@ -8,6 +8,8 @@
             {% for post in posts %}
                 {% set postUrl = path('post_show', {'slug': post.slug}) %}
                 {% set isLiked = post.slug in likedPostSlugs %}
+                {% set isAuthor = app.user and post.author.id == app.user.id %}
+                
                 <div class="col-md-4">
                     <div class="card bg-light mb-3">
                         <div class="card-header text-center">
@@ -17,12 +19,16 @@
                             <p class="card-text">{{ post.description | raw }}</p>
                             <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
                             <div class="d-flex align-items-center justify-content-start">
-                                <button class="like-button {% if isLiked %}liked{% else %}not-liked{% endif %}" 
-                                        data-post-slug="{{ post.slug }}">
+                                <button class="like-button {% if isLiked %}liked{% else %}not-liked{% endif %}{% if isAuthor %}disabled{% endif %}"
+                                        data-post-slug="{{ post.slug }}"
+                                        >
                                     <i class="fa fa-heart"></i>
                                 </button>
                                 <span class="like-count ms-2">{{ post.likes|length }}</span>
                             </div>
+                            {% if isAuthor %}
+                                <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -34,36 +40,48 @@
 {% block javascripts %}
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.like-button');
+        const buttons = document.querySelectorAll('.like-button');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            const postSlug = button.getAttribute('data-post-slug');
-            const likeCountElement = button.nextElementSibling; // Get the like count element
-
-            fetch(`/posts/${postSlug}/like`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'include' // Include cookies for authenticated requests
-            })
-            .then(response => response.json())
-            .then(data => {
-                likeCountElement.textContent = data.likeCount;
-
-                if (data.liked) {
-                    button.classList.add('liked'); // Add 'liked' class for styling
-                    button.classList.remove('not-liked'); // Remove 'not-liked' class
-                } else {
-                    button.classList.add('not-liked'); // Add 'not-liked' class for styling
-                    button.classList.remove('liked'); // Remove 'liked' class
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (button.disabled) {
+                    return; // Do nothing if the button is disabled
                 }
-            })
-            .catch(error => console.error('Error:', error));
+
+                const postSlug = button.getAttribute('data-post-slug');
+                const likeCountElement = button.nextElementSibling; // Get the like count element
+
+                fetch(`/posts/${postSlug}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include' // Include cookies for authenticated requests
+                })
+                .then(response => {
+                    if (response.status === 403) {
+                        // No alert here, just silently ignore the request
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        likeCountElement.textContent = data.likeCount;
+
+                        if (data.liked) {
+                            button.classList.add('liked'); // Add 'liked' class for styling
+                            button.classList.remove('not-liked'); // Remove 'not-liked' class
+                        } else {
+                            button.classList.add('not-liked'); // Add 'not-liked' class for styling
+                            button.classList.remove('liked'); // Remove 'liked' class
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
         });
     });
-});
     </script>
 {% endblock %}

@@ -19,6 +19,11 @@ class LikeController extends AbstractController
     public function addLike(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager, LikeRepository $likeRepo): JsonResponse
     {
         $user = $this->getUser();
+        
+        if ($post->getAuthor() === $user) {
+            return new JsonResponse(['error' => 'Cannot like your own post'], Response::HTTP_FORBIDDEN);
+        }
+
         $existingLike = $likeRepo->findOneBy(['post' => $post, 'user' => $user]);
 
         if ($existingLike) {
