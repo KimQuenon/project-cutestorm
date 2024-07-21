@@ -17,7 +17,84 @@
             </button>
         </form>
 
-    {% for post in posts %}
-        <p>{{ post.title }}</p>
-    {% endfor %}
+            {% for post in posts %}
+                {% set postUrl = path('post_show', {'slug': post.slug}) %}
+                {% set isLiked = post.slug in likedPostSlugs %}
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.description | raw }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">Posted by {{ post.author.pseudo }} on {{ post.timestamp|date('Y-m-d H:i') }}</small>
+                            </p>
+                            <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
+                            <div class="d-flex align-items-center mt-2">
+                                <button class="like-button {% if isLiked %}liked{% else %}not-liked{% endif %}"
+                                        data-post-slug="{{ post.slug }}">
+                                    <i class="fa fa-heart"></i>
+                                </button>
+                                <span class="like-count ms-2">{{ post.likes|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        No posts available.
+                    </div>
+                </div>
+            {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }} <!-- Ensure that the parent block's JavaScript is included -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.like-button');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (button.disabled) {
+                    return; // Do nothing if the button is disabled
+                }
+
+                const postSlug = button.getAttribute('data-post-slug');
+                const likeCountElement = button.nextElementSibling; // Get the like count element
+
+                fetch(`/posts/${postSlug}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include' // Include cookies for authenticated requests
+                })
+                .then(response => {
+                    if (response.status === 403) {
+                        // No alert here, just silently ignore the request
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        likeCountElement.textContent = data.likeCount;
+
+                        if (data.liked) {
+                            button.classList.add('liked'); // Add 'liked' class for styling
+                            button.classList.remove('not-liked'); // Remove 'not-liked' class
+                        } else {
+                            button.classList.add('not-liked'); // Add 'not-liked' class for styling
+                            button.classList.remove('liked'); // Remove 'liked' class
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+    </script>
 {% endblock %}
