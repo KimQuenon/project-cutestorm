@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Following;
+use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FollowingController extends AbstractController
 {
+    private $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+    
     #[Route('/toggle-follow/{slug}', name: 'toggle_follow')]
     #[IsGranted('ROLE_USER')]
     public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo): RedirectResponse {
@@ -27,7 +35,7 @@ class FollowingController extends AbstractController
                 // If the user is already following, then unfollow
                 $manager->remove($existingFollowing);
                 $manager->flush();
-                
+                                
                 $this->addFlash(
                     'success',
                     "You have unfollowed ".$userToToggle->getPseudo()."."
@@ -41,7 +49,8 @@ class FollowingController extends AbstractController
                           ->setFollowedUser($userToToggle);
                 $manager->persist($following);
                 $manager->flush();
-                
+
+
                 $this->addFlash(
                     'success',
                     "You are now following ".$userToToggle->getPseudo()."!"

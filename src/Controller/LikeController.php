@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Repository\LikeRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,7 @@ class LikeController extends AbstractController
     
     #[Route('/posts/{slug}/like', name: 'post_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function addLike(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager, LikeRepository $likeRepo): JsonResponse
+    public function addLike(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager, LikeRepository $likeRepo, NotificationRepository $notificationRepo): JsonResponse
     {
         $user = $this->getUser();
 
@@ -37,6 +38,17 @@ class LikeController extends AbstractController
         if ($existingLike) {
             // If the user has already liked the post, remove the like
             $manager->remove($existingLike);
+
+            // Remove the associated notification
+            $notification = $notificationRepo->findOneBy([
+                'type' => 'like',
+                'user' => $user,
+                'post' => $post,
+            ]);
+            if ($notification) {
+                $manager->remove($notification);
+            }
+
             $manager->flush();
             $liked = false;
         } else {

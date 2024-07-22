@@ -1,11 +1,13 @@
-{% set isFollowing = app.user.followings|filter(following => following.followedUser.id == user.id) %}
+{% if app.user %}
+    {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == user.id) %}
 
-<form action="{{ path('toggle_follow', {'slug': user.slug}) }}" method="post">
-    <button type="submit">
-        {% if isFollowing|length > 0 %}
-            Unfollow
-        {% else %}
-            Follow
-        {% endif %}
-    </button>
-</form>
+    <form action="{{ path('toggle_follow', {'slug': user.slug}) }}" method="post">
+        <button type="submit">
+            {% if isFollowing|length > 0 %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+    </form>
+{% endif %}
