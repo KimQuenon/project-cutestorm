@@ -21,8 +21,12 @@ class Notification
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Post $post = null;
+
+    #[ORM\ManyToOne(inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $relatedUser = null;
 
     #[ORM\Column]
     private ?bool $isRead = null;
@@ -64,6 +68,18 @@ class Notification
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getRelatedUser(): ?User
+    {
+        return $this->relatedUser;
+    }
+
+    public function setRelatedUser(?User $relatedUser): static
+    {
+        $this->relatedUser = $relatedUser;
 
         return $this;
     }

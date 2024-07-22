@@ -39,15 +39,6 @@ class LikeController extends AbstractController
             // If the user has already liked the post, remove the like
             $manager->remove($existingLike);
 
-            // Remove the associated notification
-            $notification = $notificationRepo->findOneBy([
-                'type' => 'like',
-                'user' => $user,
-                'post' => $post,
-            ]);
-            if ($notification) {
-                $manager->remove($notification);
-            }
 
             $manager->flush();
             $liked = false;
@@ -60,9 +51,7 @@ class LikeController extends AbstractController
             $manager->flush();
             $liked = true;
 
-            if ($post->getAuthor() !== $user) {
-                $this->notificationService->addNotification('like', $user, $post);
-            }
+            $this->notificationService->addNotification('like', $user, $post);
 
         }
 

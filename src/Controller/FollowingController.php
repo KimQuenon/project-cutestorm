@@ -50,6 +50,7 @@ class FollowingController extends AbstractController
                 $manager->persist($following);
                 $manager->flush();
 
+                $this->notificationService->addNotification('follow', $user, null, $userToToggle);
 
                 $this->addFlash(
                     'success',

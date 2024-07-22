@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Post;
+use App\Entity\User;
 use App\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -14,13 +16,14 @@ class NotificationService
         $this->entityManager = $entityManager;
     }
 
-    public function addNotification($type, $user, $post)
+    public function addNotification(string $type, User $user, ?Post $post = null, ?User $relatedUser = null): void
     {
         $notification = new Notification();
-        $notification->setType($type);
-        $notification->setUser($user);
-        $notification->setPost($post);
-        $notification->setRead(false);
+        $notification->setType($type)
+                     ->setUser($user)
+                     ->setPost($type === 'like' ? $post : null)
+                     ->setRelatedUser($type === 'follow' ? $relatedUser : null)
+                     ->setRead(false);
 
         $this->entityManager->persist($notification);
         $this->entityManager->flush();

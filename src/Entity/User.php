@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields:['email'], message:"An account is already associated with this email address, please modify it.")]
+#[UniqueEntity(fields: ['email'], message: "An account is already associated with this email address, please modify it.")]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['pseudo'], message: "This pseudo is already taken, please choose another one.")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -29,36 +29,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "Invalid email address")]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
-    #[Assert\Length(min:8, max:255, minMessage: "Your password must be at least 8 characters.", maxMessage:"Your password should not be longer than 255 characters.")]
+    #[Assert\Length(min: 8, max: 255, minMessage: "Your password must be at least 8 characters.", maxMessage: "Your password should not be longer than 255 characters.")]
     private ?string $password = null;
 
-    #[Assert\EqualTo(propertyPath:"password", message:"Unconfirmed password")]
+    #[Assert\EqualTo(propertyPath: "password", message: "Unconfirmed password")]
     public ?string $passwordConfirm = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 5, max:50, minMessage:"This field must be at least 5 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
+    #[Assert\Length(min: 5, max: 50, minMessage: "This field must be at least 5 characters long.", maxMessage: "This field can't be longer than 50 characters.")]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 2, max:50, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
+    #[Assert\Length(min: 2, max: 50, minMessage: "This field must be at least 2 characters long.", maxMessage: "This field can't be longer than 50 characters.")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 2, max:50, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 50 characters.")]
+    #[Assert\Length(min: 2, max: 50, minMessage: "This field must be at least 2 characters long.", maxMessage: "This field can't be longer than 50 characters.")]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 10, max:100, minMessage:"This field must be at least 10 characters long.", maxMessage: "This file can't be longer than 100 characters.")]
+    #[Assert\Length(min: 10, max: 100, minMessage: "This field must be at least 10 characters long.", maxMessage: "This field can't be longer than 100 characters.")]
     private ?string $address = null;
 
     #[ORM\Column]
@@ -66,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $postalcode = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 2, max:100, minMessage:"This field must be at least 2 characters long.", maxMessage: "This file can't be longer than 100 characters.")]
+    #[Assert\Length(min: 2, max: 100, minMessage: "This field must be at least 2 characters long.", maxMessage: "This field can't be longer than 100 characters.")]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
@@ -80,36 +74,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\Length(min: 5, minMessage:"The description must be at least 5 characters long.")]
+    #[Assert\Length(min: 5, minMessage: "The description must be at least 5 characters long.")]
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(mimeTypes:['image/png','image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage:"Upload a jpg, jpeg, png or gif file")]
-    #[Assert\File(maxSize:"1024k", maxSizeMessage: "This file is too big to be uploaded.")]
+    #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
+    #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $avatar = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(mimeTypes:['image/png','image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage:"Upload a jpg, jpeg, png or gif file")]
-    #[Assert\File(maxSize:"1024k", maxSizeMessage: "This file is too big to be uploaded.")]
+    #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
+    #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $banner = null;
 
-    /**
-     * @var Collection<int, Post>
-     */
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $posts;
 
-    /**
-     * @var Collection<int, Like>
-     */
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $likes;
 
-    /**
-     * @var Collection<int, Notification>
-     */
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
+
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'relatedUser', orphanRemoval: true)]
+    private Collection $relatedNotifications;
 
     #[ORM\OneToMany(mappedBy: 'followerUser', targetEntity: Following::class)]
     private Collection $followings;
@@ -122,46 +110,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->relatedNotifications = new ArrayCollection();
         $this->followings = new ArrayCollection();
         $this->followedByUsers = new ArrayCollection();
     }
 
-    /**
-     * init slug
-     *
-     * @return void
-     */
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function initializeSlug(): void
     {
-        if(empty($this->slug))
-        {
+        if (empty($this->slug)) {
             $slugify = new Slugify();
             $this->slug = $slugify->slugify($this->pseudo);
         }
     }
 
-    /**
-     * init datetime
-     *
-     * @return void
-     */
     #[ORM\PrePersist]
     public function prePersist(): void
     {
-        if(empty($this->timestamp))
-        {
+        if (empty($this->timestamp)) {
             $this->timestamp = new \DateTime();
         }
     }
 
     public function getFullName(): string
     {
-        return $this->firstname." ".$this->lastname;
+        return $this->firstname . " " . $this->lastname;
     }
-
-    
 
     public function getId(): ?int
     {
@@ -180,33 +155,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -214,9 +175,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -229,13 +187,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getPseudo(): ?string
@@ -382,9 +335,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
     public function getPosts(): Collection
     {
         return $this->posts;
@@ -403,7 +353,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePost(Post $post): static
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
             if ($post->getAuthor() === $this) {
                 $post->setAuthor(null);
             }
@@ -412,9 +361,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Like>
-     */
     public function getLikes(): Collection
     {
         return $this->likes;
@@ -433,7 +379,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLike(Like $like): static
     {
         if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
             if ($like->getUser() === $this) {
                 $like->setUser(null);
             }
@@ -442,9 +387,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Notification>
-     */
     public function getNotifications(): Collection
     {
         return $this->notifications;
@@ -463,7 +405,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeNotification(Notification $notification): static
     {
         if ($this->notifications->removeElement($notification)) {
-            // set the owning side to null (unless already changed)
             if ($notification->getUser() === $this) {
                 $notification->setUser(null);
             }
@@ -472,9 +413,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Following>
-     */
+    public function getRelatedNotifications(): Collection
+    {
+        return $this->relatedNotifications;
+    }
+
+    public function addRelatedNotification(Notification $relatedNotification): static
+    {
+        if (!$this->relatedNotifications->contains($relatedNotification)) {
+            $this->relatedNotifications->add($relatedNotification);
+            $relatedNotification->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelatedNotification(Notification $relatedNotification): static
+    {
+        if ($this->relatedNotifications->removeElement($relatedNotification)) {
+            if ($relatedNotification->getRelatedUser() === $this) {
+                $relatedNotification->setRelatedUser(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getFollowings(): Collection
     {
         return $this->followings;
@@ -493,7 +457,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFollowing(Following $following): static
     {
         if ($this->followings->removeElement($following)) {
-            // set the owning side to null (unless already changed)
             if ($following->getFollower() === $this) {
                 $following->setFollower(null);
             }
@@ -502,9 +465,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Following>
-     */
     public function getFolloweds(): Collection
     {
         return $this->followeds;
@@ -523,7 +483,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFollowed(Following $followed): static
     {
         if ($this->followeds->removeElement($followed)) {
-            // set the owning side to null (unless already changed)
             if ($followed->getFollowed() === $this) {
                 $followed->setFollowed(null);
             }
@@ -532,3 +491,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
+
