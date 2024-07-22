@@ -105,6 +105,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'followedUser', targetEntity: Following::class)]
     private Collection $followedByUsers;
 
+    #[ORM\Column]
+    private ?bool $isPrivate = null;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -487,6 +490,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $followed->setFollowed(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setPrivate(bool $isPrivate): static
+    {
+        $this->isPrivate = $isPrivate;
 
         return $this;
     }

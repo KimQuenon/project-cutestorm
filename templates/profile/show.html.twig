@@ -19,17 +19,25 @@
                     </div>
                 </div>
 
-                {% for post in posts %}
-                <div class="container">
-                    {% include "partials/_cardPost.html.twig" with {'post': post} %}
-                </div>
-                {% else %}
+                {% if isPrivate %}
                     <div class="col-12">
-                        <div class="alert alert-info" role="alert">
-                            No posts available.
+                        <div class="alert alert-warning">
+                            Ce compte est privé.
                         </div>
                     </div>
-                {% endfor %}
+                {% else %}
+                    {% for post in posts %}
+                        <div class="container">
+                            {% include "partials/_cardPost.html.twig" with {'post': post} %}
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                No posts available.
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

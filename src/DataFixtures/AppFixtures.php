@@ -44,7 +44,8 @@ class AppFixtures extends Fixture
                 ->setPassword($hash)
                 ->setBio('<p>'.join('<p></p>', $faker->paragraphs(1)).'</p>')
                 ->setAvatar('https://picsum.photos/seed/picsum/500/500')
-                ->setBanner('https://picsum.photos/seed/picsum/500/500');
+                ->setBanner('https://picsum.photos/seed/picsum/500/500')
+                ->setPrivate($faker->boolean());
 
             $manager->persist($user);
             $users[] = $user; // Add user to the array

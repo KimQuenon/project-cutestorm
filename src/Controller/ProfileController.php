@@ -37,20 +37,26 @@ class ProfileController extends AbstractController
     #[Route('/profile/{slug}', name: 'profile_show')]
     public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo): Response
     {
-        $posts = $postRepo->sortPostsByUser($profileUser);
-
         $user = $this->getUser();
 
-        $likedPosts = $likeRepo->findBy(['user' => $user]);
-        $likedPostSlugs = array_map(function($like) {
-            return $like->getPost()->getSlug();
-        }, $likedPosts);
+        $isPrivate = $profileUser->isPrivate() && $user !== $profileUser;
+        
+        $posts = $isPrivate ? [] : $postRepo->sortPostsByUser($profileUser);
+        $likedPostSlugs = [];
+
+        if (!$isPrivate) {
+            $likedPosts = $likeRepo->findBy(['user' => $user]);
+            $likedPostSlugs = array_map(function($like) {
+                return $like->getPost()->getSlug();
+            }, $likedPosts);
+        }
 
         return $this->render('profile/show.html.twig', [
-            'profileUser'=>$profileUser,
-            'user'=>$user,
-            'posts'=>$posts,
+            'profileUser' => $profileUser,
+            'user' => $user,
+            'posts' => $posts,
             'likedPostSlugs' => $likedPostSlugs,
+            'isPrivate' => $isPrivate,
         ]);
     }
 }

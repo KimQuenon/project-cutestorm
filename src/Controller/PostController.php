@@ -29,6 +29,10 @@ class PostController extends AbstractController
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
+
+        $visiblePosts = array_filter($posts, function ($post) {
+            return !$post->getAuthor()->isPrivate();
+        });
         
         // Get the posts liked by the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
@@ -38,7 +42,7 @@ class PostController extends AbstractController
         }, $likedPosts);
 
         return $this->render('posts/index.html.twig', [
-            'posts' => $posts,
+            'posts' => $visiblePosts,
             'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
