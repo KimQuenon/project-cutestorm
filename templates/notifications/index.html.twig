@@ -1,28 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'notifications/base.html.twig' %}
 
-{% block body %}
-    <h1>Notifications</h1>
-    <p>
-        Vous avez {{ unreadCount }} notification(s) non lue(s).
-    </p>
-    <a href="{{ path('mark_notifications_read') }}" class="btn btn-primary">Marquer tout comme lu</a>
-    <ul>
-        {% for notification in notifications %}
-            <li>
-                {% if not notification.isRead %}
-                    <span class="notification-indicator"></span>
-                {% endif %}
-                {% if notification.post %}
-                    <strong>{{ notification.user.pseudo }}</strong> a aimé 
-                    <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
-                        {{ notification.post.title }}
-                    </a>
-                {% else %}
-                    <strong>{{ notification.relatedUser.pseudo }}</strong> vous suit
-                {% endif %}
-            </li>
-        {% else %}
-            <li>Aucune notification</li>
-        {% endfor %}
-    </ul>
+{% set title = 'Notifications' %}
+{% set markAsReadPath = path('mark_notifications_read') %}
+
+{% block notification_content %}
+    {% if notification.post %}
+        <strong>{{ notification.user.pseudo }}</strong> a aimé 
+        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
+            {{ notification.post.title }}
+        </a>
+    {% else %}
+        <strong>{{ notification.user.pseudo }}</strong> vous suit
+    {% endif %}
 {% endblock %}

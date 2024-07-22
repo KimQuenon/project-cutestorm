@@ -90,28 +90,55 @@ class NotificationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function markAllNotificationsAsRead($user)
+    public function markAllNotificationsAsRead($user, array $posts)
     {
+        // Extraire les IDs des posts si $posts est un tableau d'objets Post
+        $postIds = array_map(fn($post) => $post->getId(), $posts); 
+    
+        // Mettre à jour les notifications liées aux posts de l'utilisateur connecté
         $this->createQueryBuilder('n')
             ->update()
-            ->set('n.isRead', 'true')
-            ->where('n.user = :user')
+            ->set('n.isRead', ':isRead')
+            ->where('n.post IN (:posts)')
+            ->andWhere('n.isRead = :isNotRead')
+            ->setParameter('isRead', true)
+            ->setParameter('posts', $postIds)
+            ->setParameter('isNotRead', false)
+            ->getQuery()
+            ->execute();
+    
+        // Mettre à jour les notifications où l'utilisateur connecté est le relatedUser
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', ':isRead')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.isRead = :isNotRead')
+            ->setParameter('isRead', true)
             ->setParameter('user', $user)
+            ->setParameter('isNotRead', false)
             ->getQuery()
             ->execute();
     }
+    
 
-    public function markLikesAsRead($user)
+    public function markLikesAsRead($user, array $posts)
     {
+        // Assure-toi que les posts contiennent les objets ou les IDs valides
+        $postIds = array_map(fn($post) => $post->getId(), $posts); // Extraire les IDs des posts si ce sont des objets
+    
+        // Construire la requête pour mettre à jour les notifications
         $this->createQueryBuilder('n')
             ->update()
-            ->set('n.isRead', 'true')
-            ->where('n.user = :user')
-            ->andWhere('n.type = :type')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'like')
+            ->set('n.isRead', ':isRead')
+            ->where('n.type = :type') // Filtrer par type de notification (likes dans ce cas)
+            ->andWhere('n.post IN (:posts)') // Filtrer par les posts spécifiés
+            ->andWhere('n.isRead = :isNotRead') // Filtrer les notifications non lues
+            ->setParameter('isRead', true) // Valeur pour marquer comme lu
+            ->setParameter('type', 'like') // Type de notification
+            ->setParameter('posts', $postIds) // Liste des IDs des posts
+            ->setParameter('isNotRead', false) // Filtrer les notifications qui ne sont pas encore lues
             ->getQuery()
-            ->execute();
+            ->execute(); // Exécution de la requête
     }
 
     public function markFollowsAsRead($user)

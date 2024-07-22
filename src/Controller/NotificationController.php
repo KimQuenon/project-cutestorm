@@ -62,21 +62,22 @@ class NotificationController extends AbstractController
 
     #[Route('/notifications/mark-read', name: 'mark_notifications_read')]
     #[IsGranted('ROLE_USER')]
-    public function markRead(NotificationRepository $notificationRepo): Response
+    public function markRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        $notificationRepo->markAllNotificationsAsRead($user);
+        $posts = $postRepo->findBy(['author' => $user]);
+        $notificationRepo->markAllNotificationsAsRead($user, $posts);
 
         return $this->redirectToRoute('notifications_index');
     }
 
     #[Route('/notifications/mark-likes-read', name: 'mark_likes_read')]
     #[IsGranted('ROLE_USER')]
-    public function markLikesRead(NotificationRepository $notificationRepo): Response
+    public function markLikesRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        
-        $notificationRepo->markLikesAsRead($user);
+        $posts = $postRepo->findBy(['author' => $user]);
+        $notificationRepo->markLikesAsRead($user, $posts);
 
         return $this->redirectToRoute('notifications_likes');
     }

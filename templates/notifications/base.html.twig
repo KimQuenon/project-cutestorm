@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+    <p>
+        Vous avez {{ unreadCount }} notification(s) non lue(s).
+    </p>
+    <a href="{{ markAsReadPath }}" class="btn btn-primary">Marquer tout comme lu</a>
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                {% if not notification.isRead %}
+                    <span class="notification-indicator"></span>
+                {% endif %}
+                {% block notification_content %}{% endblock %}
+            </li>
+        {% else %}
+            <li>Aucune notification</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
