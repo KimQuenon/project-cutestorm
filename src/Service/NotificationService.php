@@ -16,13 +16,13 @@ class NotificationService
         $this->entityManager = $entityManager;
     }
 
-    public function addNotification(string $type, User $user, ?Post $post = null, ?User $relatedUser = null): void
+    public function addNotification(string $type, User $user, ?User $relatedUser, ?Post $post = null): void
     {
         $notification = new Notification();
         $notification->setType($type)
                      ->setUser($user)
                      ->setPost($type === 'like' ? $post : null)
-                     ->setRelatedUser($type === 'follow' ? $relatedUser : null)
+                     ->setRelatedUser($relatedUser)
                      ->setRead(false);
 
         $this->entityManager->persist($notification);

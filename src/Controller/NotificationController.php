@@ -65,8 +65,7 @@ class NotificationController extends AbstractController
     public function markRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        $posts = $postRepo->findBy(['author' => $user]);
-        $notificationRepo->markAllNotificationsAsRead($user, $posts);
+        $notificationRepo->markAllNotificationsAsRead($user);
 
         return $this->redirectToRoute('notifications_index');
     }
@@ -76,8 +75,7 @@ class NotificationController extends AbstractController
     public function markLikesRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        $posts = $postRepo->findBy(['author' => $user]);
-        $notificationRepo->markLikesAsRead($user, $posts);
+        $notificationRepo->markLikesAsRead($user);
 
         return $this->redirectToRoute('notifications_likes');
     }
