@@ -16,30 +16,79 @@ class NotificationController extends AbstractController
     public function index(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        // Récupérer tous les posts que l'utilisateur a publiés
+        
+        // Récupérer tous les posts de l'utilisateur
         $posts = $postRepo->findBy(['author' => $user]);
-        $notifications = $notificationRepo->findByPosts($posts);
+        
+        // Récupérer les notifications associées aux posts et celles où l'utilisateur est relatedUser
+        $notifications = $notificationRepo->getAllNotifications($user, $posts);
 
-        // Compter les notifications non lues pour les posts de l'utilisateur
-        $unreadCount = $notificationRepo->findUnreadCountByUserPosts($user);
+        $unreadCount = $notificationRepo->countUnreadNotifications($user, $posts);
 
         return $this->render('notifications/index.html.twig', [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount
+        ]);
+    }
+
+    #[Route('/notifications/likes', name: 'notifications_likes')]
+    #[IsGranted('ROLE_USER')]
+    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    {
+        $user = $this->getUser();
+        $posts = $postRepo->findBy(['author' => $user]);
+        $notifications = $notificationRepo->getLikesNotifications($posts, 'like');
+        $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts);
+
+        return $this->render('notifications/likes.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);
     }
 
-    #[Route('/notifications/mark-read', name: 'notifications_mark_read')]
+    #[Route('/notifications/follows', name: 'notifications_follows')]
     #[IsGranted('ROLE_USER')]
-    public function markRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    public function follows(NotificationRepository $notificationRepo): Response
     {
         $user = $this->getUser();
-        // Récupérer tous les posts que l'utilisateur a publiés
-        $posts = $postRepo->findBy(['author' => $user]);
-        // Marquer les notifications liées à ces posts comme lues
-        $notificationRepo->markNotificationsAsReadForPosts($posts);
+        $notifications = $notificationRepo->getFollowsNotifications($user);
+        $unreadCount = $notificationRepo->countUnreadFollowsNotifications($user);
 
-        // Rediriger vers la page des notifications après la mise à jour
+        return $this->render('notifications/follows.html.twig', [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount,
+        ]);
+    }
+
+    #[Route('/notifications/mark-read', name: 'mark_notifications_read')]
+    #[IsGranted('ROLE_USER')]
+    public function markRead(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        $notificationRepo->markAllNotificationsAsRead($user);
+
         return $this->redirectToRoute('notifications_index');
+    }
+
+    #[Route('/notifications/mark-likes-read', name: 'mark_likes_read')]
+    #[IsGranted('ROLE_USER')]
+    public function markLikesRead(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        
+        $notificationRepo->markLikesAsRead($user);
+
+        return $this->redirectToRoute('notifications_likes');
+    }
+
+    #[Route('/notifications/mark-follows-read', name: 'mark_follows_read')]
+    #[IsGranted('ROLE_USER')]
+    public function markFollowsRead(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        
+        $notificationRepo->markFollowsAsRead($user);
+
+        return $this->redirectToRoute('notifications_follows');
     }
 }

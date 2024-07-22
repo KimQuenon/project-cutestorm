@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Notification;
@@ -16,66 +15,115 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-        /**
-     * @param array $posts
-     * @return Notification[]
-     */
-    public function findByPosts(array $posts)
+    public function getAllNotifications($user, array $posts)
     {
         return $this->createQueryBuilder('n')
             ->where('n.post IN (:posts)')
+            ->orWhere('n.relatedUser = :user')
             ->setParameter('posts', $posts)
+            ->setParameter('user', $user)
             ->orderBy('n.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
 
-    public function findUnreadCountByUserPosts($user)
+    public function getLikesNotifications(array $posts, string $type)
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.post IN (:posts)')
+            ->andWhere('n.type = :type')
+            ->setParameter('posts', $posts)
+            ->setParameter('type', $type)
+            ->orderBy('n.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getFollowsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'follow')
+            ->orderBy('n.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countUnreadNotifications($user, array $posts)
     {
         return $this->createQueryBuilder('n')
             ->select('COUNT(n.id)')
-            ->innerJoin('n.post', 'p')
-            ->where('p.author = :user')
+            ->where('n.post IN (:posts)')
+            ->orWhere('n.relatedUser = :user')
             ->andWhere('n.isRead = false')
+            ->setParameter('posts', $posts)
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
     }
-    
 
-    public function markNotificationsAsReadForPosts(array $posts)
+    public function countUnreadLikesNotifications($user, array $posts)
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->where('n.post IN (:posts)')
+            ->andWhere('n.type = :type')
+            ->andWhere('n.isRead = false')
+            ->setParameter('posts', $posts)
+            ->setParameter('type', 'like')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countUnreadFollowsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->andWhere('n.isRead = false')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'follow')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function markAllNotificationsAsRead($user)
     {
         $this->createQueryBuilder('n')
             ->update()
             ->set('n.isRead', 'true')
-            ->where('n.post IN (:posts)')
-            ->setParameter('posts', $posts)
+            ->where('n.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
             ->execute();
     }
 
-    //    /**
-    //     * @return Notification[] Returns an array of Notification objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('n')
-    //            ->andWhere('n.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('n.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function markLikesAsRead($user)
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', 'true')
+            ->where('n.user = :user')
+            ->andWhere('n.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'like')
+            ->getQuery()
+            ->execute();
+    }
 
-    //    public function findOneBySomeField($value): ?Notification
-    //    {
-    //        return $this->createQueryBuilder('n')
-    //            ->andWhere('n.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function markFollowsAsRead($user)
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', 'true')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'follow')
+            ->getQuery()
+            ->execute();
+    }
 }
