@@ -108,6 +108,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isPrivate = null;
 
+    /**
+     * @var Collection<int, FollowRequest>
+     */
+    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentBy', orphanRemoval: true)]
+    private Collection $sentRequests;
+
+    /**
+     * @var Collection<int, FollowRequest>
+     */
+    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentTo', orphanRemoval: true)]
+    private Collection $receivedRequests;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -116,6 +128,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->relatedNotifications = new ArrayCollection();
         $this->followings = new ArrayCollection();
         $this->followedByUsers = new ArrayCollection();
+        $this->sentRequests = new ArrayCollection();
+        $this->receivedRequests = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -502,6 +516,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrivate(bool $isPrivate): static
     {
         $this->isPrivate = $isPrivate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FollowRequest>
+     */
+    public function getSentRequests(): Collection
+    {
+        return $this->sentRequests;
+    }
+
+    public function addSentRequest(FollowRequest $sentRequest): static
+    {
+        if (!$this->sentRequests->contains($sentRequest)) {
+            $this->sentRequests->add($sentRequest);
+            $sentRequest->setSentBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentRequest(FollowRequest $sentRequest): static
+    {
+        if ($this->sentRequests->removeElement($sentRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($sentRequest->getSentBy() === $this) {
+                $sentRequest->setSentBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FollowRequest>
+     */
+    public function getReceivedRequests(): Collection
+    {
+        return $this->receivedRequests;
+    }
+
+    public function addReceivedRequest(FollowRequest $receivedRequest): static
+    {
+        if (!$this->receivedRequests->contains($receivedRequest)) {
+            $this->receivedRequests->add($receivedRequest);
+            $receivedRequest->setSentTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedRequest(FollowRequest $receivedRequest): static
+    {
+        if ($this->receivedRequests->removeElement($receivedRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedRequest->getSentTo() === $this) {
+                $receivedRequest->setSentTo(null);
+            }
+        }
 
         return $this;
     }

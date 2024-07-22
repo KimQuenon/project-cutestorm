@@ -4,12 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Following;
+use App\Entity\FollowRequest;
 use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FollowRequestRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,7 @@ class FollowingController extends AbstractController
     
     #[Route('/toggle-follow/{slug}', name: 'toggle_follow')]
     #[IsGranted('ROLE_USER')]
-    public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo): RedirectResponse {
+    public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo, FollowRequestRepository $followRequestRepo): RedirectResponse {
         $user = $this->getUser();
 
         if ($user && $user !== $userToToggle) {
@@ -35,27 +36,45 @@ class FollowingController extends AbstractController
                 // If the user is already following, then unfollow
                 $manager->remove($existingFollowing);
                 $manager->flush();
-                                
+                
                 $this->addFlash(
                     'success',
-                    "You have unfollowed ".$userToToggle->getPseudo()."."
+                    "You have unfollowed " . $userToToggle->getPseudo() . "."
                 );
 
                 return $this->redirectToRoute('posts_index');
             } else {
-                // If the user is not following, then follow
-                $following = new Following();
-                $following->setFollowerUser($user)
-                          ->setFollowedUser($userToToggle);
-                $manager->persist($following);
-                $manager->flush();
+                // If the user is not following, then check privacy setting
+                if ($userToToggle->isPrivate()) {
+                    // Create a follow request
+                    $followRequest = new FollowRequest();
+                    $followRequest->setSentBy($user)
+                                  ->setSentTo($userToToggle)
+                                  ->setStatus(false); // Request is pending
+                    $manager->persist($followRequest);
+                    $manager->flush();
+                    
+                    $this->addFlash(
+                        'success',
+                        "Follow request sent to " . $userToToggle->getPseudo() . "."
+                    );
 
-                $this->notificationService->addNotification('follow', $user, $userToToggle, null);
+                    return $this->redirectToRoute('posts_index');
+                } else {
+                    // Proceed with following directly
+                    $following = new Following();
+                    $following->setFollowerUser($user)
+                              ->setFollowedUser($userToToggle);
+                    $manager->persist($following);
+                    $manager->flush();
 
-                $this->addFlash(
-                    'success',
-                    "You are now following ".$userToToggle->getPseudo()."!"
-                );
+                    $this->notificationService->addNotification('follow', $user, $userToToggle, null);
+
+                    $this->addFlash(
+                        'success',
+                        "You are now following " . $userToToggle->getPseudo() . "!"
+                    );
+                }
 
                 return $this->redirectToRoute('profile_show', ['slug' => $userToToggle->getSlug()]);
             }
@@ -65,7 +84,5 @@ class FollowingController extends AbstractController
                 "You cannot follow or unfollow this user."
             );
         }
-
-        
     }
 }

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Subscription Requests{% endblock %}
+
+{% block body %}
+    <h1>Follow Requests</h1>
+
+    <ul>
+        {% for request in requests %}
+            <li>
+                {{ request.sentBy.pseudo }} wants to follow you.
+                <a href="{{ path('request_accept', { 'id': request.id }) }}">Accept</a>
+                <a href="{{ path('request_reject', { 'id': request.id }) }}">Reject</a>
+            </li>
+        {% else %}
+            <li>No follow requests.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

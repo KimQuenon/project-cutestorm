@@ -8,6 +8,7 @@ use App\Entity\PostImage;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,27 +26,32 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route('/posts', name: 'posts_index')]
-    public function list(PostRepository $postRepo, LikeRepository $likeRepo): Response
+    public function list(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
-
-        $visiblePosts = array_filter($posts, function ($post) {
-            return !$post->getAuthor()->isPrivate();
+    
+        // Determine which posts are visible based on author visibility and user subscription
+        $visiblePosts = array_filter($posts, function ($post) use ($user, $followingRepo) {
+            $author = $post->getAuthor();
+            $isPrivate = $author->isPrivate();
+            
+            // Check if the user is following the author if the author is private
+            $isFollowing = !$isPrivate || $user === $author || $followingRepo->isFollowing($user, $author);
+            
+            return $isFollowing;
         });
-        
+    
         // Get the posts liked by the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
-
-        $likedPostSlugs = array_map(function ($like) {
-            return $like->getPost()->getSlug();
-        }, $likedPosts);
-
+        $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
+    
         return $this->render('posts/index.html.twig', [
             'posts' => $visiblePosts,
             'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
+    
 
     #[Route("/posts/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]
@@ -113,19 +119,34 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo): Response
+    public function show(
+        #[MapEntity(mapping: ['slug' => 'slug'])] Post $post,
+        LikeRepository $likeRepo,
+        FollowingRepository $followingRepo
+    ): Response
     {
         $user = $this->getUser();
+        $author = $post->getAuthor();
+        $isPrivate = $author->isPrivate();
+        
+        // Determine visibility based on author's privacy settings and user's subscription
+        $canViewPost = !$isPrivate || $user === $author || $followingRepo->isFollowing($user, $author);
+    
+        if (!$canViewPost) {
+            $this->addFlash('danger', 'This publication is private or you do not have permission to view it.');
+            return $this->redirectToRoute('posts_index');
+        }
+    
+        // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
-        $likedPostSlugs = array_map(function ($like) {
-            return $like->getPost()->getSlug();
-        }, $likedPosts);
+        $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
     
         return $this->render("posts/show.html.twig", [
             'post' => $post,
             'likedPostSlugs' => $likedPostSlugs,
         ]);
     }
+    
 
     #[Route("/posts/{slug}/edit", name: "post_edit")]
     #[IsGranted(

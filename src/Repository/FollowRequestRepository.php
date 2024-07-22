@@ -2,30 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Following;
+use App\Entity\FollowRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Following>
+ * @extends ServiceEntityRepository<FollowRequest>
  */
-class FollowingRepository extends ServiceEntityRepository
+class FollowRequestRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Following::class);
-    }
-
-    public function isFollowing($followerUser, $followedUser): bool
-    {
-        return $this->findOneBy([
-            'followerUser' => $followerUser,
-            'followedUser' => $followedUser,
-        ]) !== null;
+        parent::__construct($registry, FollowRequest::class);
     }
 
     //    /**
-    //     * @return Following[] Returns an array of Following objects
+    //     * @return FollowRequest[] Returns an array of FollowRequest objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -39,7 +31,7 @@ class FollowingRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Following
+    //    public function findOneBySomeField($value): ?FollowRequest
     //    {
     //        return $this->createQueryBuilder('f')
     //            ->andWhere('f.exampleField = :val')

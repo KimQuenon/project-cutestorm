@@ -1,6 +1,5 @@
 {% if app.user %}
     {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == user.id) %}
-
     <form action="{{ path('toggle_follow', {'slug': user.slug}) }}" method="post">
         <button type="submit">
             {% if isFollowing|length > 0 %}
@@ -10,4 +9,6 @@
             {% endif %}
         </button>
     </form>
+{% else %}
+    <a href="{{ path('account_login') }}" class="btn btn-primary">Login to Follow</a>
 {% endif %}
