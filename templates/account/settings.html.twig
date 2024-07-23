@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Paramètres du compte</h1>
+    
+    <p>Votre profil est actuellement : <strong>{{ isPrivate ? 'Privé' : 'Public' }}</strong></p>
+    
+    <form action="{{ path('toggle_private') }}" method="post">
+        <button type="submit">
+            {{ isPrivate ? 'Passer en Public' : 'Passer en Privé' }}
+        </button>
+    </form>
+{% endblock %}

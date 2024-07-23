@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -58,6 +59,7 @@ class AccountController extends AbstractController
 
             $user->setFirstname(ucwords($user->getFirstname()));
             $user->setLastname(ucwords($user->getLastname()));
+            $user->setPrivate(false);
 
             $manager->persist($user);
             $manager->flush();
@@ -69,6 +71,34 @@ class AccountController extends AbstractController
         return $this->render("account/registration.html.twig",[
             'myForm'=>$form->createView()
         ]);
+    }
+
+    #[Route('/profile/settings', name: 'account_settings')]
+    #[IsGranted('ROLE_USER')]
+    public function settings(EntityManagerInterface $manager): Response
+    {
+        $user = $this->getUser();
+
+        return $this->render('account/settings.html.twig', [
+            'user' => $user,
+            'isPrivate' => $user->isPrivate(),
+        ]);
+    }
+
+    #[Route('/toggle-private', name: 'toggle_private')]
+    #[IsGranted('ROLE_USER')]
+    public function togglePrivate(EntityManagerInterface $manager): Response
+    {
+        $user = $this->getUser();
+
+        $user->setPrivate(!$user->isPrivate());
+
+        $manager->persist($user);
+        $manager->flush();
+
+        $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+
+        return $this->redirectToRoute('account_settings');
     }
 
 }
