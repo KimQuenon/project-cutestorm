@@ -4,8 +4,14 @@
 {% set markAsReadPath = path('mark_notifications_read') %}
 
 {% block notification_content %}
-    {% if notification.post %}
+    {% if notification.type == "like" %}
         <strong>{{ notification.user.pseudo }}</strong> a aimé 
+        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
+            {{ notification.post.title }}
+        </a>
+    {% elseif notification.type == "comment" %}
+        <strong>{{ notification.user.pseudo }}</strong> a commenté <br> 
+        <small>{{notification.comment.content}}</small><br>
         <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
             {{ notification.post.title }}
         </a>

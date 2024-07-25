@@ -21,9 +21,9 @@ class NotificationController extends AbstractController
         $posts = $postRepo->findBy(['author' => $user]);
         
         // Récupérer les notifications associées aux posts et celles où l'utilisateur est relatedUser
-        $notifications = $notificationRepo->getAllNotifications($user, $posts);
+        $notifications = $notificationRepo->getAllNotifications($user);
 
-        $unreadCount = $notificationRepo->countUnreadNotifications($user, $posts);
+        $unreadCount = $notificationRepo->countUnreadNotifications($user);
 
         return $this->render('notifications/index.html.twig', [
             'notifications' => $notifications,

@@ -15,12 +15,10 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function getAllNotifications($user, array $posts)
+    public function getAllNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.post IN (:posts)')
-            ->orWhere('n.relatedUser = :user')
-            ->setParameter('posts', $posts)
+            ->where('n.relatedUser = :user')
             ->setParameter('user', $user)
             ->orderBy('n.id', 'DESC')
             ->getQuery()
@@ -51,14 +49,12 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countUnreadNotifications($user, array $posts)
+    public function countUnreadNotifications($user)
     {
         return $this->createQueryBuilder('n')
             ->select('COUNT(n.id)')
-            ->where('n.post IN (:posts)')
-            ->orWhere('n.relatedUser = :user')
+            ->where('n.relatedUser = :user')
             ->andWhere('n.isRead = false')
-            ->setParameter('posts', $posts)
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();

@@ -31,6 +31,9 @@ class Notification
     #[ORM\Column]
     private ?bool $isRead = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Comment $comment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +95,18 @@ class Notification
     public function setRead(bool $isRead): static
     {
         $this->isRead = $isRead;
+
+        return $this;
+    }
+
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?Comment $comment): static
+    {
+        $this->comment = $comment;
 
         return $this;
     }

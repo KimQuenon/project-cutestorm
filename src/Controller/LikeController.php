@@ -51,7 +51,7 @@ class LikeController extends AbstractController
             $manager->flush();
             $liked = true;
 
-            $this->notificationService->addNotification('like', $user, $post->getAuthor(), $post);
+            $this->notificationService->addNotification('like', $user, $post->getAuthor(), $post, null);
 
         }
 

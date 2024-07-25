@@ -10,6 +10,7 @@ use App\Form\CommentType;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PostController extends AbstractController
 {
+    public function __construct(NotificationService $notificationService, EntityManagerInterface $entityManager)
+    {
+        $this->notificationService = $notificationService;
+        $this->entityManager = $entityManager;
+    }
+    
     /**
      * Display all posts
      *
@@ -152,6 +159,8 @@ class PostController extends AbstractController
             $manager->persist($comment);
             $manager->flush();
 
+            $this->notificationService->addNotification('comment', $user, $author, $post, $comment);
+
             $form = $this->createForm(CommentType::class);
 
             $this->addFlash(
@@ -185,7 +194,6 @@ class PostController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            // $artwork->setCoverImage($fileName);
             $manager->persist($post);
 
             $manager->flush();
