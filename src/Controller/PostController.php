@@ -26,7 +26,7 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route('/posts', name: 'posts_index')]
-    public function list(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
+    public function index(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
