@@ -6,6 +6,7 @@ use Faker\Factory;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\Comment;
 use App\Entity\Following;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -42,7 +43,7 @@ class AppFixtures extends Fixture
                 ->setCountry($faker->country())
                 ->setEmail($faker->email())
                 ->setPassword($hash)
-                ->setBio('<p>'.join('<p></p>', $faker->paragraphs(1)).'</p>')
+                ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
                 ->setAvatar('https://picsum.photos/seed/picsum/500/500')
                 ->setBanner('https://picsum.photos/seed/picsum/500/500')
                 ->setPrivate($faker->boolean());
@@ -56,11 +57,25 @@ class AppFixtures extends Fixture
         for ($i = 1; $i <= 30; $i++) {
             $post = new Post();
             $post->setTitle($faker->sentence())
-                ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(2)).'</p>')
+                ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
                 ->setAuthor($users[array_rand($users)]); // Random author
             $manager->persist($post);
             $posts[] = $post;
+        }
+
+        // Create comments
+        foreach ($posts as $post) {
+            $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
+
+            for ($c = 0; $c < $commentCount; $c++) {
+                $comment = new Comment();
+                $comment->setContent($faker->paragraph())
+                        ->setTimestamp($faker->dateTimeBetween('-1 year', 'now'))
+                        ->setAuthor($users[array_rand($users)]) // Random user as author
+                        ->setPost($post);
+                $manager->persist($comment);
+            }
         }
 
         // Create likes

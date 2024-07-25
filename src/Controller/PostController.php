@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Entity\Comment;
 use App\Entity\PostImage;
+use App\Form\CommentType;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
@@ -119,11 +121,7 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(
-        #[MapEntity(mapping: ['slug' => 'slug'])] Post $post,
-        LikeRepository $likeRepo,
-        FollowingRepository $followingRepo
-    ): Response
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
         $author = $post->getAuthor();
@@ -136,14 +134,37 @@ class PostController extends AbstractController
             $this->addFlash('danger', 'This publication is private or you do not have permission to view it.');
             return $this->redirectToRoute('posts_index');
         }
-    
+        
         // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
+
+        $comments = $post->getComments();
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->IsValid())
+        {
+            $comment->setPost($post)
+                    ->setAuthor($user);
+            $manager->persist($comment);
+            $manager->flush();
+
+            $form = $this->createForm(CommentType::class);
+
+            $this->addFlash(
+                'success',
+                'Comment posted'
+            );
+        }
     
         return $this->render("posts/show.html.twig", [
             'post' => $post,
             'likedPostSlugs' => $likedPostSlugs,
+            'comments' => $comments,
+            'myForm' => $form->createView(),
         ]);
     }
     
