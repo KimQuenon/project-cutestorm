@@ -25,6 +25,27 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('en_EN');
 
+        // Create an anonymous user
+        $anon = new User();
+        $hash = $this->passwordHasher->hashPassword($anon, 'password');
+
+        $anon->setPseudo('Anonymous User')
+            ->setFirstname('Anon')
+            ->setLastname('User')
+            ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+            ->setAddress('XXXXXXXXXXXXXXXXXXXXXXXXXX')
+            ->setPostalcode('00000')
+            ->setCity('XXXXXX')
+            ->setCountry('XXXXXXXXX')
+            ->setEmail("anon@noreply.com")
+            ->setPassword($hash)
+            ->setBio('XXXXXXXXXXXXXXXXXXXXX')
+            ->setAvatar('')
+            ->setBanner('')
+            ->setPrivate(true);
+
+        $manager->persist($anon);
+
         $users = []; // Array to store users
         $userCount = 10; // Number of users to create
 
@@ -64,7 +85,7 @@ class AppFixtures extends Fixture
             $posts[] = $post;
         }
 
-        // Create comments
+        // Create comments and replies
         foreach ($posts as $post) {
             $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
 
@@ -75,6 +96,18 @@ class AppFixtures extends Fixture
                         ->setAuthor($users[array_rand($users)]) // Random user as author
                         ->setPost($post);
                 $manager->persist($comment);
+
+                // Randomly add replies to some comments
+                $replyCount = rand(0, 3); // Each comment can have up to 3 replies
+                for ($r = 0; $r < $replyCount; $r++) {
+                    $reply = new Comment();
+                    $reply->setContent($faker->paragraph())
+                          ->setTimestamp($faker->dateTimeBetween('-1 year', 'now'))
+                          ->setAuthor($users[array_rand($users)]) // Random user as author
+                          ->setPost($post)
+                          ->setParent($comment); // Set the parent comment
+                    $manager->persist($reply);
+                }
             }
         }
 
@@ -115,3 +148,4 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 }
+

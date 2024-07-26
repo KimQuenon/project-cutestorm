@@ -44,13 +44,44 @@
         {% else %}
             <ul class="list-group list-group-flush mb-4">
                 {% for comment in comments %}
-                    <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
-                        <div>
-                            <strong class="d-block">{{ comment.author.pseudo }}</strong>
-                            <p class="mb-1">{{ comment.content }}</p>
-                        </div>
-                        <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
-                    </li>
+                    {% if comment.parent is null %}
+                        <li class="list-group-item d-flex flex-column align-items-start bg-light">
+                            <div class="d-flex justify-content-between w-100">
+                                <div>
+                                    <strong class="d-block">{{ comment.author.pseudo }}</strong>
+                                    <p class="mb-1">{{ comment.content }}</p>
+                                </div>
+                                <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
+                                {% if app.user == comment.author %}
+                                    <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                {% endif %}
+                            </div>
+
+                            {% if comment.replies is not empty %}
+                                <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
+                                    {% if comment.replies|length <= 1 %}
+                                        View {{ comment.replies|length }} reply
+                                    {% else %}
+                                        View {{ comment.replies|length }} replies
+                                    {% endif %}
+                                </button>
+                                <ul class="list-group list-group-flush ms-4 replies" id="replies-{{ comment.id }}">
+                                    {% for reply in comment.replies %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                                            <div>
+                                                <strong class="d-block">{{ reply.author.pseudo }}</strong>
+                                                <p class="mb-1">{{ reply.content }}</p>
+                                            </div>
+                                            <small class="text-muted">{{ reply.timestamp|date('Y-m-d H:i') }}</small>
+                                            {% if app.user == reply.author %}
+                                                <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}
@@ -72,4 +103,23 @@
 
 {% block javascripts %}
     {{ encore_entry_script_tags('like') }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-replies').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var commentId = this.getAttribute('data-comment-id');
+                    var replies = document.getElementById('replies-' + commentId);
+                    var repliesCount = replies.querySelectorAll('.list-group-item').length;
+
+                    if (replies.classList.contains('show')) {
+                        replies.classList.remove('show');
+                        this.textContent = repliesCount === 1 ? 'View reply' : 'View ' + repliesCount + ' replies';
+                    } else {
+                        replies.classList.add('show');
+                        this.textContent = repliesCount === 1 ? 'Hide reply' : 'Hide replies';
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
