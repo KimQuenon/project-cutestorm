@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Entity\Comment;
+use App\Form\ReplyType;
 use App\Entity\PostImage;
 use App\Form\CommentType;
 use App\Form\PostImageType;
@@ -145,28 +146,38 @@ class PostController extends AbstractController
         // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
-
+    
         $comments = $post->getComments();
-
+    
+        // Create a form for a new comment
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->IsValid())
-        {
+    
+        if ($form->isSubmitted() && $form->isValid()) {
             $comment->setPost($post)
                     ->setAuthor($user);
             $manager->persist($comment);
             $manager->flush();
-
+    
             $this->notificationService->addNotification('comment', $user, $author, $post, $comment);
-
+    
             $form = $this->createForm(CommentType::class);
-
+    
             $this->addFlash(
                 'success',
                 'Comment posted'
             );
+        }
+
+        $replyForms = [];
+        foreach ($comments as $comment) {
+            if ($comment->getParent() === null) {
+                $replyForm = $this->createForm(ReplyType::class, new Comment(), [
+                    'parent' => $comment,
+                ]);
+                $replyForms[$comment->getId()] = $replyForm->createView();
+            }
         }
     
         return $this->render("posts/show.html.twig", [
@@ -174,6 +185,7 @@ class PostController extends AbstractController
             'likedPostSlugs' => $likedPostSlugs,
             'comments' => $comments,
             'myForm' => $form->createView(),
+            'replyForms' => $replyForms,
         ]);
     }
     

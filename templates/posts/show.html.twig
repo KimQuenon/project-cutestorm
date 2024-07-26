@@ -57,6 +57,22 @@
                                 {% endif %}
                             </div>
 
+                            <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
+                                Répondre
+                            </button>
+
+                            <div class="reply-form-container" id="reply-form-{{ comment.id }}">
+                                <form action="{{ path('comment_reply', {'id': comment.id}) }}" method="post">
+                                    {{ form_start(replyForms[comment.id]) }}
+                                    {{ form_widget(replyForms[comment.id].content) }}
+                                    {{ form_errors(replyForms[comment.id].content) }}
+                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                    <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+                                    {{ form_end(replyForms[comment.id]) }}
+                                </form>
+                            </div>
+
+
                             {% if comment.replies is not empty %}
                                 <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
                                     {% if comment.replies|length <= 1 %}
@@ -65,7 +81,7 @@
                                         View {{ comment.replies|length }} replies
                                     {% endif %}
                                 </button>
-                                <ul class="list-group list-group-flush ms-4 replies" id="replies-{{ comment.id }}">
+                                <ul class="list-group list-group-flush ms-4 replies fadeIn" id="replies-{{ comment.id }}">
                                     {% for reply in comment.replies %}
                                         <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
                                             <div>
@@ -104,4 +120,5 @@
 {% block javascripts %}
     {{ encore_entry_script_tags('like') }}
     {{ encore_entry_script_tags('replyDisplay') }}
+    {{ encore_entry_script_tags('replyAdd') }}
 {% endblock %}
