@@ -35,6 +35,15 @@ class FollowingController extends AbstractController
             if ($existingFollowing) {
                 // If the user is already following, then unfollow
                 $manager->remove($existingFollowing);
+
+                $notification = $notificationRepo->findOneBy([
+                    'type' => 'follow',
+                    'relatedUser' => $userToToggle,
+                    'user' => $user
+                ]);
+
+                $manager->remove($notification);
+                
                 $manager->flush();
                 
                 $this->addFlash(

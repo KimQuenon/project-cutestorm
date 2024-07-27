@@ -39,6 +39,14 @@ class LikeController extends AbstractController
             // If the user has already liked the post, remove the like
             $manager->remove($existingLike);
 
+            $notification = $notificationRepo->findOneBy([
+                'type' => 'like',
+                'user' => $user,
+                'relatedUser' => $post->getAuthor(),
+                'post' => $post,
+            ]);
+            
+            $manager->remove($notification);
 
             $manager->flush();
             $liked = false;
