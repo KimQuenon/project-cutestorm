@@ -6,7 +6,7 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                {% include "partials/_like.html.twig" with {'type': 'post', 'post': post} %}
+                {% include "partials/_like.html.twig" with {'post': post} %}
                 {% include "partials/_follow.html.twig" with {'user': post.author} %}
             </div>
             {% if app.user == post.author %}
@@ -57,13 +57,13 @@
                                 {% endif %}
                             </div>
 
-                            <div class="d-flex align-items-center mt-2">
-                                <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %}"
-                                        data-comment-id="{{ comment.id }}">
-                                    <i class="fa fa-heart"></i>
-                                </button>
-                                <span class="ms-2 like-count">{{ comment.likeComments|length }}</span>
-                            </div>
+                                <div class="d-flex align-items-center mt-2">
+                                    <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %}"
+                                            data-comment-id="{{ comment.id }}">
+                                        <i class="fa fa-heart"></i>
+                                    </button>
+                                    <span class="ms-2 like-count">{{ comment.likeComments|length }}</span>
+                                </div>
 
                             <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
                                 Reply
