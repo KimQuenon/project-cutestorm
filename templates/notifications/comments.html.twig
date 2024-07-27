@@ -4,6 +4,10 @@
 {% set markAsReadPath = path('mark_comments_read') %}
 
 {% block notification_content %}
-    <strong>{{notification.comment.author.pseudo}}</strong> a commenté:
+    {% if notification.type == "comment" %}
+        <strong>{{notification.comment.author.pseudo}}</strong> a commenté:
+    {% else %}
+        <strong>{{notification.comment.author.pseudo}}</strong> a répondu à votre commentaire:
+    {% endif %}
     <small>{{notification.comment.content}}</small>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Form\ReplyType;
 use App\Repository\UserRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommentController extends AbstractController
 {
+    public function __construct(NotificationService $notificationService, EntityManagerInterface $entityManager)
+    {
+        $this->notificationService = $notificationService;
+        $this->entityManager = $entityManager;
+    }
+    
     #[Route("/comments/reply/{id}", name: "comment_reply", methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function reply(Comment $comment, Request $request, EntityManagerInterface $manager): Response {
@@ -34,6 +41,9 @@ class CommentController extends AbstractController
     
             $manager->persist($reply);
             $manager->flush();
+
+            // $this->notificationService->addNotification('comment', $user, $post->getAuthor(), $post, $reply);
+            $this->notificationService->addNotification('reply', $user, $comment->getAuthor(), $post, $reply);
     
             $this->addFlash('success', 'Reply posted');
             return $this->redirectToRoute('post_show', ['slug' => $post->getSlug()]);

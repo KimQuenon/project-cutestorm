@@ -52,13 +52,13 @@ class NotificationRepository extends ServiceEntityRepository
     public function getCommentsNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'comment')
-            ->orderBy('n.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['comment', 'reply'])
+        ->orderBy('n.id', 'DESC')
+        ->getQuery()
+        ->getResult();
     }
 
     public function countUnreadNotifications($user)
@@ -101,14 +101,14 @@ class NotificationRepository extends ServiceEntityRepository
     public function countUnreadCommentsNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->andWhere('n.isRead = false')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'comment')
-            ->getQuery()
-            ->getSingleScalarResult();
+        ->select('COUNT(n.id)')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->andWhere('n.isRead = false')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['comment', 'reply'])
+        ->getQuery()
+        ->getSingleScalarResult();
     }
 
     public function markAllNotificationsAsRead($user): void
@@ -121,7 +121,6 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-    
 
     public function markLikesAsRead($user): void
     {
@@ -153,11 +152,12 @@ class NotificationRepository extends ServiceEntityRepository
     {
         $this->createQueryBuilder('n')
             ->update()
-            ->set('n.isRead', 'true')
+            ->set('n.isRead', ':isRead')
             ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
+            ->andWhere('n.type IN (:types)')
             ->setParameter('user', $user)
-            ->setParameter('type', 'comment')
+            ->setParameter('types', ['comment', 'reply'])
+            ->setParameter('isRead', true)
             ->getQuery()
             ->execute();
     }

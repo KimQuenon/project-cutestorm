@@ -15,6 +15,12 @@
         <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
             {{ notification.post.title }}
         </a>
+    {% elseif notification.type == "reply" %}
+        <strong>{{ notification.user.pseudo }}</strong> a répondu à votre commentaire: <br> 
+        <small>{{notification.comment.content}}</small><br>
+        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
+            {{ notification.post.title }}
+        </a>
     {% else %}
         <strong>{{ notification.user.pseudo }}</strong> vous suit
     {% endif %}
