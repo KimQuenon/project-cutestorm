@@ -1,4 +1,4 @@
-{% set postUrl = path('post_show', {'slug': post.slug}) %}
+{# {% set postUrl = path('post_show', {'slug': post.slug}) %}
 {% set isLiked = post.slug in likedPostSlugs %}
 {% set isAuthor = app.user and post.author.id == app.user.id %}
 
@@ -8,4 +8,18 @@
         <i class="fa fa-heart"></i>
     </button>
     <span class="like-count ms-2">{{ post.likes|length }}</span>
+</div> #}
+
+
+{# templates/partials/like_button.html.twig #}
+{% set isLiked = idOrSlug in likedIds %}
+{% set isAuthor = app.user and authorId == app.user.id %}
+
+<div class="d-flex align-items-center mt-2">
+    <button class="like-button like-{{ type }} {% if isLiked %}liked{% else %}not-liked{% endif %} {% if isAuthor %}disabled{% endif %}"
+            data-{{ type }}-{{ type == 'post' ? 'slug' : 'id' }}="{{ idOrSlug }}">
+        <i class="fa fa-heart"></i>
+    </button>
+    <span class="ms-2 like-count">{{ likeCount }}</span>
 </div>
+
