@@ -60,6 +60,20 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    #[Route('/notifications/comments', name: 'notifications_comments')]
+    #[IsGranted('ROLE_USER')]
+    public function comments(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        $notifications = $notificationRepo->getCommentsNotifications($user);
+        $unreadCount = $notificationRepo->countUnreadCommentsNotifications($user);
+
+        return $this->render('notifications/comments.html.twig', [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount,
+        ]);
+    }
+
     #[Route('/notifications/mark-read', name: 'mark_notifications_read')]
     #[IsGranted('ROLE_USER')]
     public function markRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
@@ -89,5 +103,16 @@ class NotificationController extends AbstractController
         $notificationRepo->markFollowsAsRead($user);
 
         return $this->redirectToRoute('notifications_follows');
+    }
+
+    #[Route('/notifications/mark-comments-read', name: 'mark_comments_read')]
+    #[IsGranted('ROLE_USER')]
+    public function markCommentsRead(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        
+        $notificationRepo->markCommentsAsRead($user);
+
+        return $this->redirectToRoute('notifications_comments');
     }
 }

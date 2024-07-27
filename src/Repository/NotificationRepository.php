@@ -49,6 +49,18 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getCommentsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'comment')
+            ->orderBy('n.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countUnreadNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -82,6 +94,19 @@ class NotificationRepository extends ServiceEntityRepository
             ->andWhere('n.isRead = false')
             ->setParameter('user', $user)
             ->setParameter('type', 'follow')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countUnreadCommentsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->andWhere('n.isRead = false')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'comment')
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -120,6 +145,19 @@ class NotificationRepository extends ServiceEntityRepository
             ->andWhere('n.type = :type')
             ->setParameter('user', $user)
             ->setParameter('type', 'follow')
+            ->getQuery()
+            ->execute();
+    }
+
+    public function markCommentsAsRead($user)
+    {
+        $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.isRead', 'true')
+            ->where('n.relatedUser = :user')
+            ->andWhere('n.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', 'comment')
             ->getQuery()
             ->execute();
     }
