@@ -126,6 +126,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, LikeComment>
+     */
+    #[ORM\OneToMany(targetEntity: LikeComment::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $likeComments;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -137,6 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sentRequests = new ArrayCollection();
         $this->receivedRequests = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->likeComments = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -611,6 +618,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($comment->getAuthor() === $this) {
                 $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LikeComment>
+     */
+    public function getLikeComments(): Collection
+    {
+        return $this->likeComments;
+    }
+
+    public function addLikeComment(LikeComment $likeComment): static
+    {
+        if (!$this->likeComments->contains($likeComment)) {
+            $this->likeComments->add($likeComment);
+            $likeComment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikeComment(LikeComment $likeComment): static
+    {
+        if ($this->likeComments->removeElement($likeComment)) {
+            // set the owning side to null (unless already changed)
+            if ($likeComment->getUser() === $this) {
+                $likeComment->setUser(null);
             }
         }
 

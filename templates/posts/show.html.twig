@@ -6,7 +6,7 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                {% include "partials/_like.html.twig" with {'post': post} %}
+                {% include "partials/_like.html.twig" with {'type': 'post', 'post': post} %}
                 {% include "partials/_follow.html.twig" with {'user': post.author} %}
             </div>
             {% if app.user == post.author %}
@@ -57,8 +57,16 @@
                                 {% endif %}
                             </div>
 
+                            <div class="d-flex align-items-center mt-2">
+                                <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %}"
+                                        data-comment-id="{{ comment.id }}">
+                                    <i class="fa fa-heart"></i>
+                                </button>
+                                <span class="ms-2 like-count">{{ comment.likeComments|length }}</span>
+                            </div>
+
                             <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
-                                Répondre
+                                Reply
                             </button>
 
                             <div class="reply-form-container" id="reply-form-{{ comment.id }}">
@@ -72,14 +80,9 @@
                                 </form>
                             </div>
 
-
                             {% if comment.replies is not empty %}
                                 <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
-                                    {% if comment.replies|length <= 1 %}
-                                        View {{ comment.replies|length }} reply
-                                    {% else %}
-                                        View {{ comment.replies|length }} replies
-                                    {% endif %}
+                                    View {{ comment.replies|length }} replies
                                 </button>
                                 <ul class="list-group list-group-flush ms-4 replies fadeIn" id="replies-{{ comment.id }}">
                                     {% for reply in comment.replies %}
@@ -119,6 +122,7 @@
 
 {% block javascripts %}
     {{ encore_entry_script_tags('like') }}
+    {{ encore_entry_script_tags('likeComment') }}
     {{ encore_entry_script_tags('replyDisplay') }}
     {{ encore_entry_script_tags('replyAdd') }}
 {% endblock %}

@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Comment;
 use App\Entity\Following;
+use App\Entity\LikeComment;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -86,6 +87,7 @@ class AppFixtures extends Fixture
         }
 
         // Create comments and replies
+        $comments = []; // Array to store comments
         foreach ($posts as $post) {
             $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
 
@@ -96,6 +98,7 @@ class AppFixtures extends Fixture
                         ->setAuthor($users[array_rand($users)]) // Random user as author
                         ->setPost($post);
                 $manager->persist($comment);
+                $comments[] = $comment; // Add comment to the array
 
                 // Randomly add replies to some comments
                 $replyCount = rand(0, 3); // Each comment can have up to 3 replies
@@ -107,11 +110,12 @@ class AppFixtures extends Fixture
                           ->setPost($post)
                           ->setParent($comment); // Set the parent comment
                     $manager->persist($reply);
+                    $comments[] = $reply; // Add reply to the array
                 }
             }
         }
 
-        // Create likes
+        // Create likes for posts
         foreach ($posts as $post) {
             $postAuthor = $post->getAuthor();
             $potentialLikers = array_filter($users, fn($user) => $user !== $postAuthor);
@@ -122,6 +126,20 @@ class AppFixtures extends Fixture
                 $like->setUser($potentialLikers[array_rand($potentialLikers)])
                      ->setPost($post);
                 $manager->persist($like);
+            }
+        }
+
+        // Create likes for comments
+        foreach ($comments as $comment) {
+            $commentAuthor = $comment->getAuthor();
+            $potentialLikers = array_filter($users, fn($user) => $user !== $commentAuthor);
+            $potentialLikers = array_values($potentialLikers);
+
+            for ($l = 0; $l < rand(1, 5); $l++) { // Each comment gets between 1 to 5 likes
+                $likeComment = new LikeComment();
+                $likeComment->setUser($potentialLikers[array_rand($potentialLikers)])
+                            ->setComment($comment);
+                $manager->persist($likeComment);
             }
         }
 
@@ -148,4 +166,3 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 }
-

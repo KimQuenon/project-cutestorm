@@ -22,6 +22,7 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('like', './assets/js/like.js')
+    .addEntry('likeComment', './assets/js/likeComment.js')
     .addEntry('replyAdd', './assets/js/replyAdd.js')
     .addEntry('replyDisplay', './assets/js/replyDisplay.js')
 

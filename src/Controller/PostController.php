@@ -14,6 +14,7 @@ use App\Repository\PostRepository;
 use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\LikeCommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -129,7 +130,7 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
         $author = $post->getAuthor();
@@ -146,6 +147,9 @@ class PostController extends AbstractController
         // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
+
+        $likedComments = $likeCommentRepo->findBy(['user' => $user]);
+        $likedCommentIds = array_map(fn($like) => $like->getComment()->getId(), $likedComments);
     
         $comments = $post->getComments();
     
@@ -183,6 +187,7 @@ class PostController extends AbstractController
         return $this->render("posts/show.html.twig", [
             'post' => $post,
             'likedPostSlugs' => $likedPostSlugs,
+            'likedCommentIds' => $likedCommentIds,
             'comments' => $comments,
             'myForm' => $form->createView(),
             'replyForms' => $replyForms,

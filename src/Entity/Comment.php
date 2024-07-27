@@ -40,6 +40,12 @@ class Comment
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $replies;
 
+    /**
+     * @var Collection<int, LikeComment>
+     */
+    #[ORM\OneToMany(targetEntity: LikeComment::class, mappedBy: 'comment', orphanRemoval: true)]
+    private Collection $likeComments;
+
     #[ORM\PrePersist]
     public function prePersist(): void
     {
@@ -51,6 +57,7 @@ class Comment
     public function __construct()
     {
         $this->replies = new ArrayCollection();
+        $this->likeComments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,6 +149,36 @@ class Comment
             // set the owning side to null (unless already changed)
             if ($reply->getParent() === $this) {
                 $reply->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LikeComment>
+     */
+    public function getLikeComments(): Collection
+    {
+        return $this->likeComments;
+    }
+
+    public function addLikeComment(LikeComment $likeComment): static
+    {
+        if (!$this->likeComments->contains($likeComment)) {
+            $this->likeComments->add($likeComment);
+            $likeComment->setComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikeComment(LikeComment $likeComment): static
+    {
+        if ($this->likeComments->removeElement($likeComment)) {
+            // set the owning side to null (unless already changed)
+            if ($likeComment->getComment() === $this) {
+                $likeComment->setComment(null);
             }
         }
 
