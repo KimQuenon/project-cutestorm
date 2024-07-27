@@ -22,8 +22,8 @@ class NotificationService
         $notification = new Notification();
         $notification->setType($type)
                      ->setUser($user)
-                     ->setPost($type === 'like' || $type === 'comment' || $type === 'reply' ? $post : null)
-                     ->setComment($type === 'comment' || $type === 'reply' ? $comment : null)
+                     ->setPost($type === 'like' || $type === 'comment' || $type === 'reply' || $type === 'likeComment' ? $post : null)
+                     ->setComment($type === 'comment' || $type === 'reply' || $type === 'likeComment' ? $comment : null)
                      ->setRelatedUser($relatedUser)
                      ->setRead(false);
 

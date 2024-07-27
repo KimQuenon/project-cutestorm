@@ -57,14 +57,16 @@
                                 {% endif %}
                             </div>
 
-                                {% set isAuthor = app.user and comment.author.id == app.user.id %}
-                                <div class="d-flex align-items-center mt-2">
-                                    <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %} {% if isAuthor %}disabled{% endif %}"
-                                            data-comment-id="{{ comment.id }}">
-                                        <i class="fa fa-heart"></i>
-                                    </button>
-                                    <span class="ms-2 like-count">{{ comment.likeComments|length }}</span>
-                                </div>
+{% set isLiked = comment.id in likedCommentIds %}
+{% set isAuthor = app.user and comment.author.id == app.user.id %}
+
+<div class="d-flex align-items-center mt-2">
+    <button class="like-button like-comment {% if isLiked %}liked{% else %}not-liked{% endif %} {% if isAuthor %}disabled{% endif %}"
+            data-comment-id="{{ comment.id }}">
+        <i class="fa fa-heart"></i>
+    </button>
+    <span class="ms-2 like-count">{{ comment.likeComments|length }}</span>
+</div>
 
                             <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
                                 Reply

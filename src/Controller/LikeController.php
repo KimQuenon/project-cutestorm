@@ -76,7 +76,7 @@ class LikeController extends AbstractController
     
     #[Route('/comments/{id}/like', name: 'comment_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function addLikeComment(Comment $comment, EntityManagerInterface $manager, LikeCommentRepository $likeCommentRepo): JsonResponse
+    public function addLikeComment(Comment $comment, EntityManagerInterface $manager, LikeCommentRepository $likeCommentRepo, NotificationRepository $notificationRepo): JsonResponse
     {
         $user = $this->getUser();
     
@@ -89,6 +89,17 @@ class LikeController extends AbstractController
         if ($existingLike) {
             // If the user has already liked the comment, remove the like
             $manager->remove($existingLike);
+
+            $notification = $notificationRepo->findOneBy([
+                'type' => 'likeComment',
+                'user' => $user,
+                'relatedUser' => $comment->getAuthor(),
+                'post' => $comment->getPost(),
+                'comment' => $comment
+            ]);
+
+            $manager->remove($notification);
+
             $manager->flush();
             $liked = false;
         } else {
@@ -101,7 +112,7 @@ class LikeController extends AbstractController
             $liked = true;
     
             // Optionally, add a notification
-            $this->notificationService->addNotification('like', $user, $comment->getAuthor(), null, $comment);
+            $this->notificationService->addNotification('likeComment', $user, $comment->getAuthor(), $comment->getPost(), $comment);
         }
     
         // Get the updated like count

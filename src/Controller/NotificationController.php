@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
+use App\Repository\CommentRepository;
 use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,13 +34,14 @@ class NotificationController extends AbstractController
 
     #[Route('/notifications/likes', name: 'notifications_likes')]
     #[IsGranted('ROLE_USER')]
-    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy(['author' => $user]);
-        $notifications = $notificationRepo->getLikesNotifications($posts, 'like');
-        $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts);
-
+        $comments = $commentRepo->findBy(['author' => $user]);
+        $notifications = $notificationRepo->getLikesNotifications($posts, $comments);
+        $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts, $comments);
+        
         return $this->render('notifications/likes.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.like-button');
+    const buttons = document.querySelectorAll('.like-comment');
 
     buttons.forEach(button => {
         button.addEventListener('click', function() {

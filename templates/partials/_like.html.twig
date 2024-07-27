@@ -3,9 +3,8 @@
 {% set isAuthor = app.user and post.author.id == app.user.id %}
 
 <div class="d-flex align-items-center justify-content-start">
-    <button class="like-button {% if isLiked %}liked{% else %}not-liked{% endif %}{% if isAuthor %}disabled{% endif %}"
-            data-post-slug="{{ post.slug }}"
-            >
+    <button class="like-button like-post {% if isLiked %}liked{% else %}not-liked{% endif %}{% if isAuthor %}disabled{% endif %}"
+            data-post-slug="{{ post.slug }}">
         <i class="fa fa-heart"></i>
     </button>
     <span class="like-count ms-2">{{ post.likes|length }}</span>

@@ -43,8 +43,14 @@ class Comment
     /**
      * @var Collection<int, LikeComment>
      */
-    #[ORM\OneToMany(targetEntity: LikeComment::class, mappedBy: 'comment', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: LikeComment::class, orphanRemoval: true)]
     private Collection $likeComments;
+
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Notification::class)]
+    private Collection $notifications;
 
     #[ORM\PrePersist]
     public function prePersist(): void
@@ -58,6 +64,7 @@ class Comment
     {
         $this->replies = new ArrayCollection();
         $this->likeComments = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,7 +80,6 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -85,7 +91,6 @@ class Comment
     public function setTimestamp(\DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
-
         return $this;
     }
 
@@ -97,7 +102,6 @@ class Comment
     public function setPost(?Post $post): static
     {
         $this->post = $post;
-
         return $this;
     }
 
@@ -109,7 +113,6 @@ class Comment
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 
@@ -121,7 +124,6 @@ class Comment
     public function setParent(?Comment $parent): static
     {
         $this->parent = $parent;
-
         return $this;
     }
 
@@ -139,7 +141,6 @@ class Comment
             $this->replies[] = $reply;
             $reply->setParent($this);
         }
-
         return $this;
     }
 
@@ -151,7 +152,6 @@ class Comment
                 $reply->setParent(null);
             }
         }
-
         return $this;
     }
 
@@ -169,7 +169,6 @@ class Comment
             $this->likeComments->add($likeComment);
             $likeComment->setComment($this);
         }
-
         return $this;
     }
 
@@ -181,7 +180,34 @@ class Comment
                 $likeComment->setComment(null);
             }
         }
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setComment($this);
+        }
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getComment() === $this) {
+                $notification->setComment(null);
+            }
+        }
         return $this;
     }
 }

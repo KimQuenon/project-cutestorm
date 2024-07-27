@@ -25,13 +25,15 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getLikesNotifications(array $posts, string $type)
+    public function getLikesNotifications(array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.post IN (:posts)')
-            ->andWhere('n.type = :type')
+            ->where('n.post IN (:posts) AND n.type = :likeType')
+            ->orWhere('n.comment IN (:comments) AND n.type = :commentType')
             ->setParameter('posts', $posts)
-            ->setParameter('type', $type)
+            ->setParameter('comments', $comments)
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->orderBy('n.id', 'DESC')
             ->getQuery()
             ->getResult();
@@ -72,18 +74,25 @@ class NotificationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function countUnreadLikesNotifications($user, array $posts)
+    public function countUnreadLikesNotifications($user, array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
             ->select('COUNT(n.id)')
-            ->where('n.post IN (:posts)')
-            ->andWhere('n.type = :type')
+            ->where(
+                'n.post IN (:posts) AND n.type = :likeType'
+            )
+            ->orWhere(
+                'n.comment IN (:comments) AND n.type = :commentType'
+            )
             ->andWhere('n.isRead = false')
             ->setParameter('posts', $posts)
-            ->setParameter('type', 'like')
+            ->setParameter('comments', $comments)
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->getQuery()
             ->getSingleScalarResult();
     }
+    
 
     public function countUnreadFollowsNotifications($user)
     {
@@ -127,13 +136,15 @@ class NotificationRepository extends ServiceEntityRepository
         $this->createQueryBuilder('n')
             ->update()
             ->set('n.isRead', 'true')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
+            ->where(
+                'n.relatedUser = :user AND (n.type = :likeType OR n.type = :commentType)'
+            )
             ->setParameter('user', $user)
-            ->setParameter('type', 'like')
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->getQuery()
             ->execute();
-    }
+    }    
 
     public function markFollowsAsRead($user)
     {
