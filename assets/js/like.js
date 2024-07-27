@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     buttons.forEach(button => {
         button.addEventListener('click', function() {
             if (button.disabled) {
-                return; // Do nothing if the button is disabled
+                return;
             }
 
             const postSlug = button.getAttribute('data-post-slug');
-            const likeCountElement = button.nextElementSibling; // Get the like count element
+            const likeCountElement = button.nextElementSibling;
 
             fetch(`/posts/${postSlug}/like`, {
                 method: 'POST',
@@ -16,11 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                credentials: 'include' // Include cookies for authenticated requests
+                credentials: 'include'
             })
             .then(response => {
                 if (response.status === 403) {
-                    // No alert here, just silently ignore the request
                     return;
                 }
                 return response.json();
@@ -30,11 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     likeCountElement.textContent = data.likeCount;
 
                     if (data.liked) {
-                        button.classList.add('liked'); // Add 'liked' class for styling
-                        button.classList.remove('not-liked'); // Remove 'not-liked' class
+                        button.classList.add('liked');
+                        button.classList.remove('not-liked');
                     } else {
-                        button.classList.add('not-liked'); // Add 'not-liked' class for styling
-                        button.classList.remove('liked'); // Remove 'liked' class
+                        button.classList.add('not-liked');
+                        button.classList.remove('liked');
                     }
                 }
             })

@@ -57,8 +57,9 @@
                                 {% endif %}
                             </div>
 
+                                {% set isAuthor = app.user and comment.author.id == app.user.id %}
                                 <div class="d-flex align-items-center mt-2">
-                                    <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %}"
+                                    <button class="btn btn-link like-button {% if comment.id in likedCommentIds %}liked{% else %}not-liked{% endif %} {% if isAuthor %}disabled{% endif %}"
                                             data-comment-id="{{ comment.id }}">
                                         <i class="fa fa-heart"></i>
                                     </button>
