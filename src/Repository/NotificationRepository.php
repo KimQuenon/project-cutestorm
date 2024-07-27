@@ -40,13 +40,13 @@ class NotificationRepository extends ServiceEntityRepository
     public function getFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
-            ->orderBy('n.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->orderBy('n.id', 'DESC')
+        ->getQuery()
+        ->getResult();
     }
 
     public function getCommentsNotifications($user)
@@ -88,14 +88,14 @@ class NotificationRepository extends ServiceEntityRepository
     public function countUnreadFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->andWhere('n.isRead = false')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
-            ->getQuery()
-            ->getSingleScalarResult();
+        ->select('COUNT(n.id)')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->andWhere('n.isRead = false')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->getQuery()
+        ->getSingleScalarResult();
     }
 
     public function countUnreadCommentsNotifications($user)
@@ -138,14 +138,15 @@ class NotificationRepository extends ServiceEntityRepository
     public function markFollowsAsRead($user)
     {
         $this->createQueryBuilder('n')
-            ->update()
-            ->set('n.isRead', 'true')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
-            ->getQuery()
-            ->execute();
+        ->update()
+        ->set('n.isRead', ':isRead')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->setParameter('isRead', true)
+        ->getQuery()
+        ->execute();
     }
 
     public function markCommentsAsRead($user)

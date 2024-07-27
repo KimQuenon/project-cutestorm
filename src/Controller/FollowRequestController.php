@@ -49,7 +49,7 @@ class FollowRequestController extends AbstractController
 
             $manager->persist($following);
 
-            $this->notificationService->addNotification('follow', $request->getSentBy(), $user, null);
+            $this->notificationService->addNotification('request', $user, $request->getSentBy(), null, null);
 
             // Remove the follow request
             $manager->remove($request);

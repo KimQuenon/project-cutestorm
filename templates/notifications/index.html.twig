@@ -21,7 +21,12 @@
         <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
             {{ notification.post.title }}
         </a>
-    {% else %}
+    {% elseif notification.type == "request" %}
+        <strong>{{ notification.user.pseudo }}</strong> a accepté votre demande de suivi. <br>
+        <a href="{{ path('profile_show', {'slug': notification.user.slug}) }}">
+            Voir profil
+        </a>
+    {% elseif notification.type == "follow" %}
         <strong>{{ notification.user.pseudo }}</strong> vous suit
     {% endif %}
 {% endblock %}

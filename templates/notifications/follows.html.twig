@@ -4,5 +4,9 @@
 {% set markAsReadPath = path('mark_follows_read') %}
 
 {% block notification_content %}
-    <strong>{{ notification.user.pseudo }}</strong> followed you
+    {% if notification.type == "follow" %}
+        <strong>{{ notification.user.pseudo }}</strong> followed you.
+    {% elseif notification.type == "request" %}
+        <strong>{{ notification.user.pseudo }}</strong> accepted your request.
+    {% endif %}
 {% endblock %}
