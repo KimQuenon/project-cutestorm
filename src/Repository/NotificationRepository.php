@@ -15,25 +15,25 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function getAllNotifications($user, array $posts)
+    public function getAllNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.post IN (:posts)')
-            ->orWhere('n.relatedUser = :user')
-            ->setParameter('posts', $posts)
+            ->where('n.relatedUser = :user')
             ->setParameter('user', $user)
             ->orderBy('n.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
 
-    public function getLikesNotifications(array $posts, string $type)
+    public function getLikesNotifications(array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
-            ->where('n.post IN (:posts)')
-            ->andWhere('n.type = :type')
+            ->where('n.post IN (:posts) AND n.type = :likeType')
+            ->orWhere('n.comment IN (:comments) AND n.type = :commentType')
             ->setParameter('posts', $posts)
-            ->setParameter('type', $type)
+            ->setParameter('comments', $comments)
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->orderBy('n.id', 'DESC')
             ->getQuery()
             ->getResult();
@@ -42,52 +42,82 @@ class NotificationRepository extends ServiceEntityRepository
     public function getFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->orderBy('n.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function getCommentsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['comment', 'reply'])
+        ->orderBy('n.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function countUnreadNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
             ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
-            ->orderBy('n.id', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function countUnreadNotifications($user, array $posts)
-    {
-        return $this->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.post IN (:posts)')
-            ->orWhere('n.relatedUser = :user')
             ->andWhere('n.isRead = false')
-            ->setParameter('posts', $posts)
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    public function countUnreadLikesNotifications($user, array $posts)
+    public function countUnreadLikesNotifications($user, array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
             ->select('COUNT(n.id)')
-            ->where('n.post IN (:posts)')
-            ->andWhere('n.type = :type')
+            ->where(
+                'n.post IN (:posts) AND n.type = :likeType'
+            )
+            ->orWhere(
+                'n.comment IN (:comments) AND n.type = :commentType'
+            )
             ->andWhere('n.isRead = false')
             ->setParameter('posts', $posts)
-            ->setParameter('type', 'like')
+            ->setParameter('comments', $comments)
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->getQuery()
             ->getSingleScalarResult();
     }
+    
 
     public function countUnreadFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
-            ->andWhere('n.isRead = false')
-            ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
-            ->getQuery()
-            ->getSingleScalarResult();
+        ->select('COUNT(n.id)')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->andWhere('n.isRead = false')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+
+    public function countUnreadCommentsNotifications($user)
+    {
+        return $this->createQueryBuilder('n')
+        ->select('COUNT(n.id)')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->andWhere('n.isRead = false')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['comment', 'reply'])
+        ->getQuery()
+        ->getSingleScalarResult();
     }
 
     public function markAllNotificationsAsRead($user): void
@@ -100,30 +130,46 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-    
 
     public function markLikesAsRead($user): void
     {
         $this->createQueryBuilder('n')
             ->update()
             ->set('n.isRead', 'true')
-            ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
+            ->where(
+                'n.relatedUser = :user AND (n.type = :likeType OR n.type = :commentType)'
+            )
             ->setParameter('user', $user)
-            ->setParameter('type', 'like')
+            ->setParameter('likeType', 'like')
+            ->setParameter('commentType', 'likeComment')
             ->getQuery()
             ->execute();
-    }
+    }    
 
     public function markFollowsAsRead($user)
     {
         $this->createQueryBuilder('n')
+        ->update()
+        ->set('n.isRead', ':isRead')
+        ->where('n.relatedUser = :user')
+        ->andWhere('n.type IN (:types)')
+        ->setParameter('user', $user)
+        ->setParameter('types', ['follow', 'request'])
+        ->setParameter('isRead', true)
+        ->getQuery()
+        ->execute();
+    }
+
+    public function markCommentsAsRead($user)
+    {
+        $this->createQueryBuilder('n')
             ->update()
-            ->set('n.isRead', 'true')
+            ->set('n.isRead', ':isRead')
             ->where('n.relatedUser = :user')
-            ->andWhere('n.type = :type')
+            ->andWhere('n.type IN (:types)')
             ->setParameter('user', $user)
-            ->setParameter('type', 'follow')
+            ->setParameter('types', ['comment', 'reply'])
+            ->setParameter('isRead', true)
             ->getQuery()
             ->execute();
     }

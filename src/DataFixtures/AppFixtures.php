@@ -6,7 +6,9 @@ use Faker\Factory;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\Comment;
 use App\Entity\Following;
+use App\Entity\LikeComment;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -23,6 +25,27 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('en_EN');
+
+        // Create an anonymous user
+        $anon = new User();
+        $hash = $this->passwordHasher->hashPassword($anon, 'password');
+
+        $anon->setPseudo('Anonymous User')
+            ->setFirstname('Anon')
+            ->setLastname('User')
+            ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+            ->setAddress('XXXXXXXXXXXXXXXXXXXXXXXXXX')
+            ->setPostalcode('00000')
+            ->setCity('XXXXXX')
+            ->setCountry('XXXXXXXXX')
+            ->setEmail("anon@noreply.com")
+            ->setPassword($hash)
+            ->setBio('XXXXXXXXXXXXXXXXXXXXX')
+            ->setAvatar('')
+            ->setBanner('')
+            ->setPrivate(true);
+
+        $manager->persist($anon);
 
         $users = []; // Array to store users
         $userCount = 10; // Number of users to create
@@ -42,7 +65,7 @@ class AppFixtures extends Fixture
                 ->setCountry($faker->country())
                 ->setEmail($faker->email())
                 ->setPassword($hash)
-                ->setBio('<p>'.join('<p></p>', $faker->paragraphs(1)).'</p>')
+                ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
                 ->setAvatar('https://picsum.photos/seed/picsum/500/500')
                 ->setBanner('https://picsum.photos/seed/picsum/500/500')
                 ->setPrivate($faker->boolean());
@@ -56,14 +79,49 @@ class AppFixtures extends Fixture
         for ($i = 1; $i <= 30; $i++) {
             $post = new Post();
             $post->setTitle($faker->sentence())
-                ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(2)).'</p>')
+                ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
-                ->setAuthor($users[array_rand($users)]); // Random author
+                ->setAuthor($users[array_rand($users)]) // Random author
+                ->setCommentDisabled($faker->boolean(30)); // 30% chance to disable comments
             $manager->persist($post);
             $posts[] = $post;
         }
 
-        // Create likes
+        // Create comments and replies
+        $comments = []; // Array to store comments
+        foreach ($posts as $post) {
+            // Check if comments are disabled
+            if ($post->isCommentDisabled()) {
+                continue; // Skip comment creation for this post
+            }
+
+            $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
+
+            for ($c = 0; $c < $commentCount; $c++) {
+                $comment = new Comment();
+                $comment->setContent($faker->paragraph())
+                        ->setTimestamp($faker->dateTimeBetween('-1 year', 'now'))
+                        ->setAuthor($users[array_rand($users)]) // Random user as author
+                        ->setPost($post);
+                $manager->persist($comment);
+                $comments[] = $comment; // Add comment to the array
+
+                // Randomly add replies to some comments
+                $replyCount = rand(0, 3); // Each comment can have up to 3 replies
+                for ($r = 0; $r < $replyCount; $r++) {
+                    $reply = new Comment();
+                    $reply->setContent($faker->paragraph())
+                          ->setTimestamp($faker->dateTimeBetween('-1 year', 'now'))
+                          ->setAuthor($users[array_rand($users)]) // Random user as author
+                          ->setPost($post)
+                          ->setParent($comment); // Set the parent comment
+                    $manager->persist($reply);
+                    $comments[] = $reply; // Add reply to the array
+                }
+            }
+        }
+
+        // Create likes for posts
         foreach ($posts as $post) {
             $postAuthor = $post->getAuthor();
             $potentialLikers = array_filter($users, fn($user) => $user !== $postAuthor);
@@ -74,6 +132,20 @@ class AppFixtures extends Fixture
                 $like->setUser($potentialLikers[array_rand($potentialLikers)])
                      ->setPost($post);
                 $manager->persist($like);
+            }
+        }
+
+        // Create likes for comments
+        foreach ($comments as $comment) {
+            $commentAuthor = $comment->getAuthor();
+            $potentialLikers = array_filter($users, fn($user) => $user !== $commentAuthor);
+            $potentialLikers = array_values($potentialLikers);
+
+            for ($l = 0; $l < rand(1, 5); $l++) { // Each comment gets between 1 to 5 likes
+                $likeComment = new LikeComment();
+                $likeComment->setUser($potentialLikers[array_rand($potentialLikers)])
+                            ->setComment($comment);
+                $manager->persist($likeComment);
             }
         }
 

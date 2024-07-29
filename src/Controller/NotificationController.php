@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
+use App\Repository\CommentRepository;
 use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,9 +22,9 @@ class NotificationController extends AbstractController
         $posts = $postRepo->findBy(['author' => $user]);
         
         // Récupérer les notifications associées aux posts et celles où l'utilisateur est relatedUser
-        $notifications = $notificationRepo->getAllNotifications($user, $posts);
+        $notifications = $notificationRepo->getAllNotifications($user);
 
-        $unreadCount = $notificationRepo->countUnreadNotifications($user, $posts);
+        $unreadCount = $notificationRepo->countUnreadNotifications($user);
 
         return $this->render('notifications/index.html.twig', [
             'notifications' => $notifications,
@@ -33,13 +34,14 @@ class NotificationController extends AbstractController
 
     #[Route('/notifications/likes', name: 'notifications_likes')]
     #[IsGranted('ROLE_USER')]
-    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy(['author' => $user]);
-        $notifications = $notificationRepo->getLikesNotifications($posts, 'like');
-        $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts);
-
+        $comments = $commentRepo->findBy(['author' => $user]);
+        $notifications = $notificationRepo->getLikesNotifications($posts, $comments);
+        $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts, $comments);
+        
         return $this->render('notifications/likes.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
@@ -55,6 +57,20 @@ class NotificationController extends AbstractController
         $unreadCount = $notificationRepo->countUnreadFollowsNotifications($user);
 
         return $this->render('notifications/follows.html.twig', [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount,
+        ]);
+    }
+
+    #[Route('/notifications/comments', name: 'notifications_comments')]
+    #[IsGranted('ROLE_USER')]
+    public function comments(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        $notifications = $notificationRepo->getCommentsNotifications($user);
+        $unreadCount = $notificationRepo->countUnreadCommentsNotifications($user);
+
+        return $this->render('notifications/comments.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);
@@ -89,5 +105,16 @@ class NotificationController extends AbstractController
         $notificationRepo->markFollowsAsRead($user);
 
         return $this->redirectToRoute('notifications_follows');
+    }
+
+    #[Route('/notifications/mark-comments-read', name: 'mark_comments_read')]
+    #[IsGranted('ROLE_USER')]
+    public function markCommentsRead(NotificationRepository $notificationRepo): Response
+    {
+        $user = $this->getUser();
+        
+        $notificationRepo->markCommentsAsRead($user);
+
+        return $this->redirectToRoute('notifications_comments');
     }
 }

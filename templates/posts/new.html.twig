@@ -24,8 +24,8 @@
                     </div>
                 {% endfor %}
             </div>
-
             <button type="button" id="add-image" class="btn btn-secondary mt-3">Add Image</button>
+            {{ form_row(myForm.commentDisabled) }}
             <button type="submit" class="btn btn-primary mt-3">Share</button>
         {{ form_end(myForm) }}
     </div>

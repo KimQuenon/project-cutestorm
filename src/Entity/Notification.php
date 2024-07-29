@@ -31,6 +31,10 @@ class Notification
     #[ORM\Column]
     private ?bool $isRead = null;
 
+    #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Comment $comment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,7 +48,6 @@ class Notification
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -56,7 +59,6 @@ class Notification
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -68,7 +70,6 @@ class Notification
     public function setPost(?Post $post): static
     {
         $this->post = $post;
-
         return $this;
     }
 
@@ -80,7 +81,6 @@ class Notification
     public function setRelatedUser(?User $relatedUser): static
     {
         $this->relatedUser = $relatedUser;
-
         return $this;
     }
 
@@ -92,7 +92,17 @@ class Notification
     public function setRead(bool $isRead): static
     {
         $this->isRead = $isRead;
+        return $this;
+    }
 
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?Comment $comment): static
+    {
+        $this->comment = $comment;
         return $this;
     }
 }

@@ -4,12 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Entity\Comment;
+use App\Form\ReplyType;
 use App\Entity\PostImage;
+use App\Form\CommentType;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\LikeCommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,6 +24,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PostController extends AbstractController
 {
+    public function __construct(NotificationService $notificationService, EntityManagerInterface $entityManager)
+    {
+        $this->notificationService = $notificationService;
+        $this->entityManager = $entityManager;
+    }
+    
     /**
      * Display all posts
      *
@@ -119,15 +130,11 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(
-        #[MapEntity(mapping: ['slug' => 'slug'])] Post $post,
-        LikeRepository $likeRepo,
-        FollowingRepository $followingRepo
-    ): Response
-    {
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response {
         $user = $this->getUser();
         $author = $post->getAuthor();
         $isPrivate = $author->isPrivate();
+        $areCommentsDisabled = $post->isCommentDisabled();
         
         // Determine visibility based on author's privacy settings and user's subscription
         $canViewPost = !$isPrivate || $user === $author || $followingRepo->isFollowing($user, $author);
@@ -136,14 +143,57 @@ class PostController extends AbstractController
             $this->addFlash('danger', 'This publication is private or you do not have permission to view it.');
             return $this->redirectToRoute('posts_index');
         }
-    
+        
         // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
     
+        $likedComments = $likeCommentRepo->findBy(['user' => $user]);
+        $likedCommentIds = array_map(fn($like) => $like->getComment()->getId(), $likedComments);
+    
+        // Fetch comments only if comments are not disabled
+        $comments = $areCommentsDisabled ? [] : $post->getComments();
+    
+        $form = null; // if comments are disabled -> avoid rendering the form
+    
+        // Create a form for a new comment only if comments are enabled
+        if (!$areCommentsDisabled) {
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid()) {
+                $comment->setPost($post)
+                    ->setAuthor($user);
+                $manager->persist($comment);
+                $manager->flush();
+    
+                $this->notificationService->addNotification('comment', $user, $author, $post, $comment);
+    
+                $form = $this->createForm(CommentType::class);
+    
+                $this->addFlash('success', 'Comment posted');
+            }
+        }
+    
+        $replyForms = [];
+        foreach ($comments as $comment) {
+            if ($comment->getParent() === null) {
+                $replyForm = $this->createForm(ReplyType::class, new Comment(), [
+                    'parent' => $comment,
+                ]);
+                $replyForms[$comment->getId()] = $replyForm->createView();
+            }
+        }
+    
         return $this->render("posts/show.html.twig", [
             'post' => $post,
             'likedPostSlugs' => $likedPostSlugs,
+            'likedCommentIds' => $likedCommentIds,
+            'comments' => $comments,
+            'myForm' => $form ? $form->createView() : null,
+            'replyForms' => $replyForms,
+            'areCommentsDisabled' => $areCommentsDisabled,
         ]);
     }
     
@@ -164,7 +214,6 @@ class PostController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            // $artwork->setCoverImage($fileName);
             $manager->persist($post);
 
             $manager->flush();

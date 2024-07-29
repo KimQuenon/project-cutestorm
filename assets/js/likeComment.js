@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.like-post');
+    const buttons = document.querySelectorAll('.like-comment');
 
     buttons.forEach(button => {
         button.addEventListener('click', function() {
@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const postSlug = button.getAttribute('data-post-slug');
+            const commentId = button.getAttribute('data-comment-id');
             const likeCountElement = button.nextElementSibling;
 
-            fetch(`/posts/${postSlug}/like`, {
+            fetch(`/comments/${commentId}/like`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

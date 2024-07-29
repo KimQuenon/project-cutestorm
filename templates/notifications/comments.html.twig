@@ -1,0 +1,13 @@
+{% extends 'notifications/base.html.twig' %}
+
+{% set title = 'Comment Notifications' %}
+{% set markAsReadPath = path('mark_comments_read') %}
+
+{% block notification_content %}
+    {% if notification.type == "comment" %}
+        <strong>{{notification.comment.author.pseudo}}</strong> a commenté:
+    {% else %}
+        <strong>{{notification.comment.author.pseudo}}</strong> a répondu à votre commentaire:
+    {% endif %}
+    <small>{{notification.comment.content}}</small>
+{% endblock %}

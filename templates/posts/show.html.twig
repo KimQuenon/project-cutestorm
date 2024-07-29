@@ -1,28 +1,147 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{post.title}}{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        {% include "partials/_like.html.twig" with {'post': post} %}
-        {% include "partials/_follow.html.twig" with {'user': post.author} %}
-        <h1>{{post.title}}</h1>
-        <p>{{post.description | raw}}</p>
-        <div class="row">
-            {% for postImage in post.postImages %}
-                <div class="col-md-4 mb-4">
-                    <img src="{{ asset('uploads/' ~ postImage.filename) }}" alt="Image" class="img-fluid">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                {% include 'partials/_like.html.twig' with {
+                    'type': 'post',
+                    'idOrSlug': post.slug,
+                    'authorId': post.author.id,
+                    'likeCount': post.likes|length,
+                    'likedIds': likedPostSlugs
+                } %}
+                {% include "partials/_follow.html.twig" with {'user': post.author} %}
+            </div>
+            {% if app.user == post.author %}
+                <div>
+                    <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-warning btn-sm me-2">Edit post</a>
+                    <a href="{{ path('post_pictures', {'slug': post.slug}) }}" class="btn btn-primary btn-sm me-2">Edit pictures</a>
+                    <a href="{{ path('post_delete', {'slug': post.slug}) }}" class="btn btn-danger btn-sm">Delete post</a>
                 </div>
-            {% endfor %}
+            {% endif %}
         </div>
-        {% if app.user == post.author %}
-            <a href="{{path('post_pictures', {'slug':post.slug})}}" class="btn btn-primary mt-4">Edit pictures</a>
-            <a href="{{path('post_edit', {'slug':post.slug})}}" class="btn btn-warning mt-4">Edit post</a>
-            <a href="{{path('post_delete', {'slug':post.slug})}}" class="btn btn-danger mt-4">Delete post</a>
+
+        <div class="post-header mb-5">
+            <h1 class="display-4 fw-bold">{{ post.title }}</h1>
+            <p class="lead text-muted">{{ post.description | raw }}</p>
+        </div>
+
+        {% if post.postImages is not empty %}
+            <div class="row mb-4 g-3">
+                {% for postImage in post.postImages %}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <img src="{{ asset('uploads/' ~ postImage.filename) }}" class="card-img-top" alt="Image">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h2 class="mt-5">Comments</h2>
+
+        {% if post.commentDisabled %}
+            <div class="alert alert-warning" role="alert">
+                Comments are disabled for this post.
+            </div>
+        {% else %}
+            {% if comments is empty %}
+                <div class="alert alert-info" role="alert">
+                    No comments yet. Be the first to comment!
+                </div>
+            {% else %}
+                <ul class="list-group list-group-flush mb-4">
+                    {% for comment in comments %}
+                        {% if comment.parent is null %}
+                            <li class="list-group-item d-flex flex-column align-items-start bg-light">
+                                <div class="d-flex justify-content-between w-100">
+                                    <div>
+                                        <strong class="d-block">{{ comment.author.pseudo }}</strong>
+                                        <p class="mb-1">{{ comment.content }}</p>
+                                    </div>
+                                    <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
+                                    {% if app.user == comment.author %}
+                                        <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                    {% endif %}
+                                </div>
+
+                                {% include 'partials/_like.html.twig' with {
+                                    'type': 'comment',
+                                    'idOrSlug': comment.id,
+                                    'authorId': comment.author.id,
+                                    'likeCount': comment.likeComments|length,
+                                    'likedIds': likedCommentIds
+                                } %}
+
+                                <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
+                                    Reply
+                                </button>
+
+                                <div class="reply-form-container" id="reply-form-{{ comment.id }}">
+                                    <form action="{{ path('comment_reply', {'id': comment.id}) }}" method="post">
+                                        {{ form_start(replyForms[comment.id]) }}
+                                        {{ form_widget(replyForms[comment.id].content) }}
+                                        {{ form_errors(replyForms[comment.id].content) }}
+                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                        <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+                                        {{ form_end(replyForms[comment.id]) }}
+                                    </form>
+                                </div>
+
+                                {% if comment.replies is not empty %}
+                                    <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
+                                        View {{ comment.replies|length }} replies
+                                    </button>
+                                    <ul class="list-group list-group-flush ms-4 replies fadeIn" id="replies-{{ comment.id }}">
+                                        {% for reply in comment.replies %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                                                <div>
+                                                    <strong class="d-block">{{ reply.author.pseudo }}</strong>
+                                                    <p class="mb-1">{{ reply.content }}</p>
+                                                </div>
+                                                <small class="text-muted">{{ reply.timestamp|date('Y-m-d H:i') }}</small>
+                                                {% include 'partials/_like.html.twig' with {
+                                                    'type': 'comment',
+                                                    'idOrSlug': reply.id,
+                                                    'authorId': reply.author.id,
+                                                    'likeCount': reply.likeComments|length,
+                                                    'likedIds': likedCommentIds
+                                                } %}
+                                                {% if app.user == reply.author %}
+                                                    <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if app.user %}
+                <h3 class="mt-4">Add a Comment</h3>
+                {{ form_start(myForm) }}
+                {{ form_widget(myForm.content) }}
+                {{ form_errors(myForm.content) }}
+                <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
+                {{ form_end(myForm) }}
+            {% else %}
+                <div class="alert alert-warning mt-4" role="alert">
+                    You must be logged in to post a comment.
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    {{encore_entry_script_tags('like')}}
+    {{ encore_entry_script_tags('like') }}
+    {{ encore_entry_script_tags('likeComment') }}
+    {{ encore_entry_script_tags('replyDisplay') }}
+    {{ encore_entry_script_tags('replyAdd') }}
 {% endblock %}
