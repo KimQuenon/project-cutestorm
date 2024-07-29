@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class NotificationController extends AbstractController
 {
-    #[Route('/notifications', name: 'notifications_index')]
+    #[Route('profile/notifications', name: 'notifications_index')]
     #[IsGranted('ROLE_USER')]
     public function index(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
@@ -26,13 +26,13 @@ class NotificationController extends AbstractController
 
         $unreadCount = $notificationRepo->countUnreadNotifications($user);
 
-        return $this->render('notifications/index.html.twig', [
+        return $this->render('profile/notifications/index.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
         ]);
     }
 
-    #[Route('/notifications/likes', name: 'notifications_likes')]
+    #[Route('/profile/notifications/likes', name: 'notifications_likes')]
     #[IsGranted('ROLE_USER')]
     public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo): Response
     {
@@ -42,13 +42,13 @@ class NotificationController extends AbstractController
         $notifications = $notificationRepo->getLikesNotifications($posts, $comments);
         $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts, $comments);
         
-        return $this->render('notifications/likes.html.twig', [
+        return $this->render('profile/notifications/likes.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);
     }
 
-    #[Route('/notifications/follows', name: 'notifications_follows')]
+    #[Route('profile//notifications/follows', name: 'notifications_follows')]
     #[IsGranted('ROLE_USER')]
     public function follows(NotificationRepository $notificationRepo): Response
     {
@@ -56,13 +56,13 @@ class NotificationController extends AbstractController
         $notifications = $notificationRepo->getFollowsNotifications($user);
         $unreadCount = $notificationRepo->countUnreadFollowsNotifications($user);
 
-        return $this->render('notifications/follows.html.twig', [
+        return $this->render('profile/notifications/follows.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);
     }
 
-    #[Route('/notifications/comments', name: 'notifications_comments')]
+    #[Route('/profile/notifications/comments', name: 'notifications_comments')]
     #[IsGranted('ROLE_USER')]
     public function comments(NotificationRepository $notificationRepo): Response
     {
@@ -70,7 +70,7 @@ class NotificationController extends AbstractController
         $notifications = $notificationRepo->getCommentsNotifications($user);
         $unreadCount = $notificationRepo->countUnreadCommentsNotifications($user);
 
-        return $this->render('notifications/comments.html.twig', [
+        return $this->render('profile/notifications/comments.html.twig', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);

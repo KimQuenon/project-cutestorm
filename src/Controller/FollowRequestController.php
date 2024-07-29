@@ -22,7 +22,7 @@ class FollowRequestController extends AbstractController
         $this->notificationService = $notificationService;
     }
     
-    #[Route('/requests', name: 'requests_index')]
+    #[Route('/profile/requests', name: 'requests_index')]
     #[IsGranted('ROLE_USER')]
     public function index(FollowRequestRepository $requestRepo): Response
     {
@@ -30,7 +30,7 @@ class FollowRequestController extends AbstractController
 
         $requests = $requestRepo->findBy(['sentTo' => $user]);
 
-        return $this->render('follow_request/index.html.twig', [
+        return $this->render('profile/follow_requests/index.html.twig', [
             'requests' => $requests,
         ]);
     }
