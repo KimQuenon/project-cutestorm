@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Entity\Comment;
 use App\Entity\Following;
 use App\Entity\LikeComment;
+use App\Entity\Conversation;
+use App\Entity\Message;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -166,6 +168,41 @@ class AppFixtures extends Fixture
                 $following->setFollowerUser($follower)
                           ->setFollowedUser($followed);
                 $manager->persist($following);
+            }
+        }
+
+        // Create conversations and messages
+        foreach ($users as $user) {
+            // Filter only users that this user can send messages to (either private and follower, or public)
+            $possibleRecipients = array_filter($users, function($recipient) use ($user, $manager) {
+                if ($recipient === $user) {
+                    return false; // Cannot send a message to oneself
+                }
+                if (!$recipient->isPrivate()) {
+                    return true; // If not private, allow conversation
+                }
+                // If private, check if the current user is following the recipient
+                $followingRepo = $manager->getRepository(Following::class);
+                return $followingRepo->findOneBy(['followerUser' => $user, 'followedUser' => $recipient]) !== null;
+            });
+
+            // Create a random number of conversations
+            foreach ($possibleRecipients as $recipient) {
+                $conversation = new Conversation();
+                $conversation->setSentBy($user);
+                $conversation->setSentTo($recipient);
+                $manager->persist($conversation);
+
+                // Create a random number of messages in this conversation
+                $messageCount = rand(1, 10);
+                for ($m = 0; $m < $messageCount; $m++) {
+                    $message = new Message();
+                    $message->setConversation($conversation);
+                    $message->setSender($faker->boolean ? $user : $recipient); // Randomly set sender
+                    $message->setContent($faker->sentence());
+                    $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
+                    $manager->persist($message);
+                }
             }
         }
 
