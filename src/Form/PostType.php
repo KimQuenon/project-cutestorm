@@ -8,6 +8,7 @@ use App\Form\ApplicationType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
@@ -18,8 +19,12 @@ class PostType extends ApplicationType
         $builder
             ->add('title', TextType::class, $this->getConfiguration("Title of the frame:", 'Exemple : Giulia'))
             ->add('description', TextareaType::class, $this->getConfiguration("Description:", 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'))
+            ->add('commentDisabled', CheckboxType::class, [
+                'label' => 'Disable comments',
+                'required' => false,
+            ]);
         ;
-        //add this field except on edit mode
+
         if (!$options['is_edit']) {
             $builder->add('postImages', CollectionType::class, [
                 'entry_type' => PostImageType::class,

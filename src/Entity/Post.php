@@ -62,6 +62,9 @@ class Post
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\Column]
+    private ?bool $commentDisabled = false;
+
     public function __construct()
     {
         $this->postImages = new ArrayCollection();
@@ -262,6 +265,18 @@ class Post
                 $comment->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isCommentDisabled(): ?bool
+    {
+        return $this->commentDisabled;
+    }
+
+    public function setCommentDisabled(bool $commentDisabled): static
+    {
+        $this->commentDisabled = $commentDisabled;
 
         return $this;
     }

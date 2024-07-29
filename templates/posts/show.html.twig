@@ -43,92 +43,98 @@
 
         <h2 class="mt-5">Comments</h2>
 
-        {% if comments is empty %}
-            <div class="alert alert-info" role="alert">
-                No comments yet. Be the first to comment!
+        {% if post.commentDisabled %}
+            <div class="alert alert-warning" role="alert">
+                Comments are disabled for this post.
             </div>
         {% else %}
-            <ul class="list-group list-group-flush mb-4">
-                {% for comment in comments %}
-                    {% if comment.parent is null %}
-                        <li class="list-group-item d-flex flex-column align-items-start bg-light">
-                            <div class="d-flex justify-content-between w-100">
-                                <div>
-                                    <strong class="d-block">{{ comment.author.pseudo }}</strong>
-                                    <p class="mb-1">{{ comment.content }}</p>
+            {% if comments is empty %}
+                <div class="alert alert-info" role="alert">
+                    No comments yet. Be the first to comment!
+                </div>
+            {% else %}
+                <ul class="list-group list-group-flush mb-4">
+                    {% for comment in comments %}
+                        {% if comment.parent is null %}
+                            <li class="list-group-item d-flex flex-column align-items-start bg-light">
+                                <div class="d-flex justify-content-between w-100">
+                                    <div>
+                                        <strong class="d-block">{{ comment.author.pseudo }}</strong>
+                                        <p class="mb-1">{{ comment.content }}</p>
+                                    </div>
+                                    <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
+                                    {% if app.user == comment.author %}
+                                        <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                    {% endif %}
                                 </div>
-                                <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
-                                {% if app.user == comment.author %}
-                                    <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Delete</a>
-                                {% endif %}
-                            </div>
 
-                            {% include 'partials/_like.html.twig' with {
-                                'type': 'comment',
-                                'idOrSlug': comment.id,
-                                'authorId': comment.author.id,
-                                'likeCount': comment.likeComments|length,
-                                'likedIds': likedCommentIds
-                            } %}
+                                {% include 'partials/_like.html.twig' with {
+                                    'type': 'comment',
+                                    'idOrSlug': comment.id,
+                                    'authorId': comment.author.id,
+                                    'likeCount': comment.likeComments|length,
+                                    'likedIds': likedCommentIds
+                                } %}
 
-                            <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
-                                Reply
-                            </button>
-
-                            <div class="reply-form-container" id="reply-form-{{ comment.id }}">
-                                <form action="{{ path('comment_reply', {'id': comment.id}) }}" method="post">
-                                    {{ form_start(replyForms[comment.id]) }}
-                                    {{ form_widget(replyForms[comment.id].content) }}
-                                    {{ form_errors(replyForms[comment.id].content) }}
-                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                    <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
-                                    {{ form_end(replyForms[comment.id]) }}
-                                </form>
-                            </div>
-
-                            {% if comment.replies is not empty %}
-                                <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
-                                    View {{ comment.replies|length }} replies
+                                <button class="btn btn-link btn-sm mt-2 reply-button" data-comment-id="{{ comment.id }}">
+                                    Reply
                                 </button>
-                                <ul class="list-group list-group-flush ms-4 replies fadeIn" id="replies-{{ comment.id }}">
-                                    {% for reply in comment.replies %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
-                                            <div>
-                                                <strong class="d-block">{{ reply.author.pseudo }}</strong>
-                                                <p class="mb-1">{{ reply.content }}</p>
-                                            </div>
-                                            <small class="text-muted">{{ reply.timestamp|date('Y-m-d H:i') }}</small>
-                                            {% include 'partials/_like.html.twig' with {
-                                                'type': 'comment',
-                                                'idOrSlug': reply.id,
-                                                'authorId': reply.author.id,
-                                                'likeCount': reply.likeComments|length,
-                                                'likedIds': likedCommentIds
-                                            } %}
-                                            {% if app.user == reply.author %}
-                                                <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger btn-sm">Delete</a>
-                                            {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% endif %}
 
-        {% if app.user %}
-            <h3 class="mt-4">Add a Comment</h3>
-            {{ form_start(myForm) }}
-            {{ form_widget(myForm.content) }}
-            {{ form_errors(myForm.content) }}
-            <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
-            {{ form_end(myForm) }}
-        {% else %}
-            <div class="alert alert-warning mt-4" role="alert">
-                You must be logged in to post a comment.
-            </div>
+                                <div class="reply-form-container" id="reply-form-{{ comment.id }}">
+                                    <form action="{{ path('comment_reply', {'id': comment.id}) }}" method="post">
+                                        {{ form_start(replyForms[comment.id]) }}
+                                        {{ form_widget(replyForms[comment.id].content) }}
+                                        {{ form_errors(replyForms[comment.id].content) }}
+                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                        <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+                                        {{ form_end(replyForms[comment.id]) }}
+                                    </form>
+                                </div>
+
+                                {% if comment.replies is not empty %}
+                                    <button class="btn btn-link btn-sm toggle-replies mt-2" data-comment-id="{{ comment.id }}">
+                                        View {{ comment.replies|length }} replies
+                                    </button>
+                                    <ul class="list-group list-group-flush ms-4 replies fadeIn" id="replies-{{ comment.id }}">
+                                        {% for reply in comment.replies %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                                                <div>
+                                                    <strong class="d-block">{{ reply.author.pseudo }}</strong>
+                                                    <p class="mb-1">{{ reply.content }}</p>
+                                                </div>
+                                                <small class="text-muted">{{ reply.timestamp|date('Y-m-d H:i') }}</small>
+                                                {% include 'partials/_like.html.twig' with {
+                                                    'type': 'comment',
+                                                    'idOrSlug': reply.id,
+                                                    'authorId': reply.author.id,
+                                                    'likeCount': reply.likeComments|length,
+                                                    'likedIds': likedCommentIds
+                                                } %}
+                                                {% if app.user == reply.author %}
+                                                    <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if app.user %}
+                <h3 class="mt-4">Add a Comment</h3>
+                {{ form_start(myForm) }}
+                {{ form_widget(myForm.content) }}
+                {{ form_errors(myForm.content) }}
+                <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
+                {{ form_end(myForm) }}
+            {% else %}
+                <div class="alert alert-warning mt-4" role="alert">
+                    You must be logged in to post a comment.
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}

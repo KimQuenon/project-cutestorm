@@ -81,7 +81,8 @@ class AppFixtures extends Fixture
             $post->setTitle($faker->sentence())
                 ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
-                ->setAuthor($users[array_rand($users)]); // Random author
+                ->setAuthor($users[array_rand($users)]) // Random author
+                ->setCommentDisabled($faker->boolean(30)); // 30% chance to disable comments
             $manager->persist($post);
             $posts[] = $post;
         }
@@ -89,6 +90,11 @@ class AppFixtures extends Fixture
         // Create comments and replies
         $comments = []; // Array to store comments
         foreach ($posts as $post) {
+            // Check if comments are disabled
+            if ($post->isCommentDisabled()) {
+                continue; // Skip comment creation for this post
+            }
+
             $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
 
             for ($c = 0; $c < $commentCount; $c++) {

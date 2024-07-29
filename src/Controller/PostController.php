@@ -130,11 +130,11 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response
-    {
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response {
         $user = $this->getUser();
         $author = $post->getAuthor();
         $isPrivate = $author->isPrivate();
+        $areCommentsDisabled = $post->isCommentDisabled();
         
         // Determine visibility based on author's privacy settings and user's subscription
         $canViewPost = !$isPrivate || $user === $author || $followingRepo->isFollowing($user, $author);
@@ -147,33 +147,35 @@ class PostController extends AbstractController
         // Get liked posts for the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
-
+    
         $likedComments = $likeCommentRepo->findBy(['user' => $user]);
         $likedCommentIds = array_map(fn($like) => $like->getComment()->getId(), $likedComments);
     
-        $comments = $post->getComments();
+        // Fetch comments only if comments are not disabled
+        $comments = $areCommentsDisabled ? [] : $post->getComments();
     
-        // Create a form for a new comment
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
+        $form = null; // if comments are disabled -> avoid rendering the form
     
-        if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setPost($post)
+        // Create a form for a new comment only if comments are enabled
+        if (!$areCommentsDisabled) {
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid()) {
+                $comment->setPost($post)
                     ->setAuthor($user);
-            $manager->persist($comment);
-            $manager->flush();
+                $manager->persist($comment);
+                $manager->flush();
     
-            $this->notificationService->addNotification('comment', $user, $author, $post, $comment);
+                $this->notificationService->addNotification('comment', $user, $author, $post, $comment);
     
-            $form = $this->createForm(CommentType::class);
+                $form = $this->createForm(CommentType::class);
     
-            $this->addFlash(
-                'success',
-                'Comment posted'
-            );
+                $this->addFlash('success', 'Comment posted');
+            }
         }
-
+    
         $replyForms = [];
         foreach ($comments as $comment) {
             if ($comment->getParent() === null) {
@@ -189,8 +191,9 @@ class PostController extends AbstractController
             'likedPostSlugs' => $likedPostSlugs,
             'likedCommentIds' => $likedCommentIds,
             'comments' => $comments,
-            'myForm' => $form->createView(),
+            'myForm' => $form ? $form->createView() : null,
             'replyForms' => $replyForms,
+            'areCommentsDisabled' => $areCommentsDisabled,
         ]);
     }
     

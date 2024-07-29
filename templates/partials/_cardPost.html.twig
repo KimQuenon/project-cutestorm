@@ -8,7 +8,13 @@
         <div class="card-body">
             <p class="card-text">{{ post.description | raw }}</p>
             <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
-            {% include "partials/_like.html.twig" with {'post': post} %}
+            {% include 'partials/_like.html.twig' with {
+                'type': 'post',
+                'idOrSlug': post.slug,
+                'authorId': post.author.id,
+                'likeCount': post.likes|length,
+                'likedIds': likedPostSlugs
+            } %}
             {% if app.user == post.author %}
                 <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
             {% endif %}
