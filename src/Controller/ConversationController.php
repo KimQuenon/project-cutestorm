@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,6 +18,19 @@ class ConversationController extends AbstractController
 
         return $this->render('profile/conversations/index.html.twig', [
             'conversations' => $conversations,
+        ]);
+    }
+
+    #[Route('/profile/conversations/{id}', name: 'conversation_show')]
+    public function show(#[MapEntity(mapping: ['id' => 'id'])] Conversation $conversation, ConversationRepository $convRepo): Response
+    {
+        $conversation = $convRepo->findOneById($conversation);
+        $messages = $conversation->getMessagesSorted();
+
+
+        return $this->render('profile/conversations/show.html.twig', [
+            'conversation' => $conversation,
+            'messages' => $messages
         ]);
     }
 }
