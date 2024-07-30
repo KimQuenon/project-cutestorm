@@ -186,11 +186,17 @@ class AppFixtures extends Fixture
                 return $followingRepo->findOneBy(['followerUser' => $user, 'followedUser' => $recipient]) !== null;
             });
 
+            // Shuffle the possible recipients to ensure randomness in conversation creation
+            shuffle($possibleRecipients);
+
             // Create a random number of conversations
-            foreach ($possibleRecipients as $recipient) {
+            $conversationCount = rand(0, count($possibleRecipients)); // Randomize the number of conversations
+
+            for ($i = 0; $i < $conversationCount; $i++) {
+                $recipient = $possibleRecipients[$i];
                 $conversation = new Conversation();
-                $conversation->setSentBy($user);
-                $conversation->setSentTo($recipient);
+                $conversation->setSender($user);
+                $conversation->setRecipient($recipient);
                 $manager->persist($conversation);
 
                 // Create a random number of messages in this conversation

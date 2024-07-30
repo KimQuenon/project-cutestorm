@@ -17,18 +17,17 @@ class Conversation
 
     #[ORM\ManyToOne(inversedBy: 'conversations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $sentBy = null;
+    private ?User $sender = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $sentTo = null;
+    private ?User $recipient = null;
 
     /**
      * @var Collection<int, Message>
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', orphanRemoval: true)]
     private Collection $messages;
-
 
     public function __construct()
     {
@@ -37,17 +36,16 @@ class Conversation
 
     public function getLastMessage(): ?Message
     {
-        // tri par timestamp décroissant
+        // Tri par timestamp décroissant
         $messages = $this->getMessages()->toArray();
         usort($messages, function($a, $b) {
             return $b->getTimestamp() <=> $a->getTimestamp();
         });
 
-        // dernier message
+        // Dernier message
         return count($messages) > 0 ? $messages[0] : null;
     }
 
-    
     public function getMessagesSorted(): array
     {
         $messages = $this->getMessages()->toArray();
@@ -62,26 +60,26 @@ class Conversation
         return $this->id;
     }
 
-    public function getSentBy(): ?User
+    public function getSender(): ?User
     {
-        return $this->sentBy;
+        return $this->sender;
     }
 
-    public function setSentBy(?User $sentBy): static
+    public function setSender(?User $sender): static
     {
-        $this->sentBy = $sentBy;
+        $this->sender = $sender;
 
         return $this;
     }
 
-    public function getSentTo(): ?User
+    public function getRecipient(): ?User
     {
-        return $this->sentTo;
+        return $this->recipient;
     }
 
-    public function setSentTo(?User $sentTo): static
+    public function setRecipient(?User $recipient): static
     {
-        $this->sentTo = $sentTo;
+        $this->recipient = $recipient;
 
         return $this;
     }
@@ -107,7 +105,7 @@ class Conversation
     public function removeMessage(Message $message): static
     {
         if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
+            // Set the owning side to null (unless already changed)
             if ($message->getConversation() === $this) {
                 $message->setConversation(null);
             }

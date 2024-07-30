@@ -17,17 +17,31 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
-    public function sortConvByRecentMsg($user)
+    public function sortConvByRecentMsg(User $user): array
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.messages', 'm')
-            ->andWhere('c.sentBy = :user')
+            ->addSelect('MAX(m.timestamp) AS HIDDEN lastMessageTimestamp')
+            ->where('c.sender = :user OR c.recipient = :user')
             ->setParameter('user', $user)
-            ->orderBy('m.timestamp', 'DESC')
+            ->groupBy('c.id')
+            ->orderBy('lastMessageTimestamp', 'DESC')
             ->getQuery()
             ->getResult();
     }
 
+    public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.messages', 'm')
+            ->addSelect('MAX(m.timestamp) AS HIDDEN lastMessageTimestamp')
+            ->where('c.sender = :user OR c.recipient = :user')
+            ->setParameter('user', $user)
+            ->groupBy('c.id')
+            ->orderBy('lastMessageTimestamp', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
     //    /**
     //     * @return Conversation[] Returns an array of Conversation objects

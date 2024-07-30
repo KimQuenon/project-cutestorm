@@ -2,15 +2,25 @@
     {% for conversation in conversations %}
         <a href="{{ path('conversation_show', {'id': conversation.id}) }}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{ conversation.sentTo.pseudo }}</h5>
-                <div>
-                    {% if app.user == conversation.lastMessage.sender %}
-                        <p>You said:</p>
+                <h5 class="mb-1">
+                    {% if app.user == conversation.sender %}
+                        {{ conversation.recipient.pseudo }}
                     {% else %}
-                        <p>{{conversation.lastMessage.sender.pseudo}} said:</p>
+                        {{ conversation.sender.pseudo }}
                     {% endif %}
-                    <p>{{ conversation.lastMessage.content }}</p>
-                    <small>{{ conversation.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
+                </h5>
+                <div>
+                    {% if conversation.lastMessage %}
+                        {% if app.user == conversation.lastMessage.sender %}
+                            <p>You said:</p>
+                        {% else %}
+                            <p>{{ conversation.lastMessage.sender.pseudo }} said:</p>
+                        {% endif %}
+                        <p>{{ conversation.lastMessage.content }}</p>
+                        <small>{{ conversation.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
+                    {% else %}
+                        <p>Say hi</p>
+                    {% endif %}
                 </div>
             </div>
         </a>
