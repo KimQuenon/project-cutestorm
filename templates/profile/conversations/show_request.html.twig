@@ -4,13 +4,7 @@
 {% block subtitle %}Demande de conversation avec {{ otherUser.pseudo }}{% endblock %}
 
 {% block message_content %}
-        {% for message in messages %}
-            <div class="w-100 d-flex flex-column p-2">
-                <div class="w-75 not-user-message bg-light p-3 rounded align-self-start position-relative">
-                    <div class="mt-1">{{ message.content }}</div>
-                    <small class="text-muted d-block mt-1">{{ message.timestamp|date('d/m/Y H:i') }}</small>
-                </div>
-        {% endfor %}
+    {% include 'partials/_message.html.twig' with { messages: conversation.messages } %}
 {% endblock %}
 
 {% block form_content %}
