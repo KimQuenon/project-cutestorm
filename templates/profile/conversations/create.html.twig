@@ -1,48 +1,23 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/conversations/base.html.twig' %}
 
-{% block title %}Créer une Conversation{% endblock %}
+{% block title %}New Conversation{% endblock %}
+{% block subtitle %}New Conversation with {{otherUser.pseudo}}{% endblock %}
 
-{% block body %}
-    <div class="container">
-        <div class="w-auto d-flex justify-content-between">
-            <h2>Créer une nouvelle conversation avec {{ otherUser.pseudo }}</h2>
-            <div>
-                <a href="{{ path('conversations_index') }}" class="btn btn-dark">Retour aux conversations</a>
-            </div>
+{% block message_content %}
+    <p>Envoyez un premier message pour démarrer la conversation :</p>
+{% endblock %}
+
+{% block form_content %}
+    {{ form_start(form) }}
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="input-group" style="width: 90%;">
+            {{ form_widget(form.content, {'attr': {'class': 'form-control form-control-sm', 'style': 'padding: 10px;'}}) }}
         </div>
-        <div class="container d-flex justify-content-between">
-            <div class="conversations-container w-25">
-                <h1 class="mb-4">Conversations</h1>
-                {% include 'partials/_conversation.html.twig' with {
-                    items: conversations,
-                    route: 'conversation_show'
-                } %}
-            </div>
-            <div class="w-75 p-4">
-                <div id="message-container" style="height: 400px; overflow-y: auto;">
-                    <div class="w-100 container d-flex gap-20 flex-column">
-                        <p>Envoyez un premier message pour démarrer la conversation :</p>
-                        {{ form_start(form) }}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="input-group" style="width: 90%;">
-                                {{ form_widget(form.content, {'attr': {'class': 'form-control form-control-sm', 'style': 'padding: 10px;'}}) }}
-                            </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary p-3">
-                                    <i class="fas fa-arrow-up"></i> Envoyer
-                                </button>
-                            </div>
-                        </div>
-                        {{ form_end(form) }}
-                    </div>
-                </div>
-            </div>
+        <div>
+            <button type="submit" class="btn btn-primary p-3">
+                <i class="fas fa-arrow-up"></i> Envoyer
+            </button>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function (event) {
-            // Optionally, add some script if needed
-        });
-    </script>
+    {{ form_end(form) }}
 {% endblock %}

@@ -172,47 +172,57 @@ class AppFixtures extends Fixture
         }
     
         // Create conversations and messages
+        $conversations = []; // Tableau pour stocker les conversations créées
         foreach ($users as $user) {
             // Filter only users that this user can send messages to
             $possibleRecipients = array_filter($users, fn($recipient) => $recipient !== $user); // Exclude self
-    
+
             // Shuffle the possible recipients to ensure randomness in conversation creation
             shuffle($possibleRecipients);
-    
+
             // Create a random number of conversations
             $conversationCount = rand(0, count($possibleRecipients)); // Randomize the number of conversations
-    
+
             for ($i = 0; $i < $conversationCount; $i++) {
                 $recipient = $possibleRecipients[$i];
-                $conversation = new Conversation();
-                $conversation->setSender($user);
-                $conversation->setRecipient($recipient);
-    
-                // Randomly decide if the conversation is accepted or not
-                if ($faker->boolean) {
-                    $conversation->setAccepted(true); // Set conversation as accepted (in progress)
-                    // Create multiple messages for active conversations
-                    $messageCount = rand(2, 10); // Randomize the number of messages
-                    for ($m = 0; $m < $messageCount; $m++) {
+                // Vérifier si une conversation avec les mêmes intervenants existe déjà
+                $existingConversation = array_filter($conversations, fn($conversation) => (
+                    ($conversation->getSender() === $user && $conversation->getRecipient() === $recipient) ||
+                    ($conversation->getSender() === $recipient && $conversation->getRecipient() === $user)
+                ));
+
+                if (empty($existingConversation)) {
+                    $conversation = new Conversation();
+                    $conversation->setSender($user);
+                    $conversation->setRecipient($recipient);
+
+                    // Randomly decide if the conversation is accepted or not
+                    if ($faker->boolean) {
+                        $conversation->setAccepted(true); // Set conversation as accepted (in progress)
+                        // Create multiple messages for active conversations
+                        $messageCount = rand(2, 10); // Randomize the number of messages
+                        for ($m = 0; $m < $messageCount; $m++) {
+                            $message = new Message();
+                            $message->setConversation($conversation);
+                            $message->setSender($faker->boolean ? $user : $recipient); // Randomly set sender
+                            $message->setContent($faker->sentence());
+                            $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
+                            $manager->persist($message);
+                        }
+                    } else {
+                        $conversation->setAccepted(false); // Set conversation as a request
+                        // Create a single message for the request
                         $message = new Message();
                         $message->setConversation($conversation);
-                        $message->setSender($faker->boolean ? $user : $recipient); // Randomly set sender
+                        $message->setSender($user); // User who initiated the request
                         $message->setContent($faker->sentence());
                         $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
                         $manager->persist($message);
                     }
-                } else {
-                    $conversation->setAccepted(false); // Set conversation as a request
-                    // Create a single message for the request
-                    $message = new Message();
-                    $message->setConversation($conversation);
-                    $message->setSender($user); // User who initiated the request
-                    $message->setContent($faker->sentence());
-                    $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
-                    $manager->persist($message);
+
+                    $manager->persist($conversation);
+                    $conversations[] = $conversation; // Ajouter la conversation au tableau
                 }
-    
-                $manager->persist($conversation);
             }
         }
     

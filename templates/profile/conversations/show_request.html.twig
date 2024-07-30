@@ -1,0 +1,29 @@
+{% extends 'profile/conversations/base.html.twig' %}
+
+{% block title %}Demande de Conversation{% endblock %}
+{% block subtitle %}Demande de conversation avec {{ otherUser.pseudo }}{% endblock %}
+
+{% block message_content %}
+        {% for message in messages %}
+            <div class="w-100 d-flex flex-column p-2">
+                <div class="w-75 not-user-message bg-light p-3 rounded align-self-start position-relative">
+                    <div class="mt-1">{{ message.content }}</div>
+                    <small class="text-muted d-block mt-1">{{ message.timestamp|date('d/m/Y H:i') }}</small>
+                </div>
+        {% endfor %}
+{% endblock %}
+
+{% block form_content %}
+    <div class="d-flex gap-2">
+        <a href="{{ path('conversation_accept', { 'slug': conversation.sender.slug }) }}" class="btn btn-success">Accepter</a>
+        <a href="{{ path('conversation_reject', { 'slug': conversation.sender.slug }) }}" class="btn btn-danger">Refuser</a>
+    </div>
+{% endblock %}
+
+
+{% block partials_conv %}
+    {% include 'partials/_conversation.html.twig' with {
+        items: pendingRequests,
+    } %}
+{% endblock %}
+

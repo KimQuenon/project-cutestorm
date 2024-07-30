@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="w-auto d-flex justify-content-between">
+            {% block subtitle %}{% endblock %}
+            <div>
+                <a href="{{ path('conversations_index') }}" class="btn btn-dark">Retour aux conversations</a>
+            </div>
+        </div>
+        <div class="container d-flex justify-content-between">
+            <div class="conversations-container w-25">
+                <h1 class="mb-4">Conversations</h1>
+                {% block partials_conv %}{% endblock %}
+            </div>
+            <div class="w-75 p-4">
+                <div id="message-container" style="height: 400px; overflow-y: auto;">
+                    <div class="w-100 container d-flex gap-20 flex-column">
+                        {% block message_content %}
+                            {# Default content, can be overridden #}
+                            <p>Contenu spécifique de la page ici.</p>
+                        {% endblock %}
+                    </div>
+                </div>
+                <div class="mt-4">
+                    {% block form_content %}
+                        {# Default content, can be overridden #}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block extra_scripts %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function (event) {
+                var messagesContainer = document.getElementById('message-container');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+        </script>
+    {% endblock %}
+{% endblock %}
