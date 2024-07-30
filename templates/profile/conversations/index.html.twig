@@ -6,8 +6,10 @@
     <div class="container">
         <h1 class="mb-4">Messagerie</h1>
         {% if conversations|length > 0 %}
-                {% include "partials/_conversation.html.twig" %}
-            </div>
+            {% include 'partials/_conversation.html.twig' with {
+                items: conversations,
+                route: 'conversation_show'
+            } %}
         {% else %}
             <p>Pas de conversation pour le moment.</p>
         {% endif %}

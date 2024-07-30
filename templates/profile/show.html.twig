@@ -17,7 +17,7 @@
                     <div class="card-footer text-right">
                         {% include "partials/_follow.html.twig" with {'user': profileUser} %}
                     </div>
-                        <form action="{{ path('conversation_new', {'userPseudo': profileUser.slug}) }}" method="post">
+                        <form action="{{ path('conversation_new', {'slug': profileUser.slug}) }}" method="post">
                             <button type="submit" class="btn btn-primary rounded-pill">
                                 <i class="fa fa-envelope"></i> Envoyer un message
                             </button>

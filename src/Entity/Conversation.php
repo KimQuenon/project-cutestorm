@@ -29,6 +29,9 @@ class Conversation
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', orphanRemoval: true)]
     private Collection $messages;
 
+    #[ORM\Column]
+    private ?bool $isAccepted = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -110,6 +113,18 @@ class Conversation
                 $message->setConversation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isAccepted(): ?bool
+    {
+        return $this->isAccepted;
+    }
+
+    public function setAccepted(bool $isAccepted): static
+    {
+        $this->isAccepted = $isAccepted;
 
         return $this;
     }

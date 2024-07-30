@@ -36,8 +36,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/profile/{slug}', name: 'profile_show')]
-    public function viewProfile(
-        #[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
+    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
     {
         $user = $this->getUser();
     

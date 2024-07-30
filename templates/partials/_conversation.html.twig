@@ -1,23 +1,23 @@
 <div class="list-group">
-    {% for conversation in conversations %}
-        <a href="{{ path('conversation_show', {'id': conversation.id}) }}" class="list-group-item list-group-item-action">
+    {% for item in items %}
+        <a href="{{ path(route, {'id': item.id}) }}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">
-                    {% if app.user == conversation.sender %}
-                        {{ conversation.recipient.pseudo }}
+                    {% if app.user == item.sender %}
+                        {{ item.recipient.pseudo }}
                     {% else %}
-                        {{ conversation.sender.pseudo }}
+                        {{ item.sender.pseudo }}
                     {% endif %}
                 </h5>
                 <div>
-                    {% if conversation.lastMessage %}
-                        {% if app.user == conversation.lastMessage.sender %}
+                    {% if item.lastMessage %}
+                        {% if app.user == item.lastMessage.sender %}
                             <p>You said:</p>
                         {% else %}
-                            <p>{{ conversation.lastMessage.sender.pseudo }} said:</p>
+                            <p>{{ item.lastMessage.sender.pseudo }} said:</p>
                         {% endif %}
-                        <p>{{ conversation.lastMessage.content }}</p>
-                        <small>{{ conversation.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
+                        <p>{{ item.lastMessage.content }}</p>
+                        <small>{{ item.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
                     {% else %}
                         <p>Say hi</p>
                     {% endif %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Message;
 use App\Form\MessageType;
 use App\Entity\Conversation;
@@ -20,12 +21,21 @@ class ConversationController extends AbstractController
     public function index(ConversationRepository $convRepo): Response
     {
         $user = $this->getUser();
-        
-        // Récupérer les conversations où l'utilisateur est impliqué
         $conversations = $convRepo->findByUser($user);
 
         return $this->render('profile/conversations/index.html.twig', [
             'conversations' => $conversations,
+        ]);
+    }
+
+    #[Route('/profile/conversations/requests', name: 'conversation_requests')]
+    public function requests(ConversationRepository $convRepo): Response
+    {
+        $user = $this->getUser();
+        $pendingRequests = $convRepo->findPendingRequests($user);
+
+        return $this->render('profile/conversations/requests.html.twig', [
+            'pendingRequests' => $pendingRequests,
         ]);
     }
 
@@ -73,39 +83,94 @@ class ConversationController extends AbstractController
         ]);
     }
 
-    #[Route('/conversations/create/{userPseudo}', name: 'conversation_new')]
-    public function create(string $userPseudo, EntityManagerInterface $entityManager, UserRepository $userRepo, ConversationRepository $convRepo): RedirectResponse
-    {
+    #[Route('/conversations/create/{slug}', name: 'conversation_new')]
+    public function create(
+        #[MapEntity(mapping: ['slug' => 'slug'])] User $otherUser, Request $request, EntityManagerInterface $entityManager,
+        UserRepository $userRepo,
+        ConversationRepository $convRepo
+    ): Response {
         $user = $this->getUser();
-
-        // find the other user
-        $otherUser = $userRepo->findOneBy(['pseudo' => $userPseudo]);
+        $conversations = $convRepo->findByUser($user);
 
         if (!$otherUser) {
             $this->addFlash('danger', "User not found.");
             return $this->redirectToRoute('conversations_index');
         }
-
+    
         $existingConversation = $convRepo->findOneBy([
             'sender' => $user,
             'recipient' => $otherUser,
         ]);
-
+    
         if ($existingConversation) {
             $this->addFlash('warning', 'You already have a conversation going on...');
             return $this->redirectToRoute('conversation_show', ['id' => $existingConversation->getId()]);
         }
-
-        // Créer une nouvelle conversation
+    
         $conversation = new Conversation();
         $conversation->setSender($user);
         $conversation->setRecipient($otherUser);
+        $conversation->setAccepted(false);
+    
+        //init first message
+        $initialMessage = new Message();
+        $form = $this->createForm(MessageType::class, $initialMessage);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $initialMessage->setSender($user);
+            $initialMessage->setConversation($conversation);
+    
+            $entityManager->persist($conversation);
+            $entityManager->persist($initialMessage);
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Awaiting response from ' . $otherUser->getPseudo() . '.');
+    
+            return $this->redirectToRoute('conversations_index');
+        }
+    
+        return $this->render('profile/conversations/create.html.twig', [
+            'form' => $form->createView(),
+            'otherUser'=> $otherUser,
+            'conversations'=> $conversations
+        ]);
+    }
+    
 
-        $entityManager->persist($conversation);
-        $entityManager->flush();
+    #[Route('/conversations/accept/{id}', name: 'conversation_accept')]
+    public function accept(Conversation $conversation, EntityManagerInterface $manager): RedirectResponse
+    {
+        if ($conversation->getRecipient() !== $this->getUser()) {
+            throw $this->createAccessDeniedException("You are not authorized to accept this request.");
+        }
 
-        $this->addFlash('success', 'New conversation created, say hi !.');
+        $conversation->setAccepted(true);
+        $manager->persist($conversation);
+        $manager->flush();
 
-        return $this->redirectToRoute('conversation_show', ['id' => $conversation->getId()]);
+        $this->addFlash('success', 'Conversation accepted.');
+        return $this->redirectToRoute('conversation_show', [
+            'id' => $conversation->getId()
+        ]);
+    }
+
+
+    #[Route('/conversations/reject/{id}', name: 'conversation_reject')]
+    public function reject(Conversation $conversation, EntityManagerInterface $manager): RedirectResponse
+    {
+        if ($conversation->getRecipient() !== $this->getUser()) {
+            throw $this->createAccessDeniedException("You are not authorized to reject this request.");
+        }
+
+        // Supprimer la conversation et les messages associés
+        foreach ($conversation->getMessages() as $message) {
+            $manager->remove($message);
+        }
+        $manager->remove($conversation);
+        $manager->flush();
+
+        $this->addFlash('success', 'Conversation rejected and deleted.');
+        return $this->redirectToRoute('conversation_requests');
     }
 }

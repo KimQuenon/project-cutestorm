@@ -35,10 +35,20 @@ class ConversationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->leftJoin('c.messages', 'm')
             ->addSelect('MAX(m.timestamp) AS HIDDEN lastMessageTimestamp')
-            ->where('c.sender = :user OR c.recipient = :user')
+            ->andWhere('c.sender = :user OR c.recipient = :user')
             ->setParameter('user', $user)
             ->groupBy('c.id')
             ->orderBy('lastMessageTimestamp', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPendingRequests(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.isAccepted = false')
+            ->andWhere('c.recipient = :user')
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }

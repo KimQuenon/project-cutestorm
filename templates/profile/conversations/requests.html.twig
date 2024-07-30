@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes de Conversation{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">Demandes de Conversation</h1>
+        {% if pendingRequests|length > 0 %}
+            {% include 'partials/_conversation.html.twig' with {
+                items: pendingRequests,
+                route: 'conversation_show'
+            } %}
+        {% else %}
+            <p>Aucune demande en attente.</p>
+        {% endif %}
+    </div>
+{% endblock %}
