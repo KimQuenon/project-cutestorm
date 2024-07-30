@@ -24,11 +24,14 @@ class ConversationController extends AbstractController
     #[Route('/profile/conversations/{id}', name: 'conversation_show')]
     public function show(#[MapEntity(mapping: ['id' => 'id'])] Conversation $conversation, ConversationRepository $convRepo): Response
     {
+        $user = $this->getUser();
+        $conversations = $convRepo->sortConvByRecentMsg($user);
         $conversation = $convRepo->findOneById($conversation);
         $messages = $conversation->getMessagesSorted();
 
 
         return $this->render('profile/conversations/show.html.twig', [
+            'conversations' => $conversations,
             'conversation' => $conversation,
             'messages' => $messages
         ]);
