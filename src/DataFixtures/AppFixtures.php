@@ -48,6 +48,32 @@ class AppFixtures extends Fixture
             ->setPrivate(true);
     
         $manager->persist($anon);
+
+        $moderators = [];
+        for ($m = 1; $m <= 4; $m++) {
+            $moderator = new User();
+            $hash = $this->passwordHasher->hashPassword($moderator, 'password');
+
+            $moderator->setPseudo($faker->name())
+                    ->setRoles(['ROLE_MODERATOR'])
+                    ->setFirstname($faker->firstName())
+                    ->setLastname($faker->lastName())
+                    ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+                    ->setAddress($faker->streetAddress())
+                    ->setPostalcode(intval($faker->postcode()))
+                    ->setCity($faker->city())
+                    ->setCountry($faker->country())
+                    ->setEmail($faker->email())
+                    ->setPassword($hash)
+                    ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
+                    ->setAvatar('https://picsum.photos/seed/picsum/500/500')
+                    ->setBanner('https://picsum.photos/seed/picsum/500/500')
+                    ->setPrivate(true);
+
+            $manager->persist($moderator);
+
+            $moderators[] = $moderator;
+        }
     
         $users = []; // Array to store users
         $userCount = 10; // Number of users to create

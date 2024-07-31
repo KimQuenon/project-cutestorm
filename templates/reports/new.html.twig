@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Report Issue</h1>
+
+            {% if app.request.attributes.get('type') == 'user' %}
+            <p>User: {{ reportedEntity.pseudo }}</p>
+            <p>Email: {{ reportedEntity.email }}</p>
+        {% elseif app.request.attributes.get('type') == 'post' %}
+            <p>Post Title: {{ reportedEntity.title }}</p>
+            <p>Content: {{ reportedEntity.description }}</p>
+        {% elseif app.request.attributes.get('type') == 'comment' %}
+            <p>Comment: {{ reportedEntity.content }}</p>
+        {% endif %}
+
+    {{ form_start(myForm) }}
+        {{ form_widget(myForm) }}
+        <button type="submit" class="btn btn-primary">Submit Report</button>
+    {{ form_end(myForm) }}
+
+    <a href="{{ path('posts_index') }}" class="btn btn-secondary">Cancel</a>
+{% endblock %}
