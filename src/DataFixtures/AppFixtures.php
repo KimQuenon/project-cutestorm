@@ -207,6 +207,7 @@ class AppFixtures extends Fixture
                             $message->setSender($faker->boolean ? $user : $recipient); // Randomly set sender
                             $message->setContent($faker->sentence());
                             $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
+                            $message->setRead($faker->boolean(70));
                             $manager->persist($message);
                         }
                     } else {
@@ -217,6 +218,7 @@ class AppFixtures extends Fixture
                         $message->setSender($user); // User who initiated the request
                         $message->setContent($faker->sentence());
                         $message->setTimestamp($faker->dateTimeBetween('-1 year', 'now'));
+                        $message->setRead(false);
                         $manager->persist($message);
                     }
 

@@ -7,6 +7,7 @@ use App\Entity\Message;
 use App\Form\MessageType;
 use App\Entity\Conversation;
 use App\Repository\UserRepository;
+use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,15 +19,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ConversationController extends AbstractController
 {
     #[Route('/profile/conversations', name: 'conversations_index')]
-    public function index(ConversationRepository $convRepo): Response
+    public function index(ConversationRepository $convRepo, MessageRepository $messageRepo): Response
     {
         $user = $this->getUser();
         $conversations = $convRepo->findByUser($user);
-
+    
+        $unreadCounts = [];
+        foreach ($conversations as $conversation) {
+            $unreadCounts[$conversation->getId()] = $messageRepo->countUnreadMessages($conversation, $user);
+        }
+    
         return $this->render('profile/conversations/index.html.twig', [
             'conversations' => $conversations,
+            'unreadCounts' => $unreadCounts
         ]);
     }
+    
 
     #[Route('/profile/conversations/requests', name: 'conversation_requests')]
     public function requests(ConversationRepository $convRepo): Response
@@ -44,13 +52,12 @@ class ConversationController extends AbstractController
         #[MapEntity(mapping: ['slug' => 'slug'])] User $otherUser,
         Request $request,
         EntityManagerInterface $manager,
-        ConversationRepository $convRepo
+        ConversationRepository $convRepo,
+        MessageRepository $messageRepo,
     ): Response {
         $user = $this->getUser();
         $conversations = $convRepo->findByUser($user);
         $pendingRequests = $convRepo->findPendingRequests($user);
-        
-        // Rechercher la conversation en utilisant l'utilisateur et le slug
         $conversation = $convRepo->findConversationByUsers($user, $otherUser);
     
         if (!$conversation) {
@@ -58,6 +65,19 @@ class ConversationController extends AbstractController
         }
     
         $messages = $conversation->getMessagesSorted();
+
+        foreach ($messages as $message) {
+            if ($message->getSender() !== $user && !$message->isRead()) {
+                $message->setRead(true);
+                $manager->persist($message);
+            }
+        }
+        $manager->flush(); 
+
+        $unreadCounts = [];
+        foreach ($conversations as $conversation) {
+            $unreadCounts[$conversation->getId()] = $messageRepo->countUnreadMessages($conversation, $user);
+        }
     
         $newMessage = new Message();
         $form = $this->createForm(MessageType::class, $newMessage);
@@ -66,8 +86,9 @@ class ConversationController extends AbstractController
     
         if($form->isSubmitted() && $form->isValid())
         {
-            $newMessage->setConversation($conversation);
-            $newMessage->setSender($user);
+            $newMessage->setConversation($conversation)
+                        ->setSender($user)
+                        ->setRead(false);
     
             $manager->persist($newMessage);    
             $manager->flush();
@@ -90,6 +111,7 @@ class ConversationController extends AbstractController
                 'conversations' => $conversations,
                 'messages' => $messages,
                 'otherUser' => $otherUser,
+                'unreadCounts' => $unreadCounts
             ]);
         } else {
             return $this->render('profile/conversations/show_request.html.twig', [
@@ -129,9 +151,10 @@ class ConversationController extends AbstractController
         }
     
         $conversation = new Conversation();
-        $conversation->setSender($user);
-        $conversation->setRecipient($otherUser);
-        $conversation->setAccepted(false);
+        $conversation->setSender($user)
+                    ->setRecipient($otherUser)
+                    ->setAccepted(false)
+                    ->setRead(false);
     
         //init first message
         $initialMessage = new Message();

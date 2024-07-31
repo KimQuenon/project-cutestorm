@@ -1,6 +1,7 @@
 <div class="list-group">
-    {% for item in items %}
-        <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action">            <div class="d-flex w-100 justify-content-between">
+    {% for item in conversations %}
+        <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">
                     {% if app.user == item.sender %}
                         {{ item.recipient.pseudo }}
@@ -17,6 +18,10 @@
                         {% endif %}
                         <p>{{ item.lastMessage.content }}</p>
                         <small>{{ item.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
+                        {% set unreadCount = unreadCounts[item.id] ?? 0 %}
+                        {% if unreadCount > 0 %}
+                            <span class="badge rounded-pill bg-danger">{{ unreadCount }}</span>
+                        {% endif %}
                     {% else %}
                         <p>Say hi</p>
                     {% endif %}
