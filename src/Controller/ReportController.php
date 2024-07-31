@@ -18,8 +18,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ReportController extends AbstractController
 {
     #[Route('/report/{type}/{id}', name: 'report_item')]
-    public function report(UserRepository $userRepo, PostRepository $postRepo, CommentRepository $commentRepo, Request $request, EntityManagerInterface $manager, string $type, int $id ): Response
-    {
+    public function report(
+        UserRepository $userRepo,
+        PostRepository $postRepo,
+        CommentRepository $commentRepo,
+        Request $request,
+        EntityManagerInterface $manager,
+        string $type,
+        int $id
+    ): Response {
         if (!in_array($type, ['user', 'post', 'comment'])) {
             throw $this->createNotFoundException('Invalid report type.');
         }
@@ -37,15 +44,27 @@ class ReportController extends AbstractController
                 break;
         }
 
+        if (!$reportedEntity) {
+            throw $this->createNotFoundException('The reported entity was not found.');
+        }
+
         $report = new Report();
         $form = $this->createForm(ReportType::class, $report);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $report->setType($type);
-            $report->setReportedId($id);
             $report->setReportedBy($this->getUser());
             $report->setReportedAt(new \DateTime());
+
+            // Set the appropriate reported entity
+            if ($type === 'post') {
+                $report->setReportedPost($reportedEntity);
+            } elseif ($type === 'comment') {
+                $report->setReportedComment($reportedEntity);
+            } elseif ($type === 'user') {
+                $report->setReportedUser($reportedEntity);
+            }
 
             $manager->persist($report);
             $manager->flush();

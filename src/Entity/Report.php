@@ -17,9 +17,6 @@ class Report
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
-    #[ORM\Column]
-    private ?int $reportedId = null;
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $reportedBy = null;
@@ -32,6 +29,15 @@ class Report
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $details = null;
+
+    #[ORM\ManyToOne]
+    private ?Post $reportedPost = null;
+
+    #[ORM\ManyToOne]
+    private ?User $reportedUser = null;
+
+    #[ORM\ManyToOne]
+    private ?Comment $reportedComment = null;
 
     /**
      * set datetime to current datetime
@@ -60,18 +66,6 @@ class Report
     public function setType(string $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getReportedId(): ?int
-    {
-        return $this->reportedId;
-    }
-
-    public function setReportedId(int $reportedId): static
-    {
-        $this->reportedId = $reportedId;
 
         return $this;
     }
@@ -120,6 +114,42 @@ class Report
     public function setDetails(?string $details): static
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    public function getReportedPost(): ?Post
+    {
+        return $this->reportedPost;
+    }
+
+    public function setReportedPost(?Post $reportedPost): static
+    {
+        $this->reportedPost = $reportedPost;
+
+        return $this;
+    }
+
+    public function getReportedUser(): ?User
+    {
+        return $this->reportedUser;
+    }
+
+    public function setReportedUser(?User $reportedUser): static
+    {
+        $this->reportedUser = $reportedUser;
+
+        return $this;
+    }
+
+    public function getReportedComment(): ?Comment
+    {
+        return $this->reportedComment;
+    }
+
+    public function setReportedComment(?Comment $reportedComment): static
+    {
+        $this->reportedComment = $reportedComment;
 
         return $this;
     }
