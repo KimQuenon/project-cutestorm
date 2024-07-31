@@ -23,15 +23,21 @@ class ConversationController extends AbstractController
     {
         $user = $this->getUser();
         $conversations = $convRepo->findByUser($user);
-    
+     
         $unreadCounts = [];
+        $totalUnread = 0;
+    
         foreach ($conversations as $conversation) {
-            $unreadCounts[$conversation->getId()] = $messageRepo->countUnreadMessages($conversation, $user);
+            $unreadCount = $messageRepo->countUnreadMessages($conversation, $user);
+            $unreadCounts[$conversation->getId()] = $unreadCount;
+            $totalUnread += $unreadCount;
         }
     
         return $this->render('profile/conversations/index.html.twig', [
             'conversations' => $conversations,
-            'unreadCounts' => $unreadCounts
+            'unreadCounts' => $unreadCounts,
+            'totalUnread' => $totalUnread,
+            'pendingRequests' => null,
         ]);
     }
     
@@ -44,6 +50,7 @@ class ConversationController extends AbstractController
 
         return $this->render('profile/conversations/requests.html.twig', [
             'pendingRequests' => $pendingRequests,
+            'totalUnread' => null
         ]);
     }
 
@@ -75,8 +82,12 @@ class ConversationController extends AbstractController
         $manager->flush(); 
 
         $unreadCounts = [];
+        $totalUnread = 0;
+    
         foreach ($conversations as $conversation) {
-            $unreadCounts[$conversation->getId()] = $messageRepo->countUnreadMessages($conversation, $user);
+            $unreadCount = $messageRepo->countUnreadMessages($conversation, $user);
+            $unreadCounts[$conversation->getId()] = $unreadCount;
+            $totalUnread += $unreadCount;
         }
     
         $newMessage = new Message();
@@ -103,7 +114,6 @@ class ConversationController extends AbstractController
             ]);
         }
     
-        // Rediriger vers le template approprié en fonction de l'acceptation de la conversation
         if ($conversation->isAccepted()) {
             return $this->render('profile/conversations/show.html.twig', [
                 'myForm' => $form->createView(),
@@ -111,7 +121,9 @@ class ConversationController extends AbstractController
                 'conversations' => $conversations,
                 'messages' => $messages,
                 'otherUser' => $otherUser,
-                'unreadCounts' => $unreadCounts
+                'unreadCounts' => $unreadCounts,
+                'totalUnread' => $totalUnread,
+                'pendingRequests' => null,
             ]);
         } else {
             return $this->render('profile/conversations/show_request.html.twig', [
@@ -119,7 +131,8 @@ class ConversationController extends AbstractController
                 'messages' => $messages,
                 'otherUser' => $otherUser,
                 'conversations' => $conversations,
-                'pendingRequests'=> $pendingRequests
+                'pendingRequests'=> $pendingRequests,
+                'totalUnread' => null
             ]);
         }
     }
