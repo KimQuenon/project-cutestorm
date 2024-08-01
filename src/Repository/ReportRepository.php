@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Post;
+use App\Entity\User;
 use App\Entity\Report;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Report>
@@ -14,6 +16,19 @@ class ReportRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Report::class);
+    }
+
+    public function hasUserReportedPost(User $user, Post $post): bool
+    {
+        $qb = $this->createQueryBuilder('r');
+        
+        $qb->select('count(r.id)')
+            ->where('r.reportedBy = :user')
+            ->andWhere('r.reportedPost = :post')
+            ->setParameter('user', $user)
+            ->setParameter('post', $post);
+
+        return $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
     //    /**

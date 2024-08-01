@@ -59,7 +59,6 @@ class AccountController extends AbstractController
 
             $user->setFirstname(ucwords($user->getFirstname()));
             $user->setLastname(ucwords($user->getLastname()));
-            $user->setPrivate(false);
 
             $manager->persist($user);
             $manager->flush();

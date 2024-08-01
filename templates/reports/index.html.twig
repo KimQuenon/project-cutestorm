@@ -10,7 +10,7 @@
                 <th>Reason</th>
                 <th>Reported By</th>
                 <th>Reported At</th>
-                {# <th>Actions</th> #}
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -22,7 +22,8 @@
                     <td>{{ report.reportedBy.pseudo }}</td>
                     <td>{{ report.reportedAt|date('Y-m-d H:i') }}</td>
                     <td>
-                        {# <a href="{{ path('report_review', { id: report.id }) }}" class="btn btn-info">Review</a> #}
+                        <a href="{{ path('report_show', { id: report.id }) }}" class="btn btn-info">Show</a>
+                        <a href="{{ path('report_validate', { id: report.id }) }}" class="btn btn-danger">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}

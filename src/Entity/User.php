@@ -106,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $followedByUsers;
 
     #[ORM\Column]
-    private ?bool $isPrivate = null;
+    private ?bool $isPrivate = false;
 
     /**
      * @var Collection<int, FollowRequest>
@@ -143,6 +143,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender', orphanRemoval: true)]
     private Collection $messages;
+
+    #[ORM\Column]
+    private ?int $reportCount = 0;
+
+    #[ORM\Column]
+    private ?bool $isBanned = false;
 
     public function __construct()
     {
@@ -724,6 +730,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $message->setSender(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getReportCount(): ?int
+    {
+        return $this->reportCount;
+    }
+
+    public function setReportCount(int $reportCount): static
+    {
+        $this->reportCount = $reportCount;
+
+        return $this;
+    }
+
+    public function incrementReportCount(): void
+    {
+        $this->signalementCount++;
+    }
+
+    public function isBanned(): ?bool
+    {
+        return $this->isBanned;
+    }
+
+    public function setBanned(bool $isBanned): static
+    {
+        $this->isBanned = $isBanned;
 
         return $this;
     }

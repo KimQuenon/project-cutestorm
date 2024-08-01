@@ -11,6 +11,7 @@ use App\Form\CommentType;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Repository\ReportRepository;
 use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +38,7 @@ class PostController extends AbstractController
      * @return Response
      */
     #[Route('/posts', name: 'posts_index')]
-    public function index(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
+    public function index(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
@@ -57,9 +58,19 @@ class PostController extends AbstractController
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
     
+        $reportedPostIds = [];
+        if ($user) {
+            foreach ($visiblePosts as $post) {
+                if ($reportRepo->hasUserReportedPost($user, $post)) {
+                    $reportedPostIds[] = $post->getId();
+                }
+            }
+        }
+
         return $this->render('posts/index.html.twig', [
             'posts' => $visiblePosts,
             'likedPostSlugs' => $likedPostSlugs,
+            'reportedPostIds' => $reportedPostIds,
         ]);
     }
     

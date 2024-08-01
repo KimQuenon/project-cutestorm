@@ -15,10 +15,14 @@
                 'likeCount': post.likes|length,
                 'likedIds': likedPostSlugs
             } %}
-            {% if app.user == post.author %}
-                <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
-            {% endif %}
+        {% if app.user == post.author %}
+            <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
+            <a href="{{ path('post_delete', {'slug': post.slug}) }}" class="btn btn-danger mt-2">Delete</a>
+        {% elseif post.id in reportedPostIds %}
+            <span class="text-muted">Vous avez déjà signalé ce post</span>
+        {% else %}
             <a href="{{ path('report_item', { type: 'post', id: post.id }) }}" class="btn btn-warning">Report</a>
+        {% endif %}
         </div>
     </div>
 

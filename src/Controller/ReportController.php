@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -73,7 +74,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/moderation/reports', name: 'report_index')]
+    #[Route('/moderation/reports', name: 'reports_index')]
     #[IsGranted('ROLE_MODERATOR')]
     public function index(ReportRepository $reportRepository): Response
     {
@@ -82,5 +83,63 @@ class ReportController extends AbstractController
         return $this->render('reports/index.html.twig', [
             'reports' => $reports,
         ]);
+    }
+
+    #[Route('/moderation/reports/{id}', name: 'report_show')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function show(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepository): Response
+    {
+
+        return $this->render('reports/show.html.twig', [
+            'report' => $report,
+        ]);
+    }
+
+
+    #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, EntityManagerInterface $manager): RedirectResponse
+    {
+        if ($report->getReportedPost()) {
+
+            foreach ($report->getReportedPost()->getPostImages() as $image) {
+                if (!empty($image->getFilename())) {
+                    $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+                $manager->remove($image);
+            }
+            $manager->remove($report->getReportedPost());
+
+        } elseif ($report->getReportedComment()) {
+            $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
+            $comment = $report->getReportedComment();
+    
+            $comment->setContent('This comment has been reported.')
+                    ->setAuthor($anon);
+    
+            $manager->persist($comment);
+            $manager->flush();
+
+        } elseif ($report->getReportedUser()) {
+
+            $user = $report->getReportedUser();
+            $user->incrementReportCount();
+            
+            if ($user->getSignalementCount() >= 3) {
+                $user->setBanned(true);
+                $this->addFlash('danger', 'L\'utilisateur a été banni après plusieurs signalements.');
+            }
+        }
+
+        // Marquer le signalement comme traité
+        $manager->remove($report);
+        $manager->flush();
+
+        $this->addFlash('success', 'Le signalement a été traité.');
+
+        return $this->redirectToRoute('reports_index');
     }
 }
