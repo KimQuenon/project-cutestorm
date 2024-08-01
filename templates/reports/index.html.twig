@@ -24,6 +24,7 @@
                     <td>
                         <a href="{{ path('report_show', { id: report.id }) }}" class="btn btn-info">Show</a>
                         <a href="{{ path('report_validate', { id: report.id }) }}" class="btn btn-danger">Supprimer</a>
+                        <a href="{{ path('report_reject', { id: report.id }) }}" class="btn btn-warning">Garder</a>
                     </td>
                 </tr>
             {% endfor %}

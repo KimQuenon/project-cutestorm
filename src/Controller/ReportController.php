@@ -119,7 +119,7 @@ class ReportController extends AbstractController
 
     #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
+    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, EntityManagerInterface $manager): RedirectResponse
     {
         if ($report->getReportedPost()) {
 
@@ -153,13 +153,7 @@ class ReportController extends AbstractController
                 $user = $report->getReportedUser();
                 $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
                 $convRepo->replaceUserInConversations($user, $anon);
-
-                foreach ($user->getComments() as $comment) {
-                    $comment->setAuthor($anon);
-
-                    $manager->persist($comment);
-                    $manager->flush();
-                }
+                $commentRepo->replaceAuthorInComments($user, $anon);
 
                 foreach ($user->getLikeComments() as $likeComment) {
                     $manager->remove($likeComment);
@@ -193,4 +187,40 @@ class ReportController extends AbstractController
 
         return $this->redirectToRoute('reports_index');
     }
+
+    #[Route('/moderation/reports/{id}/keep', name: 'report_reject')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function keep(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
+    {
+        // Déterminer l'objet signalé
+        $reportedPost = $report->getReportedPost();
+        $reportedComment = $report->getReportedComment();
+        $reportedUser = $report->getReportedUser();
+    
+        // Trouver tous les signalements associés à cet objet
+        if ($reportedPost) {
+            $relatedReports = $reportRepo->findBy(['reportedPost' => $reportedPost]);
+        } elseif ($reportedComment) {
+            $relatedReports = $reportRepo->findBy(['reportedComment' => $reportedComment]);
+        } elseif ($reportedUser) {
+            $relatedReports = $reportRepo->findBy(['reportedUser' => $reportedUser]);
+        } else {
+            $this->addFlash('error', 'Le signalement est invalide.');
+            return $this->redirectToRoute('reports_index');
+        }
+    
+        // Supprimer tous les signalements associés
+        foreach ($relatedReports as $relatedReport) {
+            $manager->remove($relatedReport);
+        }
+    
+        // Supprimer le signalement actuel
+        $manager->remove($report);
+        $manager->flush();
+    
+        $this->addFlash('success', 'Le signalement et tous les signalements associés ont été supprimés.');
+    
+        return $this->redirectToRoute('reports_index');
+    }
+    
 }

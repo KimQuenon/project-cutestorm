@@ -65,7 +65,6 @@ class CommentController extends AbstractController
         $this->addFlash('danger','Comment deleted.');
 
         $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
-        $post = $comment->getPost();
 
         $comment->setContent('This comment has been deleted.')
                 ->setAuthor($anon);

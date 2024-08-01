@@ -57,6 +57,8 @@ class ReportRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
+
+    
     //    /**
     //     * @return Report[] Returns an array of Report objects
     //     */
