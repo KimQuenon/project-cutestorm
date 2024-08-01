@@ -18,15 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ReportController extends AbstractController
 {
     #[Route('/report/{type}/{id}', name: 'report_item')]
-    public function report(
-        UserRepository $userRepo,
-        PostRepository $postRepo,
-        CommentRepository $commentRepo,
-        Request $request,
-        EntityManagerInterface $manager,
-        string $type,
-        int $id
-    ): Response {
+    public function report(UserRepository $userRepo, PostRepository $postRepo, CommentRepository $commentRepo, Request $request, EntityManagerInterface $manager, string $type, int $id): Response
+    {
         if (!in_array($type, ['user', 'post', 'comment'])) {
             throw $this->createNotFoundException('Invalid report type.');
         }

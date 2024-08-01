@@ -37,7 +37,7 @@ class Post
     /**
      * @var Collection<int, PostImage>
      */
-    #[ORM\OneToMany(targetEntity: PostImage::class, mappedBy: 'post', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PostImage::class, mappedBy: 'post', cascade: ['remove'], orphanRemoval: true)]
     private Collection $postImages;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
@@ -47,20 +47,26 @@ class Post
     /**
      * @var Collection<int, Like>
      */
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'post', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'post', cascade: ['remove'], orphanRemoval: true)]
     private Collection $likes;
 
     /**
      * @var Collection<int, Notification>
      */
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'post', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'post', cascade: ['remove'], orphanRemoval: true)]
     private Collection $notifications;
 
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', cascade: ['remove'], orphanRemoval: true)]
     private Collection $comments;
+
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'reportedPost', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $reports;
 
     #[ORM\Column]
     private ?bool $commentDisabled = false;
@@ -277,6 +283,36 @@ class Post
     public function setCommentDisabled(bool $commentDisabled): static
     {
         $this->commentDisabled = $commentDisabled;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportedPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportedPost() === $this) {
+                $report->setReportedPost(null);
+            }
+        }
 
         return $this;
     }
