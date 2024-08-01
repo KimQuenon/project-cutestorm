@@ -165,7 +165,6 @@ class ReportController extends AbstractController
                     $manager->remove($likeComment);
                 }
 
-                // Supprimer les rapports où l'utilisateur est le `reportedBy`
                 $reportsByUser = $reportRepo->findBy(['reportedBy' => $user]);
                 foreach ($reportsByUser as $userReport) {
                     $manager->remove($userReport);

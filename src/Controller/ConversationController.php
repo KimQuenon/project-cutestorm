@@ -84,9 +84,9 @@ class ConversationController extends AbstractController
         $unreadCounts = [];
         $totalUnread = 0;
     
-        foreach ($conversations as $conversation) {
-            $unreadCount = $messageRepo->countUnreadMessages($conversation, $user);
-            $unreadCounts[$conversation->getId()] = $unreadCount;
+        foreach ($conversations as $convo) {
+            $unreadCount = $messageRepo->countUnreadMessages($convo, $user);
+            $unreadCounts[$convo->getId()] = $unreadCount;
             $totalUnread += $unreadCount;
         }
     
