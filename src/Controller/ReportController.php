@@ -25,16 +25,32 @@ class ReportController extends AbstractController
             throw $this->createNotFoundException('Invalid report type.');
         }
 
-        $reportedEntity = null;
+        $user = $this->getUser();
+
         switch ($type) {
             case 'user':
                 $reportedEntity = $userRepo->find($id);
+                // Check if the reported user is the current user
+                if ($reportedEntity === $user) {
+                    $this->addFlash('danger', 'You cannot report yourself.');
+                    return $this->redirectToRoute('posts_index');
+                }
                 break;
             case 'post':
                 $reportedEntity = $postRepo->find($id);
+                // Check if the current user is the author of the post
+                if ($reportedEntity->getAuthor() === $user) {
+                    $this->addFlash('danger', 'You cannot report your own post.');
+                    return $this->redirectToRoute('posts_index');
+                }
                 break;
             case 'comment':
                 $reportedEntity = $commentRepo->find($id);
+                // Check if the current user is the author of the comment
+                if ($reportedEntity->getAuthor() === $user) {
+                    $this->addFlash('danger', 'You cannot report your own comment.');
+                    return $this->redirectToRoute('posts_index');
+                }
                 break;
         }
 
@@ -65,7 +81,11 @@ class ReportController extends AbstractController
 
             $this->addFlash('success', 'Your report has been submitted.');
 
-            return $this->redirectToRoute('posts_index');
+            if ($type === 'comment') {
+                return $this->redirectToRoute('post_show', ['slug' => $reportedEntity->getPost()->getSlug()]);
+            } elseif ($type === 'post' || $type=== 'user') {
+                return $this->redirectToRoute('posts_index');
+            }
         }
 
         return $this->render('reports/new.html.twig', [

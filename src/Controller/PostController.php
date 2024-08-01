@@ -141,7 +141,7 @@ class PostController extends AbstractController
     }
 
     #[Route("/posts/{slug}", name: "post_show")]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, Request $request, EntityManagerInterface $manager): Response {
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo, Request $request, EntityManagerInterface $manager): Response {
         $user = $this->getUser();
         $author = $post->getAuthor();
         $isPrivate = $author->isPrivate();
@@ -186,7 +186,8 @@ class PostController extends AbstractController
                 $this->addFlash('success', 'Comment posted');
             }
         }
-    
+
+        
         $replyForms = [];
         foreach ($comments as $comment) {
             if ($comment->getParent() === null) {
@@ -197,6 +198,13 @@ class PostController extends AbstractController
             }
         }
     
+        $reportedCommentIds = [];
+        foreach ($comments as $comment) {
+            if ($reportRepo->hasUserReportedComment($user, $comment)) {
+                $reportedCommentIds[] = $comment->getId();
+            }
+        }
+
         return $this->render("posts/show.html.twig", [
             'post' => $post,
             'likedPostSlugs' => $likedPostSlugs,
@@ -205,6 +213,7 @@ class PostController extends AbstractController
             'myForm' => $form ? $form->createView() : null,
             'replyForms' => $replyForms,
             'areCommentsDisabled' => $areCommentsDisabled,
+            'reportedCommentsIds' => $reportedCommentIds
         ]);
     }
     

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Report;
+use App\Entity\Comment;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -27,6 +28,19 @@ class ReportRepository extends ServiceEntityRepository
             ->andWhere('r.reportedPost = :post')
             ->setParameter('user', $user)
             ->setParameter('post', $post);
+
+        return $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    public function hasUserReportedComment(User $user, Comment $comment): bool
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb->select('count(r.id)')
+            ->where('r.reportedBy = :user')
+            ->andWhere('r.reportedComment = :comment')
+            ->setParameter('user', $user)
+            ->setParameter('comment', $comment);
 
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }

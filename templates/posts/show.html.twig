@@ -64,7 +64,11 @@
                                     </div>
                                     <small class="text-muted">{{ comment.timestamp|date('Y-m-d H:i') }}</small>
                                     {% if app.user == comment.author %}
-                                        <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger mt-2">Delete</a>
+                                    {% elseif comment.id in reportedCommentsIds %}
+                                        <span class="text-muted">Vous avez déjà signalé ce commentaire</span>
+                                    {% else %}
+                                        <a href="{{ path('report_item', { type: 'comment', id: comment.id }) }}" class="btn btn-warning">Report</a>
                                     {% endif %}
                                 </div>
 
@@ -111,7 +115,11 @@
                                                     'likedIds': likedCommentIds
                                                 } %}
                                                 {% if app.user == reply.author %}
-                                                    <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                                    <a href="{{ path('comment_delete', {'id': reply.id}) }}" class="btn btn-danger mt-2">Delete</a>
+                                                {% elseif reply.id in reportedCommentsIds %}
+                                                    <span class="text-muted">Vous avez déjà signalé ce commentaire</span>
+                                                {% else %}
+                                                    <a href="{{ path('report_item', { type: 'comment', id: reply.id }) }}" class="btn btn-warning">Report</a>
                                                 {% endif %}
                                             </li>
                                         {% endfor %}
