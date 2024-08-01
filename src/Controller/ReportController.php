@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Repository\ReportRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -118,7 +119,7 @@ class ReportController extends AbstractController
 
     #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, EntityManagerInterface $manager): RedirectResponse
+    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
     {
         if ($report->getReportedPost()) {
 
@@ -148,8 +149,39 @@ class ReportController extends AbstractController
             $user = $report->getReportedUser();
             $user->incrementReportCount();
             
-            if ($user->getSignalementCount() >= 3) {
-                $user->setBanned(true);
+            if ($user->getReportCount() >= 3) {
+                $user = $report->getReportedUser();
+                $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
+                $convRepo->replaceUserInConversations($user, $anon);
+
+                foreach ($user->getComments() as $comment) {
+                    $comment->setAuthor($anon);
+
+                    $manager->persist($comment);
+                    $manager->flush();
+                }
+
+                foreach ($user->getLikeComments() as $likeComment) {
+                    $manager->remove($likeComment);
+                }
+
+                // Supprimer les rapports où l'utilisateur est le `reportedBy`
+                $reportsByUser = $reportRepo->findBy(['reportedBy' => $user]);
+                foreach ($reportsByUser as $userReport) {
+                    $manager->remove($userReport);
+                }
+
+                // Notify user before deleting
+                // $email = (new Email())
+                //     ->from('no-reply@yourdomain.com')
+                //     ->to($user->getEmail())
+                //     ->subject('Account Banned')
+                //     ->text('Your account has been banned due to multiple reports and will be deleted shortly.');
+        
+                // $mailer->send($email);
+
+                $manager->remove($user);
+
                 $this->addFlash('danger', 'L\'utilisateur a été banni après plusieurs signalements.');
             }
         }

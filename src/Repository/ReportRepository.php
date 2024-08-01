@@ -45,6 +45,18 @@ class ReportRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
+    public function hasUserReportedUser(User $user, User $reportedUser): bool
+    {
+        $qb = $this->createQueryBuilder('r');
+        
+        $qb->select('count(r.id)')
+            ->where('r.reportedBy = :user')
+            ->andWhere('r.reportedUser = :reportedUser')
+            ->setParameter('user', $user)
+            ->setParameter('reportedUser', $reportedUser);
+
+        return $qb->getQuery()->getSingleScalarResult() > 0;
+    }
     //    /**
     //     * @return Report[] Returns an array of Report objects
     //     */

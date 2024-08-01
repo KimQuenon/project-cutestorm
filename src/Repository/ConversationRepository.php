@@ -66,6 +66,30 @@ class ConversationRepository extends ServiceEntityRepository
     }
 
 
+    public function replaceUserInConversations(User $user, User $anonymousUser): void
+    {
+        // Remplacer l'utilisateur en tant qu'expéditeur
+        $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.sender', ':anonymousUser')
+            ->where('c.sender = :user')
+            ->setParameter('anonymousUser', $anonymousUser)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+        
+        // Remplacer l'utilisateur en tant que destinataire
+        $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.recipient', ':anonymousUser')
+            ->where('c.recipient = :user')
+            ->setParameter('anonymousUser', $anonymousUser)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+    }
+
+
     //    /**
     //     * @return Conversation[] Returns an array of Conversation objects
     //     */

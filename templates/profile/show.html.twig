@@ -16,12 +16,19 @@
                     </div>
                     <div class="card-footer text-right">
                         {% include "partials/_follow.html.twig" with {'user': profileUser} %}
+                        {% if hasReportedProfile %}
+                            <div class="alert alert-info">
+                                Vous avez déjà signalé ce profil.
+                            </div>
+                        {% else %}
+                            <a href="{{ path('report_item', { type: 'user', id: profileUser.id }) }}" class="btn btn-warning">Signaler ce profil</a>
+                        {% endif %}
                     </div>
-                        <form action="{{ path('conversation_new', {'slug': profileUser.slug}) }}" method="post">
-                            <button type="submit" class="btn btn-primary rounded-pill">
-                                <i class="fa fa-envelope"></i> Envoyer un message
-                            </button>
-                        </form>                
+                    <form action="{{ path('conversation_new', {'slug': profileUser.slug}) }}" method="post">
+                        <button type="submit" class="btn btn-primary rounded-pill">
+                            <i class="fa fa-envelope"></i> Envoyer un message
+                        </button>
+                    </form>                
                    
 
                 {% if isPrivate %}

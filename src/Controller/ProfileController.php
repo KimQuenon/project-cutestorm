@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Repository\ReportRepository;
 use App\Repository\FollowingRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,7 +16,7 @@ class ProfileController extends AbstractController
 {
     #[Route('/feed', name: 'profile_feed')]
     #[IsGranted('ROLE_USER')]
-    public function feed(PostRepository $postRepo, LikeRepository $likeRepo): Response
+    public function feed(PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo): Response
     {
         $user = $this->getUser();
     
@@ -27,16 +28,26 @@ class ProfileController extends AbstractController
         $likedPostSlugs = array_map(function($like) {
             return $like->getPost()->getSlug();
         }, $likedPosts);
+
+        $reportedPostIds = [];
+        if ($user) {
+            foreach ($posts as $post) {
+                if ($reportRepo->hasUserReportedPost($user, $post)) {
+                    $reportedPostIds[] = $post->getId();
+                }
+            }
+        }
     
         return $this->render('profile/feed.html.twig', [
             'user' => $user,
             'posts' => $posts,
             'likedPostSlugs' => $likedPostSlugs,
+            'reportedPostIds' => $reportedPostIds,
         ]);
     }
 
     #[Route('/profile/{slug}', name: 'profile_show')]
-    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo): Response
+    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo): Response
     {
         $user = $this->getUser();
     
@@ -52,7 +63,18 @@ class ProfileController extends AbstractController
             $likedPosts = $likeRepo->findBy(['user' => $user]);
             $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
         }
+
+        $reportedPostIds = [];
+        if ($user) {
+            foreach ($profileUser->getPosts() as $post) {
+                if ($reportRepo->hasUserReportedPost($user, $post)) {
+                    $reportedPostIds[] = $post->getId();
+                }
+            }
+        }
     
+        $hasReportedProfile = $user ? $reportRepo->hasUserReportedUser($user, $profileUser) : false;
+
         return $this->render('profile/show.html.twig', [
             'profileUser' => $profileUser,
             'user' => $user,
@@ -60,6 +82,8 @@ class ProfileController extends AbstractController
             'likedPostSlugs' => $likedPostSlugs,
             'isPrivate' => $isPrivate,
             'isFollowing' => $isFollowing,
+            'reportedPostIds' => $reportedPostIds,
+            'hasReportedProfile' => $hasReportedProfile 
         ]);
     }
     

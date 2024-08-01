@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
+use App\Entity\Report;
 use Cocur\Slugify\Slugify;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -87,22 +88,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $banner = null;
 
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', cascade: ['remove'], orphanRemoval: true)]
     private Collection $posts;
 
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $likes;
 
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $notifications;
 
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'relatedUser', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'relatedUser', cascade: ['remove'], orphanRemoval: true)]
     private Collection $relatedNotifications;
 
-    #[ORM\OneToMany(mappedBy: 'followerUser', targetEntity: Following::class)]
+    #[ORM\OneToMany(mappedBy: 'followerUser', cascade: ['remove'], targetEntity: Following::class),]
     private Collection $followings;
 
-    #[ORM\OneToMany(mappedBy: 'followedUser', targetEntity: Following::class)]
+    #[ORM\OneToMany(mappedBy: 'followedUser', cascade: ['remove'], targetEntity: Following::class)]
     private Collection $followedByUsers;
 
     #[ORM\Column]
@@ -111,13 +112,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, FollowRequest>
      */
-    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentBy', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentBy', cascade: ['remove'], orphanRemoval: true)]
     private Collection $sentRequests;
 
     /**
      * @var Collection<int, FollowRequest>
      */
-    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentTo', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: FollowRequest::class, mappedBy: 'sentTo', cascade: ['remove'], orphanRemoval: true)]
     private Collection $receivedRequests;
 
     /**
@@ -129,13 +130,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, LikeComment>
      */
-    #[ORM\OneToMany(targetEntity: LikeComment::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LikeComment::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $likeComments;
 
     /**
      * @var Collection<int, Conversation>
      */
-    #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'sentBy', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'sender', orphanRemoval: true)]
     private Collection $conversations;
 
     /**
@@ -144,11 +145,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender', orphanRemoval: true)]
     private Collection $messages;
 
-    #[ORM\Column]
-    private ?int $reportCount = 0;
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'reportedUser', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $reports;
 
     #[ORM\Column]
-    private ?bool $isBanned = false;
+    private ?int $reportCount = 0;
 
     public function __construct()
     {
@@ -164,6 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->likeComments = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -748,18 +753,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function incrementReportCount(): void
     {
-        $this->signalementCount++;
+        $this->reportCount++;
     }
 
-    public function isBanned(): ?bool
+        /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
     {
-        return $this->isBanned;
+        return $this->reports;
     }
 
-    public function setBanned(bool $isBanned): static
-    {
-        $this->isBanned = $isBanned;
 
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportedUser($this);
+        }
+        return $this;
+
+    }
+
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            if ($report->getReportedUser() === $this) {
+                $report->setReportedUser(null);
+            }
+        }
         return $this;
     }
 }
