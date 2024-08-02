@@ -13,10 +13,11 @@
 			{% endfor %}
 		</div>
 		{% include "partials/_pagination.html.twig" with {
-                    'route': 'posts_index',
-                    'page': currentPage,
-                    'pages': totalPages
-                } %}
+            'route': 'posts_index',
+            'parameters': {},
+            'page': currentPage,
+            'pages': totalPages
+        } %}
 	</div>
 {% endblock %}
 

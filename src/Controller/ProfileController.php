@@ -57,8 +57,8 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/{slug}', name: 'profile_show')]
-    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo): Response
+    #[Route('/profile/{slug}/{page<\d+>?1}', name: 'profile_show')]
+    public function viewProfile(#[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser, int $page, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
     
@@ -69,6 +69,15 @@ class ProfileController extends AbstractController
         // Fetch posts and liked posts based on visibility conditions
         $posts = !$isPrivate || $isFollowing ? $postRepo->sortPostsByUser($profileUser) : [];
         
+        $currentPage = $page;
+        $itemsPerPage = 2;
+
+        // Use the pagination service to get paginated results
+        $pagination = $paginationService->paginate($posts, $currentPage, $itemsPerPage);
+        $paginatedPosts = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
+
         $likedPostSlugs = [];
         if (!$isPrivate || $isFollowing) {
             $likedPosts = $likeRepo->findBy(['user' => $user]);
@@ -89,12 +98,14 @@ class ProfileController extends AbstractController
         return $this->render('profile/show.html.twig', [
             'profileUser' => $profileUser,
             'user' => $user,
-            'posts' => $posts,
+            'posts' => $paginatedPosts,
             'likedPostSlugs' => $likedPostSlugs,
             'isPrivate' => $isPrivate,
             'isFollowing' => $isFollowing,
             'reportedPostIds' => $reportedPostIds,
-            'hasReportedProfile' => $hasReportedProfile 
+            'hasReportedProfile' => $hasReportedProfile,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages, 
         ]);
     }
     

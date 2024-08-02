@@ -1,15 +1,15 @@
 <div class="d-flex justify-content-center">
     <ul class="pagination pagination-sm">
-        <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
-            <a href="{{ path(route, { 'page': currentPage - 1 }) }}" class="page-link">&laquo;</a>
+        <li class="page-item {% if page == 1 %}disabled{% endif %}">
+            <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">&laquo;</a>
         </li>
-        {% for i in 1..totalPages %}
-            <li class="page-item {% if currentPage == i %}active{% endif %}">
-                <a href="{{ path(route, i == 1 ? {} : { 'page': i }) }}" class="page-link">{{ i }}</a>
+        {% for i in 1..pages %}
+            <li class="page-item {% if page == i %}active{% endif %}">
+                <a href="{{ path(route, parameters | merge({ 'page': i })) }}" class="page-link">{{ i }}</a>
             </li>
         {% endfor %}
-        <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
-            <a href="{{ path(route, { 'page': currentPage + 1 }) }}" class="page-link">&raquo;</a>
+        <li class="page-item {% if page == pages %}disabled{% endif %}">
+            <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link">&raquo;</a>
         </li>
     </ul>
 </div>

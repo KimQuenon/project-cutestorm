@@ -64,6 +64,12 @@
                             </div>
                         </div>
                     {% endfor %}
+                    {% include "partials/_pagination.html.twig" with {
+                                'route': 'profile_show',
+                                'parameters': {'slug': profileUser.slug},
+                                'page': currentPage,
+                                'pages': totalPages
+                    } %}
                 {% endif %}
             </div>
         </div>
