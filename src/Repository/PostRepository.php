@@ -41,11 +41,12 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('followedUsers', $followedUsers)
             ->andWhere('p.id NOT IN (:likedPosts)')
             ->setParameter('likedPosts', $this->getLikedPostIds($user))
-            ->orderBy('p.timestamp', 'DESC')
+            ->orderBy('p.id', 'DESC')
             ->getQuery();
     
         return $queryBuilder->getResult();
     }
+    
     
     private function getLikedPostIds(User $user): array
     {

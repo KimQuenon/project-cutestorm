@@ -11,6 +11,7 @@ use App\Form\CommentType;
 use App\Form\PostImageType;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Service\PaginationService;
 use App\Repository\ReportRepository;
 use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
@@ -37,8 +38,8 @@ class PostController extends AbstractController
      * @param PostRepository $postRepo
      * @return Response
      */
-    #[Route('/posts', name: 'posts_index')]
-    public function index(PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo): Response
+    #[Route('/posts/{page<\d+>?1}', name: 'posts_index')]
+    public function index(int $page, PostRepository $postRepo, LikeRepository $likeRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy([], ['timestamp' => 'DESC']);
@@ -53,6 +54,14 @@ class PostController extends AbstractController
             
             return $isFollowing;
         });
+
+        $currentPage = $page;
+        $itemsPerPage = 3;
+
+        // Use the pagination service to get paginated results
+        $pagination = $paginationService->paginate($visiblePosts, $currentPage, $itemsPerPage);
+        $paginatedPosts = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
     
         // Get the posts liked by the current user
         $likedPosts = $likeRepo->findBy(['user' => $user]);
@@ -68,9 +77,11 @@ class PostController extends AbstractController
         }
 
         return $this->render('posts/index.html.twig', [
-            'posts' => $visiblePosts,
+            'posts' => $paginatedPosts,
             'likedPostSlugs' => $likedPostSlugs,
             'reportedPostIds' => $reportedPostIds,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
     

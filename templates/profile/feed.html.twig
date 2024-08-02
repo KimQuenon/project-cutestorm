@@ -27,6 +27,11 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% include "partials/_pagination.html.twig" with {
+                    'route': 'profile_feed',
+                    'page': currentPage,
+                    'pages': totalPages
+                } %}
             </div>
         </div>
     </div>

@@ -23,4 +23,5 @@ services:
 
     # add more service definitions when explicit configuration is needed
     App\Service\NotificationService:
+    App\Service\PaginationService:
     # please note that last definitions always *replace* previous ones

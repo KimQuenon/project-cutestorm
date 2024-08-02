@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Service\PaginationService;
 use App\Repository\ReportRepository;
 use App\Repository\FollowingRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -14,15 +16,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/feed', name: 'profile_feed')]
+    #[Route('/feed/{page<\d+>?1}', name: 'profile_feed')]
     #[IsGranted('ROLE_USER')]
-    public function feed(PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo): Response
+    public function feed(int $page, Request $request, PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
-    
+        $currentPage = $page;
+        $itemsPerPage = 2;
+
         // Obtenir les posts des utilisateurs suivis
         $posts = $postRepo->findPostsByFollowedUsers($user);
-    
+
+        // Pagination des posts
+        $pagination = $paginationService->paginate($posts, $currentPage, $itemsPerPage);
+        $postsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         // Obtenir les slugs des posts que l'utilisateur a aimés
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(function($like) {
@@ -31,18 +40,20 @@ class ProfileController extends AbstractController
 
         $reportedPostIds = [];
         if ($user) {
-            foreach ($posts as $post) {
+            foreach ($postsPaginated as $post) {
                 if ($reportRepo->hasUserReportedPost($user, $post)) {
                     $reportedPostIds[] = $post->getId();
                 }
             }
         }
-    
+
         return $this->render('profile/feed.html.twig', [
             'user' => $user,
-            'posts' => $posts,
+            'posts' => $postsPaginated,
             'likedPostSlugs' => $likedPostSlugs,
             'reportedPostIds' => $reportedPostIds,
+            'currentPage' => $currentPage, // Assurez-vous que c'est bien la variable que vous utilisez dans Twig
+            'totalPages' => $totalPages,   // Utilisez la même variable dans Twig
         ]);
     }
 

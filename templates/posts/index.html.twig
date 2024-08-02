@@ -1,19 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Publications{% endblock %}
+{% block title %}Publications
+{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row mt-4">
-            {% for post in posts %}
-            <div class="col-md-4">
-                {% include "partials/_cardPost.html.twig" with {'post': post} %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+	<div class="container">
+		<div class="row mt-4">
+			{% for post in posts %}
+				<div class="col-md-4">
+					{% include "partials/_cardPost.html.twig" with {'post': post} %}
+				</div>
+			{% endfor %}
+		</div>
+		{% include "partials/_pagination.html.twig" with {
+                    'route': 'posts_index',
+                    'page': currentPage,
+                    'pages': totalPages
+                } %}
+	</div>
 {% endblock %}
 
 {% block javascripts %}
-    {{encore_entry_script_tags('like')}}
+	{{encore_entry_script_tags('like')}}
 {% endblock %}
