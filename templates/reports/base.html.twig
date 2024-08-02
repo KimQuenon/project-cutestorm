@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>
+        {% block subtitle %}{% endblock %}
+    </h1>
+
+        <nav class="mb-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reports_index') }}">
+                    All Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reports_posts') }}">
+                    Post Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reports_comments') }}">
+                    Comment Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reports_users') }}">
+                    User Reports
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Reason</th>
+                <th>Reported By</th>
+                <th>Reported At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+                <tr>
+                    <td>{{ report.id }}</td>
+                    <td>{{ report.type }}</td>
+                    <td>{{ report.reason }}</td>
+                    <td>{{ report.reportedBy.pseudo }}</td>
+                    <td>{{ report.reportedAt|date('Y-m-d H:i') }}</td>
+                    <td>
+                        <a href="{{ path('report_show', { id: report.id }) }}" class="btn btn-info">Show</a>
+                        <a href="{{ path('report_validate', { id: report.id }) }}" class="btn btn-danger">Supprimer</a>
+                        <a href="{{ path('report_reject', { id: report.id }) }}" class="btn btn-warning">Garder</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

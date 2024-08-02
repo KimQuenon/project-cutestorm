@@ -106,6 +106,39 @@ class ReportController extends AbstractController
         ]);
     }
 
+    #[Route('/moderation/reports/posts', name: 'reports_posts')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function reportsPosts(ReportRepository $reportRepository): Response
+    {
+        $reports = $reportRepository->findBy(['type' => 'post']);
+
+        return $this->render('reports/posts.html.twig', [
+            'reports' => $reports,
+        ]);
+    }
+
+    #[Route('/moderation/reports/comments', name: 'reports_comments')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function reportsComments(ReportRepository $reportRepository): Response
+    {
+        $reports = $reportRepository->findBy(['type' => 'comment']);
+
+        return $this->render('reports/comments.html.twig', [
+            'reports' => $reports,
+        ]);
+    }
+
+    #[Route('/moderation/reports/users', name: 'reports_users')]
+    #[IsGranted('ROLE_MODERATOR')]
+    public function reportsUsers(ReportRepository $reportRepository): Response
+    {
+        $reports = $reportRepository->findBy(['type' => 'user']);
+
+        return $this->render('reports/users.html.twig', [
+            'reports' => $reports,
+        ]);
+    }
+    
     #[Route('/moderation/reports/{id}', name: 'report_show')]
     #[IsGranted('ROLE_MODERATOR')]
     public function show(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepository): Response
