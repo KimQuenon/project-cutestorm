@@ -1,15 +1,42 @@
 <div class="d-flex justify-content-center">
     <ul class="pagination pagination-sm">
+        <!-- Premier Bouton de Page -->
+        <li class="page-item {% if page == 1 %}disabled{% endif %}">
+            <a href="{{ path(route, parameters | merge({ 'page': 1 })) }}" class="page-link">First</a>
+        </li>
+
+        <!-- Bouton Page Précédente -->
         <li class="page-item {% if page == 1 %}disabled{% endif %}">
             <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">&laquo;</a>
         </li>
-        {% for i in 1..pages %}
-            <li class="page-item {% if page == i %}active{% endif %}">
-                <a href="{{ path(route, parameters | merge({ 'page': i })) }}" class="page-link">{{ i }}</a>
+
+        <!-- Page Précédente -->
+        {% if page > 1 %}
+            <li class="page-item">
+                <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">{{ page - 1 }}</a>
             </li>
-        {% endfor %}
+        {% endif %}
+
+        <!-- Page Actuelle -->
+        <li class="page-item active">
+            <span class="page-link">{{ page }}</span>
+        </li>
+
+        <!-- Page Suivante -->
+        {% if page < pages %}
+            <li class="page-item">
+                <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link">{{ page + 1 }}</a>
+            </li>
+        {% endif %}
+
+        <!-- Bouton Page Suivante -->
         <li class="page-item {% if page == pages %}disabled{% endif %}">
             <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link">&raquo;</a>
+        </li>
+
+        <!-- Dernier Bouton de Page -->
+        <li class="page-item {% if page == pages %}disabled{% endif %}">
+            <a href="{{ path(route, parameters | merge({ 'page': pages })) }}" class="page-link">Last</a>
         </li>
     </ul>
 </div>

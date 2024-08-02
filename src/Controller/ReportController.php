@@ -6,6 +6,7 @@ use App\Entity\Report;
 use App\Form\ReportType;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
+use App\Service\PaginationService;
 use App\Repository\ReportRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,47 +96,83 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/moderation/reports', name: 'reports_index')]
+    #[Route('/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function index(ReportRepository $reportRepository): Response
+    public function index(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findAll();
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($reports, $currentPage, $itemsPerPage);
+        $reportsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('reports/index.html.twig', [
-            'reports' => $reports,
+            'reports' => $reportsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('/moderation/reports/posts', name: 'reports_posts')]
+    #[Route('/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function reportsPosts(ReportRepository $reportRepository): Response
+    public function reportsPosts(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'post']);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($reports, $currentPage, $itemsPerPage);
+        $reportsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('reports/posts.html.twig', [
-            'reports' => $reports,
+            'reports' => $reportsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('/moderation/reports/comments', name: 'reports_comments')]
+    #[Route('/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function reportsComments(ReportRepository $reportRepository): Response
+    public function reportsComments(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'comment']);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($reports, $currentPage, $itemsPerPage);
+        $reportsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('reports/comments.html.twig', [
-            'reports' => $reports,
+            'reports' => $reportsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('/moderation/reports/users', name: 'reports_users')]
+    #[Route('/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function reportsUsers(ReportRepository $reportRepository): Response
+    public function reportsUsers(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'user']);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($reports, $currentPage, $itemsPerPage);
+        $reportsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('reports/users.html.twig', [
-            'reports' => $reports,
+            'reports' => $reportsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
     

@@ -1,8 +1,15 @@
 {% extends '/reports/base.html.twig' %}
 
-{% block body %}
-    {% block subtitle %}
-        All Reports
-    {% endblock %}
-    {{ parent() }}
+{% block subtitle %}
+    All Reports
 {% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'reports_index',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}
+

@@ -15,5 +15,11 @@
         {% else %}
             <li>No follow requests.</li>
         {% endfor %}
+        {% include "partials/_pagination.html.twig" with {
+            'route': 'requests_index',
+            'parameters': {},
+            'page': currentPage,
+            'pages': totalPages
+        } %}
     </ul>
 {% endblock %}

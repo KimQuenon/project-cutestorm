@@ -11,3 +11,12 @@
     {% endif %}
     <small>{{notification.comment.content}}</small>
 {% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'notifications_comments',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

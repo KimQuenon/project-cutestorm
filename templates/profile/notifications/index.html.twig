@@ -36,3 +36,12 @@
         <strong>{{ notification.user.pseudo }}</strong> vous suit
     {% endif %}
 {% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'notifications_index',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

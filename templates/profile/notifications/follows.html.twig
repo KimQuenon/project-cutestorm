@@ -10,3 +10,12 @@
         <strong>{{ notification.user.pseudo }}</strong> accepted your request.
     {% endif %}
 {% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'notifications_follows',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

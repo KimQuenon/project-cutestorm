@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
+use App\Service\PaginationService;
 use App\Repository\CommentRepository;
 use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,29 +13,38 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class NotificationController extends AbstractController
 {
-    #[Route('profile/notifications', name: 'notifications_index')]
+    #[Route('profile/notifications/{page<\d+>?1}', name: 'notifications_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    public function index(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo): Response
     {
         $user = $this->getUser();
-        
+
         // Récupérer tous les posts de l'utilisateur
         $posts = $postRepo->findBy(['author' => $user]);
         
         // Récupérer les notifications associées aux posts et celles où l'utilisateur est relatedUser
         $notifications = $notificationRepo->getAllNotifications($user);
-
+        
         $unreadCount = $notificationRepo->countUnreadNotifications($user);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($notifications, $currentPage, $itemsPerPage);
+        $notificationsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('profile/notifications/index.html.twig', [
-            'notifications' => $notifications,
-            'unreadCount' => $unreadCount
+            'notifications' => $notificationsPaginated,
+            'unreadCount' => $unreadCount,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('/profile/notifications/likes', name: 'notifications_likes')]
+    #[Route('/profile/notifications/likes/{page<\d+>?1}', name: 'notifications_likes')]
     #[IsGranted('ROLE_USER')]
-    public function likes(NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo): Response
+    public function likes(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findBy(['author' => $user]);
@@ -42,37 +52,64 @@ class NotificationController extends AbstractController
         $notifications = $notificationRepo->getLikesNotifications($posts, $comments);
         $unreadCount = $notificationRepo->countUnreadLikesNotifications($user, $posts, $comments);
         
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($notifications, $currentPage, $itemsPerPage);
+        $notificationsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('profile/notifications/likes.html.twig', [
-            'notifications' => $notifications,
+            'notifications' => $notificationsPaginated,
             'unreadCount' => $unreadCount,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('profile//notifications/follows', name: 'notifications_follows')]
+    #[Route('profile/notifications/follows/{page<\d+>?1}', name: 'notifications_follows')]
     #[IsGranted('ROLE_USER')]
-    public function follows(NotificationRepository $notificationRepo): Response
+    public function follows(int $page, NotificationRepository $notificationRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
         $notifications = $notificationRepo->getFollowsNotifications($user);
         $unreadCount = $notificationRepo->countUnreadFollowsNotifications($user);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($notifications, $currentPage, $itemsPerPage);
+        $notificationsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('profile/notifications/follows.html.twig', [
-            'notifications' => $notifications,
+            'notifications' => $notificationsPaginated,
             'unreadCount' => $unreadCount,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
-    #[Route('/profile/notifications/comments', name: 'notifications_comments')]
+    #[Route('/profile/notifications/comments/{page<\d+>?1}', name: 'notifications_comments')]
     #[IsGranted('ROLE_USER')]
-    public function comments(NotificationRepository $notificationRepo): Response
+    public function comments(int $page, NotificationRepository $notificationRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
         $notifications = $notificationRepo->getCommentsNotifications($user);
         $unreadCount = $notificationRepo->countUnreadCommentsNotifications($user);
 
+        $currentPage = $page;
+        $itemsPerPage = 20;
+
+        $pagination = $paginationService->paginate($notifications, $currentPage, $itemsPerPage);
+        $notificationsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('profile/notifications/comments.html.twig', [
-            'notifications' => $notifications,
+            'notifications' => $notificationsPaginated,
             'unreadCount' => $unreadCount,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 

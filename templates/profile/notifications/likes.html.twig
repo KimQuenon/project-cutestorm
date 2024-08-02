@@ -17,3 +17,12 @@
         </a>
         {% endif %}
 {% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'notifications_likes',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

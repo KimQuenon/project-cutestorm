@@ -1,8 +1,14 @@
 {% extends 'reports/base.html.twig' %}
 
-{% block body %}
-    {% block subtitle %}
-        Comments Reports
-    {% endblock %}
-    {{ parent() }}
+{% block subtitle %}
+    Comments Reports
+{% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'reports_comments',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
 {% endblock %}

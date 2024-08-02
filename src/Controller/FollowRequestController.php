@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Following;
 use App\Entity\FollowRequest;
+use App\Service\PaginationService;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FollowRequestRepository;
@@ -22,16 +23,25 @@ class FollowRequestController extends AbstractController
         $this->notificationService = $notificationService;
     }
     
-    #[Route('/profile/requests', name: 'requests_index')]
+    #[Route('/profile/requests/{page<\d+>?1}', name: 'requests_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(FollowRequestRepository $requestRepo): Response
+    public function index(int $page, FollowRequestRepository $requestRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
-
+        
         $requests = $requestRepo->findBy(['sentTo' => $user]);
 
+        $currentPage = $page;
+        $itemsPerPage = 2;
+
+        $pagination = $paginationService->paginate($requests, $currentPage, $itemsPerPage);
+        $requestsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('profile/follow_requests/index.html.twig', [
-            'requests' => $requests,
+            'requests' => $requestsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
