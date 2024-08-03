@@ -1,0 +1,8 @@
+<div class="card {{ podiumClass }} {{ height }} w-100">
+    <div class="card-body">
+        <h3 class="card-title">{{ rank }}. {{ item.title }}</h3>
+        by <a href="{{path('profile_show', {'slug': item.author.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.author.pseudo }}</a>
+        {% block subtitle %}{% endblock %}
+        {# <p class="card-text">{{ item.value }} {{ item.unit }}</p> #}
+    </div>
+</div>

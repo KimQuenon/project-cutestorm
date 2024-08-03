@@ -1,0 +1,28 @@
+<div class="podium-row row justify-content-center text-center">
+    {% for item in items %}
+        {% set rank = loop.index %}
+        {% set podiumClass = rank == 1 ? 'bg-gold' : (rank == 2 ? 'bg-silver' : 'bg-bronze') %}
+        {% set order = rank == 1 ? 'order-2' : (rank == 2 ? 'order-1' : 'order-3') %}
+        {% set height = rank == 1 ? 'h-100' : (rank == 2 ? 'h-75' : 'h-50') %}
+        
+        <div class="col-md-4 d-flex justify-content-between align-items-end {{ order }}">
+
+            {% if itemType == 'post' %}
+                <div class="card {{ podiumClass }} {{ height }} w-100">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ rank }}. {{ item.title }}</h3>
+                        by <a href="{{path('profile_show', {'slug': item.author.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.author.pseudo }}</a>
+                    </div>
+                </div>
+            {% elseif itemType == 'user' %}
+                <div class="card {{ podiumClass }} {{ height }} w-100">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ rank }}. {{ item.pseudo }}</h3>
+                        by <a href="{{path('profile_show', {'slug': item.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.pseudo }}</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+    {% endfor %}
+</div>
