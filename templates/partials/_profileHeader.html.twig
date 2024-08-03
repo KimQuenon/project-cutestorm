@@ -19,6 +19,10 @@
         position: mostActiveUser,
         iconClass: 'fas fa-edit'
     } only %}
+    {% include 'partials/_badge.html.twig' with {
+        position: mostFollowedUser,
+        iconClass: 'fas fa-sun'
+    } only %}
 </div>
 <div class="card-body">
     <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>

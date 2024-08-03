@@ -17,12 +17,14 @@ class AwardController extends AbstractController
         $topCommentedPosts = $postRepo->findTopCommentedPosts();
         $topLikedUsers = $userRepo->findTopLikedUsers();
         $topCreators = $userRepo->findTopCreators();
+        $topFollowedUsers = $userRepo->findTopFollowedUsers();
 
         return $this->render('awards/index.html.twig', [
             'topLikedPosts' => $topLikedPosts,
             'topCommentedPosts' => $topCommentedPosts,
             'topLikedUsers' => $topLikedUsers,
-            'topCreators' => $topCreators
+            'topCreators' => $topCreators,
+            'topFollowedUsers' => $topFollowedUsers
         ]);
     }
 }

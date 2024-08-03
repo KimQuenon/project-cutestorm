@@ -59,6 +59,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getArrayResult(); // Use getArrayResult to get scalar results
     }
+
+    public function findTopFollowedUsers(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.followedByUsers', 'f') // Joindre les suivis
+            ->select('u.id, u.pseudo, u.slug, COUNT(f.id) as follower_count') // Sélectionner les champs et compter les followers
+            ->where('u.isPrivate = false') // Filtrer les utilisateurs non privés
+            ->groupBy('u.id, u.pseudo, u.slug') // Grouper par les champs non agrégés
+            ->orderBy('follower_count', 'DESC') // Trier par le nombre de followers
+            ->setMaxResults($limit) // Limiter le nombre de résultats
+            ->getQuery()
+            ->getArrayResult(); // Retourner les résultats sous forme de tableau
+    }
     
 
     //    /**

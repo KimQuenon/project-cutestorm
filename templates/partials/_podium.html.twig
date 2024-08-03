@@ -12,6 +12,11 @@
                     <div class="card-body">
                         <h3 class="card-title">{{ rank }}. {{ item.title }}</h3>
                         by <a href="{{path('profile_show', {'slug': item.author.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.author.pseudo }}</a>
+                        {% if itemCategory == "likedPost" %}
+                            <p class="card-text">{{ item.likes|length }} Likes</p>
+                        {% elseif itemCategory == "commentedPost" %}
+                            <p class="card-text">{{ item.comments|length }} Comments</p>
+                        {% endif %}
                     </div>
                 </div>
             {% elseif itemType == 'user' %}
@@ -19,6 +24,13 @@
                     <div class="card-body">
                         <h3 class="card-title">{{ rank }}. {{ item.pseudo }}</h3>
                         by <a href="{{path('profile_show', {'slug': item.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.pseudo }}</a>
+                        {% if itemCategory == "likedUser" %}
+                            <p class="card-text">{{ item.total_likes }} Likes</p>
+                        {% elseif itemCategory == "activeUser" %}
+                            <p class="card-text">{{ item.post_count }} Posts</p>
+                        {% elseif itemCategory == "followedUser" %}
+                            <p class="card-text">{{ item.follower_count }} Followers</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}

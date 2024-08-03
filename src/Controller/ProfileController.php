@@ -117,15 +117,11 @@ class ProfileController extends AbstractController
         // Obtain reported post IDs
         $reportedPostIds = $user ? $this->getReportedPostIds($user, $paginatedPosts, $reportRepo) : [];
 
-        $topLikedPosts = $postRepo->findTopLikedPosts();
-        $topCommentedPosts = $postRepo->findTopCommentedPosts();
-        $topLikedUsers = $userRepo->findTopLikedUsers();
-        $topCreators = $userRepo->findTopCreators();
-
-        $mostLikedPost = $this->getPodiumPosition($profileUser ?? $user, $topLikedPosts, 'post');
-        $mostCommentedPost = $this->getPodiumPosition($profileUser ?? $user, $topCommentedPosts, 'comment');
-        $mostLikedUser = $this->getPodiumPosition($profileUser ?? $user, $topLikedUsers, 'user');
-        $mostActiveUser = $this->getPodiumPosition($profileUser ?? $user, $topCreators, 'creator');
+        $mostLikedPost = $this->getPodiumPosition($profileUser ?? $user, $postRepo->findTopLikedPosts(), 'post');
+        $mostCommentedPost = $this->getPodiumPosition($profileUser ?? $user, $postRepo->findTopCommentedPosts(), 'comment');
+        $mostLikedUser = $this->getPodiumPosition($profileUser ?? $user, $userRepo->findTopLikedUsers(), 'user');
+        $mostActiveUser = $this->getPodiumPosition($profileUser ?? $user, $userRepo->findTopCreators(), 'creator');
+        $mostFollowedUser = $this->getPodiumPosition($profileUser ?? $user, $userRepo->findTopFollowedUsers(), 'popular');
 
         // Render the template
         return $this->render($template, [
@@ -142,7 +138,8 @@ class ProfileController extends AbstractController
             'mostLikedPost' => $mostLikedPost,
             'mostCommentedPost' => $mostCommentedPost,
             'mostLikedUser' => $mostLikedUser,
-            'mostActiveUser' => $mostActiveUser
+            'mostActiveUser' => $mostActiveUser,
+            'mostFollowedUser'=> $mostFollowedUser,
         ]);
     }
 
@@ -177,6 +174,9 @@ class ProfileController extends AbstractController
                 return $this->getPodiumRank($index);
             }
             if ($type === 'creator' && $item['id'] === $user->getId()) {
+                return $this->getPodiumRank($index);
+            }
+            if ($type === 'popular' && $item['id'] === $user->getId()) {
                 return $this->getPodiumRank($index);
             }
         }

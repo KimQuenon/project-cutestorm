@@ -1,56 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Top Liked Posts{% endblock %}
+{% block title %}Awards{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="text-center my-5">
             <h1 class="display-4">Top 3 Most Liked Posts</h1>
         </div>
-        {% include 'partials/_podium.html.twig' with {'items': topLikedPosts, 'itemType': 'post'} %}
+        {% include 'partials/_podium.html.twig' with {'items': topLikedPosts, 'itemType': 'post', 'itemCategory': 'likedPost'} %}
     </div>
 
     <div class="container">
         <div class="text-center my-5">
             <h1 class="display-4">Top 3 Most Commented Posts</h1>
         </div>
-        {% include 'partials/_podium.html.twig' with {'items': topCommentedPosts, 'itemType': 'post'} %}
+        {% include 'partials/_podium.html.twig' with {'items': topCommentedPosts, 'itemType': 'post', 'itemCategory': 'commentedPost'} %}
     </div>
 
     <div class="container">
         <div class="text-center my-5">
             <h1 class="display-4">Top 3 Most Liked Users</h1>
         </div>
-        {% include 'partials/_podium.html.twig' with {'items': topLikedUsers, 'itemType': 'user'} %}
+        {% include 'partials/_podium.html.twig' with {'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
     </div>
 
     <div class="container">
         <div class="text-center my-5">
             <h1 class="display-4">Top 3 Most Active Users</h1>
         </div>
-        {% include 'partials/_podium.html.twig' with {'items': topCreators, 'itemType': 'user'} %}
+        {% include 'partials/_podium.html.twig' with {'items': topCreators, 'itemType': 'user', 'itemCategory': 'activeUser'} %}
     </div>
 
-
-{# most liked posts
-
-<p class="card-text">{{ post.likes|length }} Likes</p>
- #}
-
-{# most commented posts
-
-<p class="card-text">{{ post.comments|length }} Comments</p>
- #}
-
-
-{# most liked users
-
-<p class="card-text">{{ user.total_likes }} Likes</p>
- #}
-
-{# most prolific users
-
-<p class="card-text">{{ user.post_count }} Posts</p>
- #}
-
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="display-4">Top 3 Most Popular Users</h1>
+        </div>
+        {% include 'partials/_podium.html.twig' with {'items': topFollowedUsers, 'itemType': 'user', 'itemCategory': 'followedUser'} %}
+    </div>
 {% endblock %}
