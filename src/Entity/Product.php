@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product
 {
     #[ORM\Id]
@@ -26,13 +28,34 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    // Change from single color to multiple colors using JSON array
     #[ORM\Column(type: Types::JSON)]
     private array $colors = [];
 
-    // Change from single size to multiple sizes using JSON array
     #[ORM\Column(type: Types::JSON)]
     private array $sizes = [];
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+        /**
+     * init slug
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function initializeSlug(): void
+    {
+        if(empty($this->slug))
+        {
+            $slugify = new Slugify();
+
+            $productName = $slugify->slugify($this->name);
+            $productRef = $slugify->slugify($this->reference);
+
+            $this->slug = $productName . '-' . $productRef;
+        }
+    }
 
     public function getId(): ?int
     {
@@ -139,6 +162,18 @@ class Product
     public function removeSize(int $size): static
     {
         $this->sizes = array_diff($this->sizes, [$size]);
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }
