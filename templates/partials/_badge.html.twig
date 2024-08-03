@@ -1,0 +1,12 @@
+{% if position %}
+    <span class="podium-badge bg-{{ position }}">
+        <i class="{{ iconClass }}"></i> 
+        {% if position == 'gold' %}
+            1<sup>st</sup>
+        {% elseif position == 'silver' %}
+            2<sup>nd</sup>
+        {% elseif position == 'bronze' %}
+            3<sup>rd</sup>
+        {% endif %}
+    </span>
+{% endif %}

@@ -1,49 +1,24 @@
 <div class="card-header">
     <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
-    {% if podiumPosition %}
-        <span class="podium-badge bg-{{ podiumPosition }}">
-            {% if podiumPosition == 'gold' %}
-                <i class="fas fa-crown"></i> 1<sup>st</sup>
-            {% elseif podiumPosition == 'silver' %}
-                <i class="fas fa-crown"></i> 2<sup>nd</sup>
-            {% elseif podiumPosition == 'bronze' %}
-                <i class="fas fa-crown"></i> 3<sup>rd</sup>
-            {% endif %}
-        </span>
-    {% endif %}
-    {% if podiumCommentPosition %}
-        <span class="podium-badge bg-{{ podiumCommentPosition }}">
-            {% if podiumCommentPosition == 'gold' %}
-                <i class="fas fa-star"></i> 1<sup>st</sup>
-            {% elseif podiumCommentPosition == 'silver' %}
-                <i class="fas fa-star"></i> 2<sup>nd</sup>
-            {% elseif podiumCommentPosition == 'bronze' %}
-                <i class="fas fa-star"></i> 3<sup>rd</sup>
-            {% endif %}
-        </span>
-    {% endif %}
-    {% if podiumUserPosition %}
-        <span class="podium-badge bg-{{ podiumUserPosition }}">
-            {% if podiumUserPosition == 'gold' %}
-                <i class="fas fa-heart"></i> 1<sup>st</sup>
-            {% elseif podiumUserPosition == 'silver' %}
-                <i class="fas fa-heart"></i> 2<sup>nd</sup>
-            {% elseif podiumUserPosition == 'bronze' %}
-                <i class="fas fa-heart"></i> 3<sup>rd</sup>
-            {% endif %}
-        </span>
-    {% endif %}
-    {% if podiumCreatorPosition %}
-        <span class="podium-badge bg-{{ podiumCreatorPosition }}">
-            {% if podiumCreatorPosition == 'gold' %}
-                <i class="fas fa-edit"></i> 1<sup>st</sup>
-            {% elseif podiumCreatorPosition == 'silver' %}
-                <i class="fas fa-edit"></i> 2<sup>nd</sup>
-            {% elseif podiumCreatorPosition == 'bronze' %}
-                <i class="fas fa-edit"></i> 3<sup>rd</sup>
-            {% endif %}
-        </span>
-    {% endif %}
+    {% include 'partials/_badge.html.twig' with {
+        position: mostLikedPost,
+        iconClass: 'fas fa-crown'
+    } only %}
+
+    {% include 'partials/_badge.html.twig' with {
+        position: mostCommentedPost,
+        iconClass: 'fas fa-star'
+    } only %}
+
+    {% include 'partials/_badge.html.twig' with {
+        position: mostLikedUser,
+        iconClass: 'fas fa-heart'
+    } only %}
+
+    {% include 'partials/_badge.html.twig' with {
+        position: mostActiveUser,
+        iconClass: 'fas fa-edit'
+    } only %}
 </div>
 <div class="card-body">
     <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>

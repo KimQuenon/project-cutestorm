@@ -118,16 +118,14 @@ class ProfileController extends AbstractController
         $reportedPostIds = $user ? $this->getReportedPostIds($user, $paginatedPosts, $reportRepo) : [];
 
         $topLikedPosts = $postRepo->findTopLikedPosts();
-        $podiumPosition = $this->getPodiumPosition($profileUser ?? $user, $topLikedPosts);
-
         $topCommentedPosts = $postRepo->findTopCommentedPosts();
-        $podiumCommentPosition = $this->getPodiumCommentPosition($profileUser ?? $user, $topCommentedPosts);
-
         $topLikedUsers = $userRepo->findTopLikedUsers();
-        $podiumUserPosition = $this->getPodiumUserPosition($profileUser ?? $user, $topLikedUsers);
-
         $topCreators = $userRepo->findTopCreators();
-        $podiumCreatorPosition = $this->getPodiumCreatorPosition($profileUser ?? $user, $topCreators);
+
+        $mostLikedPost = $this->getPodiumPosition($profileUser ?? $user, $topLikedPosts, 'post');
+        $mostCommentedPost = $this->getPodiumPosition($profileUser ?? $user, $topCommentedPosts, 'comment');
+        $mostLikedUser = $this->getPodiumPosition($profileUser ?? $user, $topLikedUsers, 'user');
+        $mostActiveUser = $this->getPodiumPosition($profileUser ?? $user, $topCreators, 'creator');
 
         // Render the template
         return $this->render($template, [
@@ -141,10 +139,10 @@ class ProfileController extends AbstractController
             'isPrivate' => $isPrivate,
             'isFollowing' => $isFollowing,
             'hasReportedProfile' => $hasReportedProfile,
-            'podiumPosition' => $podiumPosition,
-            'podiumCommentPosition' => $podiumCommentPosition,
-            'podiumUserPosition' => $podiumUserPosition,
-            'podiumCreatorPosition' => $podiumCreatorPosition
+            'mostLikedPost' => $mostLikedPost,
+            'mostCommentedPost' => $mostCommentedPost,
+            'mostLikedUser' => $mostLikedUser,
+            'mostActiveUser' => $mostActiveUser
         ]);
     }
 
@@ -165,69 +163,34 @@ class ProfileController extends AbstractController
         return $reportedPostIds;
     }
 
-    private function getPodiumPosition(User $user, array $topLikedPosts): ?string
+
+    private function getPodiumPosition(User $user, array $items, string $type): ?string
     {
-        $postIds = array_map(fn($post) => $post->getId(), $topLikedPosts);
-        
-        foreach ($topLikedPosts as $index => $post) {
-            if ($post->getAuthor() === $user) {
-                return match ($index) {
-                    0 => 'gold',
-                    1 => 'silver',
-                    2 => 'bronze',
-                    default => null
-                };
+        foreach ($items as $index => $item) {
+            if ($type === 'post' && $item->getAuthor() === $user) {
+                return $this->getPodiumRank($index);
             }
-        }
-
-        return null;
-    }
-    private function getPodiumCommentPosition(User $user, array $topCommentedPosts): ?string
-    {
-        $postIds = array_map(fn($post) => $post->getId(), $topCommentedPosts);
-        
-        foreach ($topCommentedPosts as $index => $post) {
-            if ($post->getAuthor() === $user) {
-                return match ($index) {
-                    0 => 'gold',
-                    1 => 'silver',
-                    2 => 'bronze',
-                    default => null
-                };
+            if ($type === 'comment' && $item->getAuthor() === $user) {
+                return $this->getPodiumRank($index);
             }
-        }
-
-        return null;
-    }
-
-    private function getPodiumUserPosition(User $user, array $topLikedUsers): ?string
-    {
-        foreach ($topLikedUsers as $index => $topUser) {
-            if ($topUser['id'] === $user->getId()) {
-                return match ($index) {
-                    0 => 'gold',
-                    1 => 'silver',
-                    2 => 'bronze',
-                    default => null,
-                };
+            if ($type === 'user' && $item['id'] === $user->getId()) {
+                return $this->getPodiumRank($index);
+            }
+            if ($type === 'creator' && $item['id'] === $user->getId()) {
+                return $this->getPodiumRank($index);
             }
         }
         return null;
     }
 
-    private function getPodiumCreatorPosition(User $user, array $topCreators): ?string
+    private function getPodiumRank(int $index): ?string
     {
-        foreach ($topCreators as $index => $topCreator) {
-            if ($topCreator['id'] === $user->getId()) {
-                return match ($index) {
-                    0 => 'gold',
-                    1 => 'silver',
-                    2 => 'bronze',
-                    default => null,
-                };
-            }
-        }
-        return null;
+        return match ($index) {
+            0 => 'gold',
+            1 => 'silver',
+            2 => 'bronze',
+            default => null
+        };
     }
 
 }
