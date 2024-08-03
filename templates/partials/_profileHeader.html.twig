@@ -1,5 +1,16 @@
 <div class="card-header">
     <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
+    {% if podiumPosition %}
+        <span class="podium-badge bg-{{ podiumPosition }}">
+            {% if podiumPosition == 'gold' %}
+                <i class="fas fa-crown"></i> 1<sup>st</sup>
+            {% elseif podiumPosition == 'silver' %}
+                <i class="fas fa-crown"></i> 2<sup>nd</sup>
+            {% elseif podiumPosition == 'bronze' %}
+                <i class="fas fa-crown"></i> 3<sup>rd</sup>
+            {% endif %}
+        </span>
+    {% endif %}
 </div>
 <div class="card-body">
     <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>

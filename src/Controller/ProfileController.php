@@ -40,7 +40,8 @@ class ProfileController extends AbstractController
             $likeRepo,
             $reportRepo,
             $paginationService,
-            'profile/feed.html.twig'
+            $postRepo,
+            'profile/feed.html.twig',
         );
     }
 
@@ -74,11 +75,12 @@ class ProfileController extends AbstractController
             $likeRepo,
             $reportRepo,
             $paginationService,
+            $postRepo,
             'profile/show.html.twig',
             $profileUser,
             $isPrivate,
             $isFollowing,
-            $hasReportedProfile
+            $hasReportedProfile,
         );
     }
 
@@ -89,11 +91,13 @@ class ProfileController extends AbstractController
         LikeRepository $likeRepo,
         ReportRepository $reportRepo,
         PaginationService $paginationService,
+        PostRepository $postRepo,
         string $template,
         User $profileUser = null,
         bool $isPrivate = false,
         bool $isFollowing = true,
-        bool $hasReportedProfile = false
+        bool $hasReportedProfile = false,
+        ?string $podiumPosition = null
     ): Response {
         $itemsPerPage = 2;
 
@@ -108,6 +112,9 @@ class ProfileController extends AbstractController
         // Obtain reported post IDs
         $reportedPostIds = $user ? $this->getReportedPostIds($user, $paginatedPosts, $reportRepo) : [];
 
+        $topLikedPosts = $postRepo->findTopLikedPosts();
+        $podiumPosition = $this->getPodiumPosition($profileUser ?? $user, $topLikedPosts);
+
         // Render the template
         return $this->render($template, [
             'user' => $user,
@@ -120,6 +127,7 @@ class ProfileController extends AbstractController
             'isPrivate' => $isPrivate,
             'isFollowing' => $isFollowing,
             'hasReportedProfile' => $hasReportedProfile,
+            'podiumPosition' => $podiumPosition
         ]);
     }
 
@@ -138,5 +146,23 @@ class ProfileController extends AbstractController
             }
         }
         return $reportedPostIds;
+    }
+
+    private function getPodiumPosition(User $user, array $topLikedPosts): ?string
+    {
+        $postIds = array_map(fn($post) => $post->getId(), $topLikedPosts);
+        
+        foreach ($topLikedPosts as $index => $post) {
+            if ($post->getAuthor() === $user) {
+                return match ($index) {
+                    0 => 'gold',
+                    1 => 'silver',
+                    2 => 'bronze',
+                    default => null
+                };
+            }
+        }
+
+        return null;
     }
 }

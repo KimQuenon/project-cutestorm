@@ -73,27 +73,27 @@
     border-radius: 15px;
 }
 
+.podium-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
 .bg-gold {
-    background-color: #FFD700;
-    color: #fff;
+    background-color: #FFD700!important;
 }
+
 .bg-silver {
-    background-color: #C0C0C0;
-    color: #fff;
+    background-color: #C0C0C0!important;
 }
+
 .bg-bronze {
-    background-color: #CD7F32;
-    color: #fff;
+    background-color: #CD7F32!important;
 }
-.card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.h-100 {
-    height: 100px;
-}
-.h-75 {
-    height: 75px;
-}
-.h-50 {
-    height: 50px;
+
+.podium-row{
+    height:500px!important;
 }
