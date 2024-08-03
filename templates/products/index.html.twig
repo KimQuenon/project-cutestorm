@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product Store{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Our Products</h1>
+    <div class="row">
+        {% for product in products %}
+            {% include "partials/_cardProduct.html.twig" %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -7,10 +7,11 @@ use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Comment;
+use App\Entity\Message;
+use App\Entity\Product;
 use App\Entity\Following;
 use App\Entity\LikeComment;
 use App\Entity\Conversation;
-use App\Entity\Message;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -100,6 +101,26 @@ class AppFixtures extends Fixture
     
             $manager->persist($user);
             $users[] = $user; // Add user to the array
+        }
+
+        $productCount = 50;
+
+        for ($i = 0; $i < $productCount; $i++) {
+            $product = new Product();
+            $product->setReference($faker->unique()->ean13())
+                    ->setName($faker->words(3, true))
+                    ->setDescription($faker->paragraph())
+                    ->setPrice($faker->randomFloat(2, 5, 500))
+                    ->setColors($faker->randomElements(
+                        ['red', 'green', 'blue', 'yellow', 'black', 'white'], 
+                        rand(1, 6)
+                    ))
+                    ->setSizes($faker->randomElements(
+                        [36, 38, 40, 42, 44, 46, 48], 
+                        rand(1, 3)
+                    ));
+
+            $manager->persist($product);
         }
     
         // Create posts
