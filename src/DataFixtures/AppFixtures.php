@@ -115,10 +115,13 @@ class AppFixtures extends Fixture
                         ['red', 'green', 'blue', 'yellow', 'black', 'white'], 
                         rand(1, 6)
                     ))
-                    ->setSizes($faker->randomElements(
-                        [36, 38, 40, 42, 44, 46, 48], 
-                        rand(1, 3)
-                    ));
+                    ->setSizes(
+                        (function() use ($faker) {
+                            $sizes = $faker->randomElements([36, 38, 40, 42, 44, 46, 48], rand(1, 3));
+                            sort($sizes); // Sort the sizes in ascending order
+                            return $sizes;
+                        })()
+                    );                    
 
             $manager->persist($product);
         }
