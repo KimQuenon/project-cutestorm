@@ -1,81 +1,70 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/base.html.twig' %}
 
 {% block title %}Profile of {{ profileUser.pseudo }}{% endblock %}
 
-{% block body %}
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">{{ profileUser.pseudo }}</h2>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text"><strong>Email:</strong> {{ profileUser.email }}</p>
-                        <p class="card-text"><strong>Joined:</strong> {{ profileUser.timestamp|date('d M Y') }}</p>
-                    </div>
-                    <div class="card-footer text-right">
-                        {% include "partials/_follow.html.twig" with {'user': profileUser} %}
-                        {% if hasReportedProfile %}
-                            <div class="alert alert-info">
-                                Vous avez déjà signalé ce profil.
-                            </div>
-                        {% else %}
-                            <a href="{{ path('report_item', { type: 'user', id: profileUser.id }) }}" class="btn btn-warning">Signaler ce profil</a>
-                        {% endif %}
-                    </div>
-                    <form action="{{ path('conversation_new', {'slug': profileUser.slug}) }}" method="post">
-                        <button type="submit" class="btn btn-primary rounded-pill">
-                            <i class="fa fa-envelope"></i> Envoyer un message
-                        </button>
-                    </form>                
-                   
-
-                {% if isPrivate %}
-                    {% if isFollowing %}
-                        {% for post in posts %}
-                            <div class="container">
-                                {% include "partials/_cardPost.html.twig" with {'post': post} %}
-                            </div>
-                        {% else %}
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    No posts available.
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12">
-                            <div class="alert alert-warning">
-                                This account is private. Follow the user to view their posts.
-                                {% include "partials/_follow.html.twig" with {'user': profileUser} %}
-                            </div>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    {% for post in posts %}
-                        <div class="container">
-                            {% include "partials/_cardPost.html.twig" with {'post': post} %}
-                        </div>
-                    {% else %}
-                        <div class="col-12">
-                            <div class="alert alert-info">
-                                No posts available.
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% include "partials/_pagination.html.twig" with {
-                                'route': 'profile_show',
-                                'parameters': {'slug': profileUser.slug},
-                                'page': currentPage,
-                                'pages': totalPages
-                    } %}
-                {% endif %}
+{% block profileHeader %}
+    {% include 'partials/_profileHeader.html.twig' with { user: profileUser } %}
+    <div class="card-footer text-right">
+        {% include "partials/_follow.html.twig" with {'user': profileUser} %}
+        {% if hasReportedProfile %}
+            <div class="alert alert-info">
+                Vous avez déjà signalé ce profil.
             </div>
-        </div>
+        {% else %}
+            <a href="{{ path('report_item', { type: 'user', id: profileUser.id }) }}" class="btn btn-warning">Signaler ce profil</a>
+        {% endif %}
     </div>
+    <form action="{{ path('conversation_new', {'slug': profileUser.slug}) }}" method="post">
+        <button type="submit" class="btn btn-primary rounded-pill">
+            <i class="fa fa-envelope"></i> Envoyer un message
+        </button>
+    </form>
 {% endblock %}
 
-{% block javascripts %}
-    {{ encore_entry_script_tags('like') }}
+{% block postList %}
+    {% if isPrivate %}
+        {% if isFollowing %}
+            {% for post in posts %}
+                <div class="container">
+                    {% include "partials/_cardPost.html.twig" with {'post': post} %}
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No posts available.
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    This account is private. Follow the user to view their posts.
+                    {% include "partials/_follow.html.twig" with {'user': profileUser} %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        {% for post in posts %}
+            <div class="container">
+                {% include "partials/_cardPost.html.twig" with {'post': post} %}
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No posts available.
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block pagination %}
+    {% if not isPrivate or isFollowing %}
+        {% include "partials/_pagination.html.twig" with {
+            'route': 'profile_show',
+            'parameters': {'slug': profileUser.slug},
+            'page': currentPage,
+            'pages': totalPages
+        } %}
+    {% endif %}
 {% endblock %}

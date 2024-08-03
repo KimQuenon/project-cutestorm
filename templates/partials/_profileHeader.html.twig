@@ -1,0 +1,7 @@
+<div class="card-header">
+    <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
+</div>
+<div class="card-body">
+    <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+    <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
+</div>

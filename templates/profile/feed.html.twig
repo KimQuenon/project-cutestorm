@@ -1,43 +1,30 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/base.html.twig' %}
 
-{% block title %}Your Feed{{ user.pseudo }}{% endblock %}
+{% block title %}Your Feed - {{ user.pseudo }}{% endblock %}
 
-{% block body %}
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-                        <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
-                    </div>
-                </div>
-
-                {% for post in posts %}
-                <div class="container">
-                    {% include "partials/_cardPost.html.twig" with {'post': post} %}
-                </div>
-                {% else %}
-                    <div class="col-12">
-                        <div class="alert alert-info" role="alert">
-                            No posts available.
-                        </div>
-                    </div>
-                {% endfor %}
-                {% include "partials/_pagination.html.twig" with {
-                    'route': 'profile_feed',
-                    'parameters': {},
-                    'page': currentPage,
-                    'pages': totalPages
-                } %}
-            </div>
-        </div>
-    </div>
+{% block profileHeader %}
+    {% include 'partials/_profileHeader.html.twig' with { user: user } %}
 {% endblock %}
 
-{% block javascripts %}
-    {{encore_entry_script_tags('like')}}
+{% block postList %}
+    {% for post in posts %}
+        <div class="container">
+            {% include "partials/_cardPost.html.twig" with {'post': post} %}
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                No posts available.
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'profile_feed',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
 {% endblock %}

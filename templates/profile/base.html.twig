@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    {% block profileHeader %}
+                    {% endblock %}
+                </div>
+
+                {% block postList %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No posts available.
+                        </div>
+                    </div>
+                {% endblock %}
+
+                {% block pagination %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('like') }}
+{% endblock %}
