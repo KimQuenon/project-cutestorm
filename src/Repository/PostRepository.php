@@ -63,6 +63,19 @@ class PostRepository extends ServiceEntityRepository
     }
     
 
+    public function findTopLikedPosts(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.likes', 'l')
+            ->innerJoin('p.author', 'a')
+            ->where('a.isPrivate = false') // Vérifier que l'auteur n'est pas privé
+            ->groupBy('p.id')
+            ->orderBy('COUNT(l.id)', 'DESC') // Trier par nombre de likes décroissant
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Post[] Returns an array of Post objects
     //     */

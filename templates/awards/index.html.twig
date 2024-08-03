@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Top Liked Posts{% endblock %}
+
+{% block body %}
+<div class="text-center my-5">
+    <h1 class="display-4">Top 3 Most Liked Posts</h1>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center align-items-end text-center">
+        {% for post in topLikedPosts %}
+            {% set rank = loop.index %}
+            {% set podiumClass = rank == 1 ? 'bg-gold' : (rank == 2 ? 'bg-silver' : 'bg-bronze') %}
+            {% set order = rank == 1 ? 'order-2' : (rank == 2 ? 'order-1' : 'order-3') %}
+            {% set height = rank == 1 ? 'h-100' : (rank == 2 ? 'h-75' : 'h-50') %}
+            <div class="col-md-4 d-flex align-items-end {{ order }}">
+                <div class="card {{ podiumClass }} mb-3 {{ height }}">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ rank }}. {{ post.title }}</h2>
+                        by <a href="{{path('profile_show', {'slug': post.author.slug})}}" class="card-subtitle mb-2 text-muted">{{ post.author.pseudo }}</a>
+                        <p class="card-text">{{ post.likes|length }} Likes</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

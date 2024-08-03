@@ -52,8 +52,8 @@ class ProfileController extends AbstractController
             'posts' => $postsPaginated,
             'likedPostSlugs' => $likedPostSlugs,
             'reportedPostIds' => $reportedPostIds,
-            'currentPage' => $currentPage, // Assurez-vous que c'est bien la variable que vous utilisez dans Twig
-            'totalPages' => $totalPages,   // Utilisez la même variable dans Twig
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
