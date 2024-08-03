@@ -76,6 +76,19 @@ class PostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findTopCommentedPosts(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.comments', 'c') // Supposez que vous avez une relation 'comments' sur l'entité Post
+            ->innerJoin('p.author', 'a')
+            ->where('a.isPrivate = false') // Vérifier que l'auteur n'est pas privé
+            ->groupBy('p.id')
+            ->orderBy('COUNT(c.id)', 'DESC') // Trier par nombre de commentaires décroissant
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Post[] Returns an array of Post objects
     //     */

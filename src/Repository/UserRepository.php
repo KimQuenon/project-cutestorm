@@ -33,6 +33,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findTopLikedUsers(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.posts', 'p')
+            ->leftJoin('p.likes', 'l')
+            ->select('u.id, u.pseudo, u.slug, COUNT(l.id) as total_likes')
+            ->where('u.isPrivate = false')
+            ->groupBy('u.id, u.pseudo') // Vous devez grouper par tous les champs sélectionnés non agrégés
+            ->orderBy('total_likes', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult(); // Utilisez getArrayResult pour obtenir des résultats scalaires
+    }
+    
+    public function findTopCreators(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.posts', 'p')
+            ->select('u.id, u.pseudo, u.slug, COUNT(p.id) as post_count')
+            ->where('u.isPrivate = false') // Ensure users are not private
+            ->groupBy('u.id, u.pseudo, u.slug') // Group by all selected fields that are not aggregated
+            ->orderBy('post_count', 'DESC') // Order by the number of posts in descending order
+            ->setMaxResults($limit) // Limit the number of results
+            ->getQuery()
+            ->getArrayResult(); // Use getArrayResult to get scalar results
+    }
+    
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use App\Service\PaginationService;
 use App\Repository\ReportRepository;
 use App\Repository\FollowingRepository;
@@ -22,6 +23,7 @@ class ProfileController extends AbstractController
         int $page,
         Request $request,
         PostRepository $postRepo,
+        UserRepository $userRepo,
         LikeRepository $likeRepo,
         ReportRepository $reportRepo,
         PaginationService $paginationService
@@ -50,6 +52,7 @@ class ProfileController extends AbstractController
         #[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser,
         int $page,
         PostRepository $postRepo,
+        UserRepository $userRepo,
         LikeRepository $likeRepo,
         FollowingRepository $followingRepo,
         ReportRepository $reportRepo,
@@ -76,6 +79,7 @@ class ProfileController extends AbstractController
             $reportRepo,
             $paginationService,
             $postRepo,
+            $userRepo,
             'profile/show.html.twig',
             $profileUser,
             $isPrivate,
@@ -92,6 +96,7 @@ class ProfileController extends AbstractController
         ReportRepository $reportRepo,
         PaginationService $paginationService,
         PostRepository $postRepo,
+        UserRepository $userRepo,
         string $template,
         User $profileUser = null,
         bool $isPrivate = false,
@@ -115,6 +120,15 @@ class ProfileController extends AbstractController
         $topLikedPosts = $postRepo->findTopLikedPosts();
         $podiumPosition = $this->getPodiumPosition($profileUser ?? $user, $topLikedPosts);
 
+        $topCommentedPosts = $postRepo->findTopCommentedPosts();
+        $podiumCommentPosition = $this->getPodiumCommentPosition($profileUser ?? $user, $topCommentedPosts);
+
+        $topLikedUsers = $userRepo->findTopLikedUsers();
+        $podiumUserPosition = $this->getPodiumUserPosition($profileUser ?? $user, $topLikedUsers);
+
+        $topCreators = $userRepo->findTopCreators();
+        $podiumCreatorPosition = $this->getPodiumCreatorPosition($profileUser ?? $user, $topCreators);
+
         // Render the template
         return $this->render($template, [
             'user' => $user,
@@ -127,7 +141,10 @@ class ProfileController extends AbstractController
             'isPrivate' => $isPrivate,
             'isFollowing' => $isFollowing,
             'hasReportedProfile' => $hasReportedProfile,
-            'podiumPosition' => $podiumPosition
+            'podiumPosition' => $podiumPosition,
+            'podiumCommentPosition' => $podiumCommentPosition,
+            'podiumUserPosition' => $podiumUserPosition,
+            'podiumCreatorPosition' => $podiumCreatorPosition
         ]);
     }
 
@@ -165,4 +182,52 @@ class ProfileController extends AbstractController
 
         return null;
     }
+    private function getPodiumCommentPosition(User $user, array $topCommentedPosts): ?string
+    {
+        $postIds = array_map(fn($post) => $post->getId(), $topCommentedPosts);
+        
+        foreach ($topCommentedPosts as $index => $post) {
+            if ($post->getAuthor() === $user) {
+                return match ($index) {
+                    0 => 'gold',
+                    1 => 'silver',
+                    2 => 'bronze',
+                    default => null
+                };
+            }
+        }
+
+        return null;
+    }
+
+    private function getPodiumUserPosition(User $user, array $topLikedUsers): ?string
+    {
+        foreach ($topLikedUsers as $index => $topUser) {
+            if ($topUser['id'] === $user->getId()) {
+                return match ($index) {
+                    0 => 'gold',
+                    1 => 'silver',
+                    2 => 'bronze',
+                    default => null,
+                };
+            }
+        }
+        return null;
+    }
+
+    private function getPodiumCreatorPosition(User $user, array $topCreators): ?string
+    {
+        foreach ($topCreators as $index => $topCreator) {
+            if ($topCreator['id'] === $user->getId()) {
+                return match ($index) {
+                    0 => 'gold',
+                    1 => 'silver',
+                    2 => 'bronze',
+                    default => null,
+                };
+            }
+        }
+        return null;
+    }
+
 }

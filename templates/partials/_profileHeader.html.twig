@@ -11,6 +11,39 @@
             {% endif %}
         </span>
     {% endif %}
+    {% if podiumCommentPosition %}
+        <span class="podium-badge bg-{{ podiumCommentPosition }}">
+            {% if podiumCommentPosition == 'gold' %}
+                <i class="fas fa-star"></i> 1<sup>st</sup>
+            {% elseif podiumCommentPosition == 'silver' %}
+                <i class="fas fa-star"></i> 2<sup>nd</sup>
+            {% elseif podiumCommentPosition == 'bronze' %}
+                <i class="fas fa-star"></i> 3<sup>rd</sup>
+            {% endif %}
+        </span>
+    {% endif %}
+    {% if podiumUserPosition %}
+        <span class="podium-badge bg-{{ podiumUserPosition }}">
+            {% if podiumUserPosition == 'gold' %}
+                <i class="fas fa-heart"></i> 1<sup>st</sup>
+            {% elseif podiumUserPosition == 'silver' %}
+                <i class="fas fa-heart"></i> 2<sup>nd</sup>
+            {% elseif podiumUserPosition == 'bronze' %}
+                <i class="fas fa-heart"></i> 3<sup>rd</sup>
+            {% endif %}
+        </span>
+    {% endif %}
+    {% if podiumCreatorPosition %}
+        <span class="podium-badge bg-{{ podiumCreatorPosition }}">
+            {% if podiumCreatorPosition == 'gold' %}
+                <i class="fas fa-edit"></i> 1<sup>st</sup>
+            {% elseif podiumCreatorPosition == 'silver' %}
+                <i class="fas fa-edit"></i> 2<sup>nd</sup>
+            {% elseif podiumCreatorPosition == 'bronze' %}
+                <i class="fas fa-edit"></i> 3<sup>rd</sup>
+            {% endif %}
+        </span>
+    {% endif %}
 </div>
 <div class="card-body">
     <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>

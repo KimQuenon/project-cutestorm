@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
         }
     
         $users = []; // Array to store users
-        $userCount = 10; // Number of users to create
+        $userCount = 20; // Number of users to create
     
         // Create users
         for ($u = 1; $u <= $userCount; $u++) {
@@ -104,7 +104,7 @@ class AppFixtures extends Fixture
     
         // Create posts
         $posts = [];
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 40; $i++) {
             $post = new Post();
             $post->setTitle($faker->sentence())
                 ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
@@ -123,7 +123,7 @@ class AppFixtures extends Fixture
                 continue; // Skip comment creation for this post
             }
     
-            $commentCount = rand(2, 15); // Each post gets between 2 to 15 comments
+            $commentCount = rand(2, 30); // Each post gets between 2 to 15 comments
     
             for ($c = 0; $c < $commentCount; $c++) {
                 $comment = new Comment();
@@ -155,7 +155,7 @@ class AppFixtures extends Fixture
             $potentialLikers = array_filter($users, fn($user) => $user !== $postAuthor);
             $potentialLikers = array_values($potentialLikers);
     
-            for ($l = 0; $l < rand(1, 10); $l++) { // Each post gets between 1 to 10 likes
+            for ($l = 0; $l < rand(1, $userCount); $l++) { // Each post gets between 1 to 10 likes
                 $like = new Like();
                 $like->setUser($potentialLikers[array_rand($potentialLikers)])
                      ->setPost($post);
