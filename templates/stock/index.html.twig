@@ -1,0 +1,68 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Stock Management{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Stock Management</h1>
+
+        <form method="post">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Current Stock</th>
+                        <th>Change</th>
+                        <th>New Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for variant in variants %}
+                        <tr>
+                            <td>{{ variant.product.name }}</td>
+                            <td>{{ variant.size }}</td>
+                            <td>{{ variant.stock }}</td>
+                            <td>
+                                <button type="button" class="btn btn-secondary btn-sm change-quantity" data-id="{{ variant.id }}" data-change="-1">-</button>
+                                <input type="number" name="stocks[{{ variant.id }}]" value="0" min="0" class="form-control d-inline-block w-50 stock-input" data-initial="{{ variant.stock }}">
+                                <button type="button" class="btn btn-secondary btn-sm change-quantity" data-id="{{ variant.id }}" data-change="+1">+</button>
+                            </td>
+                            <td class="new-stock">{{ variant.stock }}</td>
+                            <td>
+                                <button type="submit" name="update[{{ variant.id }}]" class="btn btn-primary btn-sm">Confirm</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.change-quantity').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.closest('td').querySelector('.stock-input');
+                let currentValue = parseInt(input.value, 10);
+                const change = parseInt(button.dataset.change, 10);
+                const newValue = Math.max(currentValue + change, 0);
+                input.value = newValue;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
+
+        document.querySelectorAll('.stock-input').forEach(input => {
+            input.addEventListener('change', () => {
+                const initialStock = parseInt(input.dataset.initial, 10);
+                const changeValue = parseInt(input.value, 10);
+                const newStock = initialStock + changeValue;
+                input.closest('tr').querySelector('.new-stock').textContent = newStock;
+            });
+        });
+    });
+    </script>
+{% endblock %}
