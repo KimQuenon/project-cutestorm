@@ -13,6 +13,7 @@ use App\Entity\Following;
 use App\Entity\LikeComment;
 use App\Entity\Conversation;
 use App\Entity\ProductColor;
+use App\Entity\ProductVariant;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -126,6 +127,17 @@ class AppFixtures extends Fixture
                     ->setPrice($faker->randomFloat(2, 5, 500))
                     ->setColor($colors[array_rand($colors)]);               
             $manager->persist($product);
+
+            // Création des variantes pour chaque produit
+            $variantCount = rand(1, 5); // Nombre de variantes par produit
+            for ($v = 0; $v < $variantCount; $v++) {
+                $variant = new ProductVariant();
+                $variant->setSize($faker->numberBetween(36, 48))
+                        ->setStock($faker->numberBetween(0, 100))
+                        ->setProduct($product);
+                
+                $manager->persist($variant);
+            }
         }
     
         // Create posts

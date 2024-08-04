@@ -24,20 +24,22 @@
                 <p class="text-muted">No color available</p>
             {% endif %}
 
-            {# <p class="mt-4">Sizes Available:</p>
-            <div class="mb-4">
-                {% if product.sizes %}
-                    <ul class="list-inline">
-                        {% for size in product.sizes %}
-                            <li class="list-inline-item">
-                                <span class="badge bg-secondary">{{ size }}</span>
+            {% if product.productVariants|length > 0 %}
+                <div class="mt-4">
+                    <h5>Available Sizes:</h5>
+                    <ul class="list-unstyled">
+                        {% for variant in product.productVariants %}
+                            <li>
+                                <span class="badge bg-secondary">{{ variant.size }}</span> 
+                                ({{ variant.stock }} in stock)
                             </li>
                         {% endfor %}
                     </ul>
-                {% else %}
-                    <p class="text-muted">No sizes available</p>
-                {% endif %}
-            </div> #}
+                </div>
+            {% else %}
+                <p class="text-muted">No sizes available</p>
+            {% endif %}
+
             <div class="d-flex align-items-center">
                 <a href="#" class="btn btn-primary me-3">Add to Cart</a>
                 <a href="{{ path('products_index') }}" class="btn btn-outline-secondary">Back to Products</a>

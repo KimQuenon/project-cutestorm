@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
@@ -34,6 +36,17 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'product')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProductColor $color = null;
+
+    /**
+     * @var Collection<int, ProductVariant>
+     */
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', orphanRemoval: true)]
+    private Collection $productVariants;
+
+    public function __construct()
+    {
+        $this->productVariants = new ArrayCollection();
+    }
 
     /**
      * Initialize slug
@@ -128,6 +141,36 @@ class Product
     public function setColor(?ProductColor $color): static
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getProductVariants(): Collection
+    {
+        return $this->productVariants;
+    }
+
+    public function addProductVariant(ProductVariant $productVariant): static
+    {
+        if (!$this->productVariants->contains($productVariant)) {
+            $this->productVariants->add($productVariant);
+            $productVariant->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductVariant(ProductVariant $productVariant): static
+    {
+        if ($this->productVariants->removeElement($productVariant)) {
+            // set the owning side to null (unless already changed)
+            if ($productVariant->getProduct() === $this) {
+                $productVariant->setProduct(null);
+            }
+        }
 
         return $this;
     }
