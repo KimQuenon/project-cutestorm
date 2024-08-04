@@ -33,17 +33,13 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        //form complet et valid -> envoi bdd + message et redirection
         if($form->isSubmitted() && $form->IsValid())
         {
+            foreach ($product->getProductVariants() as $variant) {
+                $manager->persist($variant);
+            }
+
             $manager->persist($product);
-
-            // foreach ($artwork->getMovements() as $movement)
-            // {
-            //     $movement->addArtwork($artwork);
-            //     $manager->persist($artwork);
-            // }
-
 
             $manager->flush();
 
@@ -69,6 +65,36 @@ class ProductController extends AbstractController
 
         return $this->render('products/show.html.twig', [
             'product' => $product,
+        ]);
+    }
+
+    #[Route('/product/{slug}/edit', name: 'product_edit')]
+    public function edit(ProductRepository $productRepo, Request $request, EntityManagerInterface $manager, Product $product): Response
+    {
+        $form = $this->createForm(ProductType::class, $product);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($product->getProductVariants() as $variant) {
+                $manager->persist($variant);
+            }
+            
+            $manager->persist($product);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "La fiche de <strong>".$product->getName()."</strong> a été mise à jour."
+            );
+
+            return $this->redirectToRoute('product_show', [
+                'slug' => $product->getSlug()
+            ]);
+        }
+
+        return $this->render('products/edit.html.twig', [
+            'myForm' => $form->createView(),
         ]);
     }
 }

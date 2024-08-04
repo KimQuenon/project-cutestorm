@@ -1,12 +1,14 @@
+{# templates/products/edit.html.twig #}
+
 {% extends "base.html.twig" %}
 
-{% block title %}New Product{% endblock %}
+{% block title %}Edit Product{% endblock %}
 
 {% form_theme myForm _self %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>New Product</h1>
+        <h1>Edit Product</h1>
 
         {{ form_start(myForm) }}
             {{ form_row(myForm.reference) }}
@@ -23,9 +25,8 @@
                     </div>
                 {% endfor %}
             </div>
-
             <button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <button type="submit" class="btn btn-primary mt-3">Update</button>
         {{ form_end(myForm) }}
     </div>
 {% endblock %}

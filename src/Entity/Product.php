@@ -145,30 +145,28 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection<int, ProductVariant>
-     */
     public function getProductVariants(): Collection
     {
         return $this->productVariants;
     }
 
-    public function addProductVariant(ProductVariant $productVariant): static
+    public function addProductVariant(ProductVariant $variant): self
     {
-        if (!$this->productVariants->contains($productVariant)) {
-            $this->productVariants->add($productVariant);
-            $productVariant->setProduct($this);
+        if (!$this->productVariants->contains($variant)) {
+            $this->productVariants[] = $variant;
+            $variant->setProduct($this);
         }
 
         return $this;
     }
 
-    public function removeProductVariant(ProductVariant $productVariant): static
+    public function removeProductVariant(ProductVariant $variant): self
     {
-        if ($this->productVariants->removeElement($productVariant)) {
+        if ($this->productVariants->contains($variant)) {
+            $this->productVariants->removeElement($variant);
             // set the owning side to null (unless already changed)
-            if ($productVariant->getProduct() === $this) {
-                $productVariant->setProduct(null);
+            if ($variant->getProduct() === $this) {
+                $variant->setProduct(null);
             }
         }
 

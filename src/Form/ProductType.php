@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Product;
 use App\Entity\ProductColor;
 use App\Form\ApplicationType;
+use App\Form\ProductVariantType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,6 +28,13 @@ class ProductType extends ApplicationType
                 'class' => ProductColor::class,
                 'choice_label' => 'name', // Choix basé sur le nom de la couleur
                 'required' => true, // Marque le champ comme obligatoire
+            ])
+            ->add('productVariants', CollectionType::class, [
+                'entry_type' => ProductVariantType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
             ])
         ;
     }
