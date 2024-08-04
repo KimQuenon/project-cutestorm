@@ -97,3 +97,21 @@
 .podium-row{
     height:500px!important;
 }
+
+.color-choice label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.color-choice input {
+    margin-right: 10px;
+}
+
+.color-choice .color-swatch {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
