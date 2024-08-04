@@ -154,6 +154,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $reportCount = 0;
 
+    /**
+     * @var Collection<int, Cart>
+     */
+    #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $cart;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -169,6 +175,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->conversations = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->cart = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -783,6 +790,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $report->setReportedUser(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCart(): Collection
+    {
+        return $this->cart;
+    }
+
+    public function addCart(Cart $cart): static
+    {
+        if (!$this->cart->contains($cart)) {
+            $this->cart->add($cart);
+            $cart->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): static
+    {
+        if ($this->cart->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getUser() === $this) {
+                $cart->setUser(null);
+            }
+        }
+
         return $this;
     }
 }

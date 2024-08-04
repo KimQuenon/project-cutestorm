@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
 use App\Entity\Product;
+use App\Entity\CartItem;
 use App\Form\ProductType;
+use App\Form\AddToCartType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductColorRepository;
@@ -60,11 +63,45 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/{slug}', name: 'product_show')]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo): Response
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, Request $request, EntityManagerInterface $manager): Response
     {
+        $user = $this->getUser();
+        $cart = $user->getCart()->first();
+
+        if (!$cart) {
+            $cart = new Cart();
+            $user->addCart($cart);
+
+            $manager->persist($cart);
+            $manager->flush();
+        }
+
+        $form = $this->createForm(AddToCartType::class, null, [
+            'product_variants' => $product->getProductVariants(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $cartItem = new CartItem();
+            $cartItem->setProductVariant($data['productVariant']);
+            $cartItem->setQuantity($data['quantity']);
+            $cartItem->setCart($cart);
+
+            $manager->persist($cartItem);
+            $manager->flush();
+
+            $this->addFlash('success', 'Item added to cart');
+
+            return $this->redirectToRoute('product_show', [
+                'slug' => $product->getSlug()
+            ]);
+        }
 
         return $this->render('products/show.html.twig', [
             'product' => $product,
+            'myForm' => $form->createView(),
         ]);
     }
 
@@ -79,7 +116,7 @@ class ProductController extends AbstractController
             foreach ($product->getProductVariants() as $variant) {
                 $manager->persist($variant);
             }
-            
+
             $manager->persist($product);
             $manager->flush();
 
