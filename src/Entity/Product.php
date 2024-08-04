@@ -28,17 +28,15 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(type: Types::JSON)]
-    private array $colors = [];
-
-    #[ORM\Column(type: Types::JSON)]
-    private array $sizes = [];
-
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-        /**
-     * init slug
+    #[ORM\ManyToOne(inversedBy: 'product')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductColor $color = null;
+
+    /**
+     * Initialize slug
      *
      * @return void
      */
@@ -110,62 +108,6 @@ class Product
         return $this;
     }
 
-    public function getColors(): array
-    {
-        return $this->colors;
-    }
-
-    public function setColors(array $colors): static
-    {
-        $this->colors = $colors;
-
-        return $this;
-    }
-
-    public function addColor(string $color): static
-    {
-        if (!in_array($color, $this->colors)) {
-            $this->colors[] = $color;
-        }
-
-        return $this;
-    }
-
-    public function removeColor(string $color): static
-    {
-        $this->colors = array_diff($this->colors, [$color]);
-
-        return $this;
-    }
-
-    public function getSizes(): array
-    {
-        return $this->sizes;
-    }
-
-    public function setSizes(array $sizes): static
-    {
-        $this->sizes = $sizes;
-
-        return $this;
-    }
-
-    public function addSize(int $size): static
-    {
-        if (!in_array($size, $this->sizes)) {
-            $this->sizes[] = $size;
-        }
-
-        return $this;
-    }
-
-    public function removeSize(int $size): static
-    {
-        $this->sizes = array_diff($this->sizes, [$size]);
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -174,6 +116,18 @@ class Product
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getColor(): ?ProductColor
+    {
+        return $this->color;
+    }
+
+    public function setColor(?ProductColor $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

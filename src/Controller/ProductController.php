@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ProductColorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,11 +24,12 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/new', name: 'product_create')]
-    public function create(Request $request, EntityManagerInterface $manager): Response
+    public function create(ProductColorRepository $colorRepo, Request $request, EntityManagerInterface $manager): Response
     {
 
         $product = new Product();
         $form = $this->createform(ProductType::class, $product);
+        $colors = $colorRepo->findAll();
 
         $form->handleRequest($request);
 
@@ -56,7 +58,8 @@ class ProductController extends AbstractController
         }
 
         return $this->render('products/new.html.twig', [
-            'myForm' => $form->createView()
+            'myForm' => $form->createView(),
+            'colors' => $colors
         ]);
     }
 

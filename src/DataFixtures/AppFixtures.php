@@ -12,6 +12,7 @@ use App\Entity\Product;
 use App\Entity\Following;
 use App\Entity\LikeComment;
 use App\Entity\Conversation;
+use App\Entity\ProductColor;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -103,6 +104,18 @@ class AppFixtures extends Fixture
             $users[] = $user; // Add user to the array
         }
 
+        // Create colors
+        $colors = [];
+        $colorNames = ['Red', 'Green', 'Blue', 'Black', 'White', 'Yellow', 'Purple'];
+        foreach ($colorNames as $colorName) {
+            $color = new ProductColor();
+            $color->setName($colorName);
+            $color->setHexCode($faker->hexColor());
+
+            $manager->persist($color);
+            $colors[] = $color; // Store colors to use later
+        }
+
         $productCount = 50;
 
         for ($i = 0; $i < $productCount; $i++) {
@@ -111,18 +124,7 @@ class AppFixtures extends Fixture
                     ->setName($faker->words(3, true))
                     ->setDescription($faker->paragraph())
                     ->setPrice($faker->randomFloat(2, 5, 500))
-                    ->setColors($faker->randomElements(
-                        ['red', 'green', 'blue', 'yellow', 'black', 'white'], 
-                        rand(1, 6)
-                    ))
-                    ->setSizes(
-                        (function() use ($faker) {
-                            $sizes = $faker->randomElements([36, 38, 40, 42, 44, 46, 48], rand(1, 3));
-                            sort($sizes);
-                            return $sizes;
-                        })()
-                    );                    
-
+                    ->setColor($colors[array_rand($colors)]);               
             $manager->persist($product);
         }
     

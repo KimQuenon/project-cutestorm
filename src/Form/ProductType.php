@@ -3,9 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Product;
+use App\Entity\ProductColor;
 use App\Form\ApplicationType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -22,29 +23,11 @@ class ProductType extends ApplicationType
             ->add('name', TextType::class, $this->getConfiguration("Name:", 'I.E. : White jacket...'))
             ->add('description', TextareaType::class, $this->getConfiguration("Description:", 'I.E. : Long white jacket...'))
             ->add('price', MoneyType::class, $this->getConfiguration("Price:", '...'))
-            ->add('colors', ChoiceType::class, [
-                'choices' => [
-                    'Red' => 'red',
-                    'Green' => 'green',
-                    'Blue' => 'blue',
-                    'White' => 'white',
-                    'Black' => 'black',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-                'label' => 'Colors',
+            ->add('color', EntityType::class, [
+                'class' => ProductColor::class,
+                'choice_label' => 'name', // Choix basé sur le nom de la couleur
+                'required' => true, // Marque le champ comme obligatoire
             ])
-            ->add('sizes', ChoiceType::class, [
-                'choices' => [
-                    '36' => '36',
-                    '37' => '37',
-                    '38' => '38',
-                    '39' => '39',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-                'label' => 'Sizes',
-            ]);
         ;
     }
 

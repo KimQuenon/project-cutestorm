@@ -15,21 +15,16 @@
             <p class="text-muted mb-4">{{ product.reference }}</p>
             <h3 class="text-success mb-4">${{ product.price }}</h3>
             <p class="mb-4">{{ product.description }}</p>
-            <p class="mt-4">Colors Available:</p>
-            <div class="mb-4">
-                {% if product.colors %}
-                    <ul class="list-inline">
-                        {% for color in product.colors %}
-                            <li class="list-inline-item">
-                                <span class="badge rounded-pill" style="background-color: {{ color }}; color: #fff; width: 30px; height: 30px; display: inline-block; border: 1px solid #ccc;"></span>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted">No colors available</p>
-                {% endif %}
-            </div>
-            <p class="mt-4">Sizes Available:</p>
+            {% if product.color %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="color-swatch" style="width: 30px; height: 30px; background-color: {{ product.color.hexCode }}; border-radius: 50%;"></div>
+                    <p class="ms-3 mb-0">{{ product.color.name }}</p>
+                </div>
+            {% else %}
+                <p class="text-muted">No color available</p>
+            {% endif %}
+
+            {# <p class="mt-4">Sizes Available:</p>
             <div class="mb-4">
                 {% if product.sizes %}
                     <ul class="list-inline">
@@ -42,7 +37,7 @@
                 {% else %}
                     <p class="text-muted">No sizes available</p>
                 {% endif %}
-            </div>
+            </div> #}
             <div class="d-flex align-items-center">
                 <a href="#" class="btn btn-primary me-3">Add to Cart</a>
                 <a href="{{ path('products_index') }}" class="btn btn-outline-secondary">Back to Products</a>
