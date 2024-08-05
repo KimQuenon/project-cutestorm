@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Form\OrderType;
+use App\Entity\OrderItem;
 use App\Repository\DeliveryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,11 +63,29 @@ class OrderController extends AbstractController
     
             $order->setDelivery($selectedDelivery);
     
-            // Move cart items to order
             foreach ($cartItems as $cartItem) {
-                $order->addCartItem($cartItem);
-                $cart->removeCartItem($cartItem);
+
+                $orderItem = new OrderItem();
+    
+                $orderItem->setOrderRelated($order);
+    
+                $orderItem->setProductVariant($cartItem->getProductVariant());
+    
+                $orderItem->setQuantity($cartItem->getQuantity());
+    
+                $order->addOrderItem($orderItem);
+    
             }
+    
+    
+            // Supprime les éléments du panier
+    
+            foreach ($cartItems as $cartItem) {
+    
+                $cart->removeCartItem($cartItem);
+    
+            }
+
             $manager->persist($order);
             $manager->flush();
     
@@ -80,7 +99,16 @@ class OrderController extends AbstractController
             'totalPrice' => $totalPrice
         ]);
     }
+
+    #[Route('/order/{reference}', name: 'order_show')]
+    public function show(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
+    {
+        $orderItems = $order->getOrderItems();
     
-    
+        return $this->render('orders/show.html.twig', [
+            'order' => $order,
+            'orderItems' => $orderItems,
+        ]);
+    }    
 }
 

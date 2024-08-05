@@ -31,9 +31,16 @@ class ProductVariant
     #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'productVariant', orphanRemoval: true)]
     private Collection $cartItems;
 
+    /**
+     * @var Collection<int, OrderItem>
+     */
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'productVariant', orphanRemoval: true)]
+    private Collection $orderItems;
+
     public function __construct()
     {
         $this->cartItems = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,6 +108,36 @@ class ProductVariant
             // set the owning side to null (unless already changed)
             if ($cartItem->getProductVariant() === $this) {
                 $cartItem->setProductVariant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderItem>
+     */
+    public function getOrderItems(): Collection
+    {
+        return $this->orderItems;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): static
+    {
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setProductVariant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderItem(OrderItem $orderItem): static
+    {
+        if ($this->orderItems->removeElement($orderItem)) {
+            // set the owning side to null (unless already changed)
+            if ($orderItem->getProductVariant() === $this) {
+                $orderItem->setProductVariant(null);
             }
         }
 

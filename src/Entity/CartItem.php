@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\CartItemRepository;
+use App\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CartItemRepository;
 
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
 class CartItem
@@ -24,8 +25,10 @@ class CartItem
     #[ORM\JoinColumn(nullable: false)]
     private ?Cart $cart = null;
 
-    #[ORM\ManyToOne(inversedBy: 'cartItems')]
-    private ?Order $orderRelated = null;
+
+    #[ORM\ManyToOne(inversedBy: 'cartItems', targetEntity: Order::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Order $order = null;
 
     public function getId(): ?int
     {
@@ -68,15 +71,18 @@ class CartItem
         return $this;
     }
 
-    public function getOrderRelated(): ?Order
+
+    public function getOrder(): ?Order
     {
-        return $this->orderRelated;
+        return $this->order;
     }
 
-    public function setOrderRelated(?Order $orderRelated): static
+
+    public function setOrder(?Order $order): static
     {
-        $this->orderRelated = $orderRelated;
+        $this->order = $order;
 
         return $this;
+
     }
 }

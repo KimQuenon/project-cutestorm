@@ -18,8 +18,8 @@
                         <th scope="col">Order ID</th>
                         <th scope="col">Total Price</th>
                         <th scope="col">Delivery</th>
-                        {# <th scope="col">Date</th> #}
-                        {# <th scope="col" class="text-center">Actions</th> #}
+                        <th scope="col">Date</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,12 +28,12 @@
                             <td>{{ order.id }}</td>
                             <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
                             <td>{{ order.delivery.name }}</td>
-                            {# <td>{{ order.createdAt|date('d/m/Y H:i') }}</td> #}
-                            {# <td class="text-center">
-                                <a href="{{ path('order_show', { id: order.id }) }}" class="btn btn-sm btn-info">
+                            <td>{{ order.timestamp|date('d/m/Y H:i') }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('order_show', { reference: order.reference }) }}" class="btn btn-sm btn-info">
                                     View Details
                                 </a>
-                            </td> #}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
