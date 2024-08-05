@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\Comment;
 use App\Entity\Message;
 use App\Entity\Product;
+use App\Entity\Delivery;
 use App\Entity\Following;
 use App\Entity\LikeComment;
 use App\Entity\Conversation;
@@ -103,6 +104,29 @@ class AppFixtures extends Fixture
     
             $manager->persist($user);
             $users[] = $user; // Add user to the array
+        }
+
+        //create Delivery options
+        $deliveryOptions = [
+            [
+                'name' => 'Standard Shipping',
+                'price' => 5.99,
+                'deliveryTime' => 5 // Delivery time in days
+            ],
+            [
+                'name' => 'Express Shipping',
+                'price' => 12.99,
+                'deliveryTime' => 2 // Delivery time in days
+            ]
+        ];
+    
+        foreach ($deliveryOptions as $optionData) {
+            $deliveryOption = new Delivery();
+            $deliveryOption->setName($optionData['name'])
+                           ->setPrice($optionData['price'])
+                           ->setDeliveryTime($optionData['deliveryTime']);
+    
+            $manager->persist($deliveryOption);
         }
 
         // Create colors
