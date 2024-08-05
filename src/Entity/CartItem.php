@@ -24,6 +24,9 @@ class CartItem
     #[ORM\JoinColumn(nullable: false)]
     private ?Cart $cart = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cartItems')]
+    private ?Order $orderRelated = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class CartItem
     public function setCart(?Cart $cart): static
     {
         $this->cart = $cart;
+
+        return $this;
+    }
+
+    public function getOrderRelated(): ?Order
+    {
+        return $this->orderRelated;
+    }
+
+    public function setOrderRelated(?Order $orderRelated): static
+    {
+        $this->orderRelated = $orderRelated;
 
         return $this;
     }

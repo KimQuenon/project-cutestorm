@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">My Orders</h1>
+
+    {% if orders is empty %}
+        <div class="alert alert-warning" role="alert">
+            You have no orders yet.
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Delivery</th>
+                        {# <th scope="col">Date</th> #}
+                        {# <th scope="col" class="text-center">Actions</th> #}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
+                            <td>{{ order.delivery.name }}</td>
+                            {# <td>{{ order.createdAt|date('d/m/Y H:i') }}</td> #}
+                            {# <td class="text-center">
+                                <a href="{{ path('order_show', { id: order.id }) }}" class="btn btn-sm btn-info">
+                                    View Details
+                                </a>
+                            </td> #}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
