@@ -28,13 +28,10 @@ class ProfileController extends AbstractController
         ReportRepository $reportRepo,
         PaginationService $paginationService
     ): Response {
-        /** @var User $user */
-        $user = $this->getUser(); // Ensure user is always of type User
+        $user = $this->getUser();
 
-        // Get posts from followed users
         $posts = $postRepo->findPostsByFollowedUsers($user);
 
-        // Render the feed page
         return $this->renderProfilePage(
             $user,
             $posts,
@@ -43,6 +40,7 @@ class ProfileController extends AbstractController
             $reportRepo,
             $paginationService,
             $postRepo,
+            $userRepo,
             'profile/feed.html.twig',
         );
     }

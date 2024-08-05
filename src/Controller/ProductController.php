@@ -8,6 +8,7 @@ use App\Entity\CartItem;
 use App\Form\ProductType;
 use App\Form\AddToCartType;
 use App\Repository\ProductRepository;
+use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductColorRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,47 +64,89 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/{slug}', name: 'product_show')]
-    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, Request $request, EntityManagerInterface $manager): Response
-    {
+    public function show(
+        #[MapEntity(mapping: ['slug' => 'slug'])] Product $product,
+        ProductRepository $productRepo,
+        CartItemRepository $cartItemRepo,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
         $user = $this->getUser();
-        $cart = $user->getCart()->first();
-
-        if (!$cart) {
-            $cart = new Cart();
-            $user->addCart($cart);
-
-            $manager->persist($cart);
-            $manager->flush();
+        $cart = null;
+    
+        if ($user) {
+            $cart = $user->getCart();
+            if (!$cart) {
+                $cart = new Cart();
+                $user->setCart($cart);
+                $manager->persist($cart);
+                $manager->flush();
+            }
         }
-
+    
         $form = $this->createForm(AddToCartType::class, null, [
             'product_variants' => $product->getProductVariants(),
         ]);
-
+    
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $cartItem = new CartItem();
-            $cartItem->setProductVariant($data['productVariant']);
-            $cartItem->setQuantity($data['quantity']);
-            $cartItem->setCart($cart);
-
-            $manager->persist($cartItem);
-            $manager->flush();
-
-            $this->addFlash('success', 'Item added to cart');
-
+            $productVariant = $data['productVariant'];
+            $quantity = $data['quantity'];
+    
+            // Check stock availability
+            if ($quantity > $productVariant->getStock()) {
+                $this->addFlash('danger', 'Not enough stock available.');
+                return $this->redirectToRoute('product_show', [
+                    'slug' => $product->getSlug(),
+                ]);
+            }
+    
+            if ($user) {
+                // Check if the cart already contains this product variant
+                $cartItem = $cartItemRepo->findOneBy([
+                    'cart' => $cart,
+                    'productVariant' => $productVariant,
+                ]);
+    
+                if ($cartItem) {
+                    // If the cart item exists, update the quantity
+                    $newQuantity = $cartItem->getQuantity() + $quantity;
+    
+                    if ($newQuantity > $productVariant->getStock()) {
+                        $this->addFlash('danger', 'Not enough stock available for the requested quantity.');
+                        return $this->redirectToRoute('product_show', [
+                            'slug' => $product->getSlug(),
+                        ]);
+                    }
+    
+                    $cartItem->setQuantity($newQuantity);
+                } else {
+                    $cartItem = new CartItem();
+                    $cartItem->setProductVariant($productVariant);
+                    $cartItem->setQuantity($quantity);
+                    $cartItem->setCart($cart);
+    
+                    $manager->persist($cartItem);
+                }
+    
+                $manager->flush();
+                $this->addFlash('success', 'Item added to cart. <a href="' . $this->generateUrl('cart_show') . '">View Cart</a>');
+            }
+    
             return $this->redirectToRoute('product_show', [
-                'slug' => $product->getSlug()
+                'slug' => $product->getSlug(),
             ]);
         }
-
+    
         return $this->render('products/show.html.twig', [
             'product' => $product,
             'myForm' => $form->createView(),
         ]);
     }
+    
+    
 
     #[Route('/product/{slug}/edit', name: 'product_edit')]
     public function edit(ProductRepository $productRepo, Request $request, EntityManagerInterface $manager, Product $product): Response

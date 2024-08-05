@@ -1,20 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CartController!{% endblock %}
+{% block title %}My Cart{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container mt-5">
+    <h1 class="mb-4">My Cart</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/HP/Documents/symfonyDocs/project-cutestorm/src/Controller/CartController.php</code></li>
-        <li>Your template at <code>C:/Users/HP/Documents/symfonyDocs/project-cutestorm/templates/cart/index.html.twig</code></li>
-    </ul>
+    {% if cartItems is empty %}
+        <div class="alert alert-warning" role="alert">
+            Your cart is empty. <a href="{{ path('products_index') }}" class="alert-link">Continue shopping</a>.
+        </div>
+    {% else %}
+        <a href="{{ path('cart_clear') }}" class="btn btn-danger mb-3">
+            Clear Cart
+        </a>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Size</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col" class="text-right">Price</th>
+                        <th scope="col" class="text-right">Total</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cartItem in cartItems %}
+                        <tr>
+                            <td>{{ cartItem.productVariant.product.name }}</td>
+                            <td>{{ cartItem.productVariant.size }}</td>
+                            <td>
+                                <form method="post" action="{{ path('cart_edit', {id: cartItem.id}) }}">
+                                    <div class="input-group">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity('{{ cartItem.id }}', -1)">-</button>
+                                        <input type="number" name="quantity" value="{{ cartItem.quantity }}" min="1" class="form-control text-center" id="quantity-{{ cartItem.id }}">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity('{{ cartItem.id }}', 1)">+</button>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Save Changes</button>
+                                </form>
+                            </td>
+                            <td class="text-right">{{ cartItem.productVariant.product.price|number_format(2, ',', '.')}} $</td>
+                            <td class="text-right" id="total-{{ cartItem.id }}">{{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}} $</td>
+                            <td class="text-center">
+                                <a href="{{ path('cart_remove', { id: cartItem.id }) }}" class="btn btn-sm btn-danger">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                        <td class="text-right">
+                            <strong>
+                                {{ cartItems|reduce((carry, item) => carry + (item.productVariant.product.price * item.quantity), 0) | number_format(2) }} $
+                            </strong>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('products_index') }}" class="btn btn-secondary">
+                Continue Shopping
+            </a>
+            <a href="#" class="btn btn-primary">
+                Proceed to Checkout
+            </a>
+        </div>
+    {% endif %}
 </div>
+
+<script>
+function updateQuantity(itemId, change) {
+    const quantityInput = document.getElementById('quantity-' + itemId);
+    let currentQuantity = parseInt(quantityInput.value, 10);
+    currentQuantity += change;
+
+    if (currentQuantity < 1) {
+        currentQuantity = 1;
+    }
+
+    quantityInput.value = currentQuantity;
+
+    const priceText = quantityInput.closest('tr').querySelector('td:nth-child(4)').textContent.replace('$', '').replace('.', '').replace(',', '.').trim();
+    const price = parseFloat(priceText);
+    
+    const totalCell = document.getElementById('total-' + itemId);
+    const total = (price * currentQuantity).toFixed(2);
+    totalCell.textContent = total.replace('.', ',') + ' $';
+
+    updateCartTotal();
+}
+
+function updateCartTotal() {
+    let cartTotal = 0;
+    const totalCells = document.querySelectorAll('td[id^="total-"]');
+    totalCells.forEach(cell => {
+        const totalText = cell.textContent.replace(' $', '').replace('.', '').replace(',', '.').trim();
+        const total = parseFloat(totalText);
+        if (!isNaN(total)) {
+            cartTotal += total;
+        }
+    });
+    
+    const totalRow = document.querySelector('tfoot tr td:nth-child(2) strong');
+    totalRow.textContent = cartTotal.toFixed(2).replace('.', ',') + ' $';
+}
+
+
+
+</script>
 {% endblock %}
