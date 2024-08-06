@@ -46,6 +46,14 @@ class CartController extends AbstractController
     #[Route('/cart/edit/{id}', name: 'cart_edit', methods: ['POST'])]
     public function editItem(#[MapEntity(mapping: ['id' => 'id'])] CartItem $cartItem, ProductVariantRepository $productVariantRepo, Request $request, EntityManagerInterface $manager): RedirectResponse
     {
+        $user = $this->getUser();
+        $cart = $user->getCart();
+    
+        if ($cartItem->getCart() !== $cart) {
+            $this->addFlash('danger', 'You do not have permission to edit this item.');
+            return $this->redirectToRoute('cart_show');
+        }
+
         $quantity = $request->request->get('quantity');
 
         if ($quantity !== null && $quantity > 0) {
@@ -72,16 +80,20 @@ class CartController extends AbstractController
     public function removeItem(#[MapEntity(mapping: ['id' => 'id'])] CartItem $cartItem, EntityManagerInterface $manager): RedirectResponse
     {
         $user = $this->getUser();
-
         $cart = $user->getCart();
-        if ($cart) {
-            $cart->removeCartItem($cartItem);
-            $manager->remove($cartItem);
-            $manager->flush();
+    
+        // Vérifiez si l'élément appartient au panier de l'utilisateur connecté
+        if ($cartItem->getCart() !== $cart) {
+            $this->addFlash('danger', 'You do not have permission to remove this item.');
+            return $this->redirectToRoute('cart_show');
         }
-
+    
+        $cart->removeCartItem($cartItem);
+        $manager->remove($cartItem);
+        $manager->flush();
+    
         $this->addFlash('success', 'Item removed from cart.');
-
+    
         return $this->redirectToRoute('cart_show');
     }
 

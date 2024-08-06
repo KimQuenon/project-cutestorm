@@ -110,6 +110,14 @@ class OrderController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
     {
+        if ($order->getUser() !== $user) {
+            $this->addFlash(
+                'danger',
+                "You do not have permission to access this."
+            );
+            return $this->redirectToRoute('products_index');
+        }
+
         $orderItems = $order->getOrderItems();
     
         return $this->render('orders/show.html.twig', [
@@ -118,10 +126,19 @@ class OrderController extends AbstractController
         ]);
     }
     
-    #[Route('/order/pdf/{reference}', name: 'order_pdf')]
+    #[Route('profile/order/{reference}/pdf', name: 'order_pdf')]
+    #[IsGranted('ROLE_USER')]
     public function generatePdf(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, PdfGeneratorService $pdfGeneratorService): Response
     {
         $user = $this->getUser();
+
+        if ($order->getUser() !== $user) {
+            $this->addFlash(
+                'danger',
+                "You do not have permission to access this."
+            );
+            return $this->redirectToRoute('products_index');
+        }
 
         $html = $this->renderView('orders/pdf.html.twig', [
             'order' => $order,
