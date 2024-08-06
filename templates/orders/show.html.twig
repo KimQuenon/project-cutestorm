@@ -10,6 +10,7 @@
         <span class="badge rounded-pill bg-danger">Unpaid</span>
     {% endif %}
     <h1>Order Details</h1>
+    <a href="{{ path('order_pdf', { reference: order.reference }) }}" class="btn btn-primary">Download PDF</a>
     <h2>Order Reference: {{ order.reference }}</h2>
     <p><strong>Delivery Method:</strong> {{ order.delivery.name }}</p>
     <p><strong>Delivery Cost:</strong> {{ order.delivery.price|number_format(2, ',', '.') }} $</p>

@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderItem;
+use App\Service\PdfGeneratorService;
 use App\Repository\DeliveryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -114,6 +116,24 @@ class OrderController extends AbstractController
             'order' => $order,
             'orderItems' => $orderItems,
         ]);
-    }    
+    }
+    
+    #[Route('/order/pdf/{reference}', name: 'order_pdf')]
+    public function generatePdf(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, PdfGeneratorService $pdfGeneratorService): Response
+    {
+        $user = $this->getUser();
+
+        $html = $this->renderView('orders/pdf.html.twig', [
+            'order' => $order,
+            'user' => $user
+        ]);
+
+        $user = $this->getUser();
+        $userName = $user->getLastName();
+
+        $fileName = sprintf('Order_%s-%s.pdf', $order->getReference(), $userName);
+
+        return $pdfGeneratorService->generatePdf($html, $fileName);
+    }
 }
 

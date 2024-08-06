@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            display:flex;
+            flex-direction: column;
+        }
+        .header {
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header p {
+            margin: 5px 0;
+        }
+        .customer-info {
+            width: 300px;
+            border-top: 2px solid #dee2e6;
+            padding-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 350px;
+        }
+        .customer-info h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .customer-info p {
+            margin: 5px 0;
+        }
+        .invoice-info {
+            margin-bottom: 20px;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border: 1px solid #dee2e6;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            background-color: #f8f9fa;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            border-radius: 0.25rem;
+            color: #fff;
+            background-color: #007bff;
+        }
+        .badge.bg-success {
+            background-color: #28a745;
+        }
+        .badge.bg-danger {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Your Company Name</h1>
+            <p>1234 Company Address, City, Country, 56789</p>
+            <p>Email: contact@yourcompany.com | Phone: (123) 456-7890</p>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="customer-info">
+            <h2>Customer Information</h2>
+            <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+            <p><strong>Address:</strong> {{ user.address }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        <!-- Invoice Information -->
+        <div class="invoice-info">
+            <h2>Order Reference: {{ order.reference }}</h2>
+            <p><strong>Delivery Method:</strong> {{ order.delivery.name }}</p>
+            <p><strong>Delivery Cost:</strong> {{ order.delivery.price|number_format(2, ',', '.') }} $</p>
+            <p><strong>Delivery Time:</strong> {{ order.delivery.deliveryTime }}</p>
+
+            <!-- Order Items Table -->
+            <h3>Items:</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for orderItem in order.orderItems %}
+                    <tr>
+                        <td>{{ orderItem.productVariant.product.name }}</td>
+                        <td>{{ orderItem.productVariant.size }}</td>
+                        <td>{{ orderItem.quantity }}</td>
+                        <td>{{ orderItem.productVariant.product.price|number_format(2, ',', '.') }} $</td>
+                        <td>{{ (orderItem.productVariant.product.price * orderItem.quantity)|number_format(2, ',', '.') }} $</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                        <td>{{ (order.totalPrice - order.delivery.price)|number_format(2, ',', '.') }} $</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Delivery:</strong></td>
+                        <td>{{ order.delivery.price|number_format(2, ',', '.') }} $</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                        <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
