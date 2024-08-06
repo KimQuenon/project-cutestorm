@@ -64,33 +64,34 @@ class OrderController extends AbstractController
             $order->setDelivery($selectedDelivery);
     
             foreach ($cartItems as $cartItem) {
+                $productVariant = $cartItem->getProductVariant();
+
+                // Update stock
+                $newStock = $productVariant->getStock() - $cartItem->getQuantity();
+                if ($newStock < 0) {
+                    $this->addFlash('error', 'Insufficient stock for some items.');
+                    return $this->redirectToRoute('cart_show');
+                }
+                $productVariant->setStock($newStock);
 
                 $orderItem = new OrderItem();
-    
                 $orderItem->setOrderRelated($order);
-    
                 $orderItem->setProductVariant($cartItem->getProductVariant());
-    
                 $orderItem->setQuantity($cartItem->getQuantity());
-    
                 $order->addOrderItem($orderItem);
-    
             }
     
     
-            // Supprime les éléments du panier
-    
-            foreach ($cartItems as $cartItem) {
-    
+            foreach ($cartItems as $cartItem) {    
                 $cart->removeCartItem($cartItem);
-    
             }
 
             $manager->persist($order);
             $manager->flush();
     
-            $this->addFlash('success', 'Your order has been placed.');
-            return $this->redirectToRoute('orders_index');
+            return $this->redirectToRoute('payment_stripe', [
+                'reference'=> $order->getReference()
+            ]);
         }
     
         return $this->render('orders/new.html.twig', [
