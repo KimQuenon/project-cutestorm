@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="container mt-5">
-    {% if order.isPayed %}
+    {% if order.isPaid %}
         <span class="badge rounded-pill bg-success">Paid</span>
     {% else %}
         <span class="badge rounded-pill bg-danger">Unpaid</span>
@@ -50,7 +50,7 @@
             </tr>
         </tbody>
     </table>
-    {% if not order.isPayed %}
+    {% if not order.isPaid %}
         <a href="{{ path('payment_stripe', { reference: order.reference }) }}" class="btn btn-success">Pay</a>
     {% endif %}
     <a href="{{ path('orders_index') }}" class="btn btn-secondary">Back to Orders</a>

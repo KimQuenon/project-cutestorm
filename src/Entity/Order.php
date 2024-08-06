@@ -48,7 +48,7 @@ class Order
     private Collection $orderItems;
 
     #[ORM\Column]
-    private ?bool $isPayed = false;
+    private ?bool $isPaid = false;
 
     public function __construct()
     {
@@ -204,14 +204,14 @@ class Order
         return $this;
     }
 
-    public function isPayed(): ?bool
+    public function isPaid(): ?bool
     {
-        return $this->isPayed;
+        return $this->isPaid;
     }
 
-    public function setPayed(bool $isPayed): static
+    public function setPaid(bool $isPaid): static
     {
-        $this->isPayed = $isPayed;
+        $this->isPaid = $isPaid;
 
         return $this;
     }

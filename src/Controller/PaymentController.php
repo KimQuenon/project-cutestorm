@@ -90,15 +90,16 @@ class PaymentController extends AbstractController
 
         // $order->setStripeSessionId($checkout_session->id);
 
-        $order->setPayed(true);
-        $manager->flush();
+        
         return new RedirectResponse($checkout_session->url);
 
     }
 
     #[Route('/order/payment/{reference}/success', name: 'payment_stripe_success')]
-    public function stripeSuccess(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
+    public function stripeSuccess(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, EntityManagerInterface $manager): Response
     {
+        $order->setPaid(true);
+        $manager->flush();
 
         return $this->render('orders/success.html.twig', [
 

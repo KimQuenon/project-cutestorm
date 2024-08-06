@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderItem;
+use App\Repository\OrderRepository;
 use App\Service\PdfGeneratorService;
 use App\Repository\DeliveryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,11 +32,18 @@ class OrderController extends AbstractController
 
     #[Route('/order/create', name: 'order_create')]
     #[IsGranted('ROLE_USER')]
-    public function create(Request $request, DeliveryRepository $deliveryRepo, EntityManagerInterface $manager): Response
+    public function create(Request $request, DeliveryRepository $deliveryRepo, OrderRepository $orderRepo, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
         $cart = $user->getCart();
         $cartItems = $cart->getCartItems();
+
+        $unpaidOrders = $orderRepo->findUnpaidOrders($user);
+
+        if ($unpaidOrders) {
+            $this->addFlash('warning', 'You have unpaid invoices. Please settle them before placing a new order.');
+            return $this->redirectToRoute('orders_index');
+        }
     
         if (count($cartItems) === 0) {
             $this->addFlash('warning', 'Your cart is empty.');
