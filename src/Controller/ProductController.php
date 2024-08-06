@@ -8,6 +8,7 @@ use App\Entity\CartItem;
 use App\Form\ProductType;
 use App\Form\AddToCartType;
 use App\Entity\ProductVariant;
+use App\Service\PaginationService;
 use App\Repository\ProductRepository;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,12 +20,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProductController extends AbstractController
 {
-    #[Route('/store', name: 'products_index')]
-    public function index(ProductRepository $productRepo): Response
+    #[Route('/store/{page<\d+>?1}', name: 'products_index')]
+    public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService): Response
     {
         $products = $productRepo->findAll();
+
+        $currentPage = $page;
+        $itemsPerPage = 9;
+
+        $pagination = $paginationService->paginate($products, $currentPage, $itemsPerPage);
+        $productsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('products/index.html.twig', [
-            'products' => $products,
+            'products' => $productsPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
@@ -75,8 +86,6 @@ class ProductController extends AbstractController
             'colors' => $colors
         ]);
     }
-    
-    
     
 
     #[Route('/product/{slug}', name: 'product_show')]
@@ -168,7 +177,6 @@ class ProductController extends AbstractController
             'myForm' => $form->createView(),
         ]);
     }
-    
     
 
     #[Route('/product/{slug}/edit', name: 'product_edit')]

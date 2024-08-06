@@ -10,5 +10,11 @@
             {% include "partials/_cardProduct.html.twig" %}
         {% endfor %}
     </div>
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'products_index',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
 </div>
 {% endblock %}

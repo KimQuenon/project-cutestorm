@@ -56,7 +56,7 @@ class PostController extends AbstractController
         });
 
         $currentPage = $page;
-        $itemsPerPage = 1;
+        $itemsPerPage = 9;
 
         // Use the pagination service to get paginated results
         $pagination = $paginationService->paginate($visiblePosts, $currentPage, $itemsPerPage);
