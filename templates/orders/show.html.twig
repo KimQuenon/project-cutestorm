@@ -4,11 +4,16 @@
 
 {% block body %}
 <div class="container mt-5">
+    {% if order.isPayed %}
+        <span class="badge rounded-pill bg-success">Paid</span>
+    {% else %}
+        <span class="badge rounded-pill bg-danger">Unpaid</span>
+    {% endif %}
     <h1>Order Details</h1>
     <h2>Order Reference: {{ order.reference }}</h2>
-    <p><strong>Total Price:</strong> {{ order.totalPrice|number_format(2, ',', '.') }} $</p>
     <p><strong>Delivery Method:</strong> {{ order.delivery.name }}</p>
     <p><strong>Delivery Cost:</strong> {{ order.delivery.price|number_format(2, ',', '.') }} $</p>
+    <p><strong>Delivery Time:</strong> {{ order.delivery.deliveryTime }}</p>
     <h3>Items:</h3>
     <table class="table table-bordered">
         <thead>
@@ -30,9 +35,23 @@
                 <td>{{ (orderItem.productVariant.product.price * orderItem.quantity)|number_format(2, ',', '.') }} $</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                <td>{{ (order.totalPrice - order.delivery.price)|number_format(2, ',', '.') }} $</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Delivery:</strong></td>
+                <td>{{ order.delivery.price|number_format(2, ',', '.') }} $</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
+            </tr>
         </tbody>
     </table>
-    <a href="{{ path('payment_stripe', { reference: order.reference }) }}" class="btn btn-success">Payer</a>
+    {% if not order.isPayed %}
+        <a href="{{ path('payment_stripe', { reference: order.reference }) }}" class="btn btn-success">Pay</a>
+    {% endif %}
     <a href="{{ path('orders_index') }}" class="btn btn-secondary">Back to Orders</a>
 </div>
 {% endblock %}

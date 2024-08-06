@@ -20,10 +20,21 @@ class AddToCartType extends ApplicationType
                 'class' => ProductVariant::class,
                 'choices' => $options['product_variants'],
                 'choice_label' => function (ProductVariant $variant) {
-                    return sprintf('%s (%d in stock)', $variant->getSize(), $variant->getStock());
+                    $label = sprintf('%s (%d in stock)', $variant->getSize(), $variant->getStock());
+                    if ($variant->getStock() == 0) {
+                        $label = '<strike>' . $label . '</strike>';
+                    }
+                    return $label;
                 },
-                'expanded' => true, // Use radio buttons
+                'label_html' => true,
+                'expanded' => true,
                 'multiple' => false,
+                'choice_attr' => function (ProductVariant $variant) {
+                    if ($variant->getStock() == 0) {
+                        return ['disabled' => 'disabled'];
+                    }
+                    return [];
+                },
             ])
             ->add('quantity', IntegerType::class, [
                 'data' => 1,

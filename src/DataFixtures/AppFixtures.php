@@ -111,12 +111,12 @@ class AppFixtures extends Fixture
             [
                 'name' => 'Standard Shipping',
                 'price' => 5.99,
-                'deliveryTime' => 5 // Delivery time in days
+                'deliveryTime' => "2 weeks" // Delivery time in days
             ],
             [
                 'name' => 'Express Shipping',
                 'price' => 12.99,
-                'deliveryTime' => 2 // Delivery time in days
+                'deliveryTime' => "3 days" // Delivery time in days
             ]
         ];
     

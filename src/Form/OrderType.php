@@ -19,7 +19,12 @@ class OrderType extends ApplicationType
             ->add('delivery', ChoiceType::class, [
                 'choices' => $options['deliveries'],
                 'choice_label' => function(Delivery $delivery) {
-                    return $delivery->getName() . ' (' . $delivery->getPrice() . ' $)';
+                    return sprintf(
+                        '<strong>%s</strong><br>%s<br>%s $',
+                        $delivery->getName(),
+                        $delivery->getDeliveryTime(),
+                        $delivery->getPrice()
+                    );
                 },
                 'choice_value' => 'id',
                 'multiple' => false,
@@ -29,6 +34,7 @@ class OrderType extends ApplicationType
                         'data-price' => $delivery->getPrice(),
                     ];
                 },
+                'label_html' => true, // Enable HTML rendering for the label
             ])
         ;
     }

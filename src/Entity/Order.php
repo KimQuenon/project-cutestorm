@@ -47,6 +47,9 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'orderRelated', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $orderItems;
 
+    #[ORM\Column]
+    private ?bool $isPayed = false;
+
     public function __construct()
     {
         $this->cartItems = new ArrayCollection();
@@ -197,6 +200,18 @@ class Order
                 $orderItem->setOrderRelated(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isPayed(): ?bool
+    {
+        return $this->isPayed;
+    }
+
+    public function setPayed(bool $isPayed): static
+    {
+        $this->isPayed = $isPayed;
 
         return $this;
     }

@@ -10,11 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class OrderController extends AbstractController
 {
-    #[Route('/orders', name: 'orders_index')]
+    #[Route('/profile/orders', name: 'orders_index')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $user = $this->getUser();
@@ -26,6 +28,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/order/create', name: 'order_create')]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request, DeliveryRepository $deliveryRepo, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
@@ -101,7 +104,8 @@ class OrderController extends AbstractController
         ]);
     }
 
-    #[Route('/order/{reference}', name: 'order_show')]
+    #[Route('/profile/order/{reference}', name: 'order_show')]
+    #[IsGranted('ROLE_USER')]
     public function show(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
     {
         $orderItems = $order->getOrderItems();

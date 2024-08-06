@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -20,6 +21,7 @@ class PaymentController extends AbstractController
     }
     
     #[Route('/order/payment/{reference}', name: 'payment_stripe')]
+    #[IsGranted('ROLE_USER')]
     public function index(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, ProductRepository $productRepo, EntityManagerInterface $manager): RedirectResponse
     {
         if(!$order){
@@ -88,6 +90,7 @@ class PaymentController extends AbstractController
 
         // $order->setStripeSessionId($checkout_session->id);
 
+        $order->setPayed(true);
         $manager->flush();
         return new RedirectResponse($checkout_session->url);
 

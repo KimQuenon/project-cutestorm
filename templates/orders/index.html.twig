@@ -15,7 +15,8 @@
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col">Order ID</th>
+                        <th scope="col">Order Status</th>
+                        <th scope="col">Order Reference</th>
                         <th scope="col">Total Price</th>
                         <th scope="col">Delivery</th>
                         <th scope="col">Date</th>
@@ -25,7 +26,14 @@
                 <tbody>
                     {% for order in orders %}
                         <tr>
-                            <td>{{ order.id }}</td>
+                            <td>
+                                {% if order.isPayed %}
+                                    <span class="badge rounded-pill bg-success">Paid</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-danger">Unpaid</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.reference }}</td>
                             <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
                             <td>{{ order.delivery.name }}</td>
                             <td>{{ order.timestamp|date('d/m/Y H:i') }}</td>
