@@ -31,6 +31,18 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function replaceUserInOrders(User $userToReplace, User $replacementUser): void
+    {
+        $qb = $this->createQueryBuilder('o');
+        $qb->update()
+            ->set('o.user', ':replacementUser')
+            ->where('o.user = :userToReplace')
+            ->setParameter('replacementUser', $replacementUser)
+            ->setParameter('userToReplace', $userToReplace)
+            ->getQuery()
+            ->execute();
+    }
+
     //    /**
     //     * @return Order[] Returns an array of Order objects
     //     */

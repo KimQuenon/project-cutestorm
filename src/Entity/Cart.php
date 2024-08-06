@@ -18,7 +18,7 @@ class Cart
     /**
      * @var Collection<int, CartItem>
      */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'cart', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'cart', cascade: ['remove'], orphanRemoval: true)]
     private Collection $cartItems;
 
     #[ORM\OneToOne(inversedBy: 'cart')]

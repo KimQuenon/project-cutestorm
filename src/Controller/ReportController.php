@@ -7,6 +7,7 @@ use App\Form\ReportType;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Service\PaginationService;
+use App\Repository\OrderRepository;
 use App\Repository\ReportRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -189,10 +190,18 @@ class ReportController extends AbstractController
 
     #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
     #[IsGranted('ROLE_MODERATOR')]
-    public function validate(#[MapEntity(mapping: ['id' => 'id'])] Report $report, UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, EntityManagerInterface $manager): RedirectResponse
+    public function validate(
+        #[MapEntity(mapping: ['id' => 'id'])] Report $report,
+        UserRepository $userRepo,
+        ConversationRepository $convRepo,
+        ReportRepository $reportRepo,
+        CommentRepository $commentRepo,
+        OrderRepository $orderRepo,
+        EntityManagerInterface $manager
+    ): RedirectResponse
     {
         if ($report->getReportedPost()) {
-
+            // Traitement du post signalé
             foreach ($report->getReportedPost()->getPostImages() as $image) {
                 if (!empty($image->getFilename())) {
                     $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
@@ -203,60 +212,72 @@ class ReportController extends AbstractController
                 $manager->remove($image);
             }
             $manager->remove($report->getReportedPost());
-
+    
         } elseif ($report->getReportedComment()) {
+            // Traitement du commentaire signalé
             $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
             $comment = $report->getReportedComment();
-    
+        
             $comment->setContent('This comment has been reported.')
                     ->setAuthor($anon);
-    
+        
             $manager->persist($comment);
             $manager->flush();
-
+    
         } elseif ($report->getReportedUser()) {
-
+            // Traitement de l'utilisateur signalé
             $user = $report->getReportedUser();
-            $user->incrementReportCount();
+            $reportCount = $user->getReportCount();
+    
+            if ($reportCount < 3) {
+                // Incrémente le compteur de signalements
+                $user->incrementReportCount();
+                $manager->persist($user);
+                $manager->remove($report);
+                $manager->flush();
+    
+                $this->addFlash('success', 'Le signalement a été traité.');
+            } else {
+                $unpaidOrders = $orderRepo->findUnpaidOrders($user);
+    
+                if ($unpaidOrders) {
+                    $this->addFlash('warning', 'The user cannot be deleted as they have unpaid invoices.');
+                } else {
+                    $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
+                    $convRepo->replaceUserInConversations($user, $anon);
+                    $commentRepo->replaceAuthorInComments($user, $anon);
+                    $orderRepo->replaceUserInOrders($user, $anon);
+    
+                    foreach ($user->getLikeComments() as $likeComment) {
+                        $manager->remove($likeComment);
+                    }
+    
+                    $reportsByUser = $reportRepo->findBy(['reportedBy' => $user]);
+                    foreach ($reportsByUser as $userReport) {
+                        $manager->remove($userReport);
+                    }
+    
+                    // Notify user before deleting
+                    // $email = (new Email())
+                    //     ->from('no-reply@yourdomain.com')
+                    //     ->to($user->getEmail())
+                    //     ->subject('Account Banned')
+                    //     ->text('Your account has been banned due to multiple reports and will be deleted shortly.');
             
-            if ($user->getReportCount() >= 3) {
-                $user = $report->getReportedUser();
-                $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
-                $convRepo->replaceUserInConversations($user, $anon);
-                $commentRepo->replaceAuthorInComments($user, $anon);
-
-                foreach ($user->getLikeComments() as $likeComment) {
-                    $manager->remove($likeComment);
+                    // $mailer->send($email);
+    
+                    $manager->remove($user);
+                    $manager->remove($report);
+                    $manager->flush();
+    
+                    $this->addFlash('danger', 'L\'utilisateur a été banni après plusieurs signalements.');
                 }
-
-                $reportsByUser = $reportRepo->findBy(['reportedBy' => $user]);
-                foreach ($reportsByUser as $userReport) {
-                    $manager->remove($userReport);
-                }
-
-                // Notify user before deleting
-                // $email = (new Email())
-                //     ->from('no-reply@yourdomain.com')
-                //     ->to($user->getEmail())
-                //     ->subject('Account Banned')
-                //     ->text('Your account has been banned due to multiple reports and will be deleted shortly.');
-        
-                // $mailer->send($email);
-
-                $manager->remove($user);
-
-                $this->addFlash('danger', 'L\'utilisateur a été banni après plusieurs signalements.');
             }
         }
-
-        // Marquer le signalement comme traité
-        $manager->remove($report);
-        $manager->flush();
-
-        $this->addFlash('success', 'Le signalement a été traité.');
-
+    
         return $this->redirectToRoute('reports_index');
     }
+    
 
     #[Route('/moderation/reports/{id}/keep', name: 'report_reject')]
     #[IsGranted('ROLE_MODERATOR')]
