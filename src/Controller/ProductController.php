@@ -27,9 +27,14 @@ class ProductController extends AbstractController
     public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService, Request $request): Response
     {
         $colorId = $request->query->get('color');
+        $categoryId = $request->query->get('category');
     
-        if ($colorId) {
+        if ($colorId && $categoryId) {
+            $products = $productRepo->findByColorAndCategory($colorId, $categoryId);
+        } elseif ($colorId) {
             $products = $productRepo->findByColor($colorId);
+        } elseif ($categoryId) {
+            $products = $productRepo->findByCategory($categoryId);
         } else {
             $products = $productRepo->findBy([], ['id' => 'DESC']);
         }
@@ -42,6 +47,7 @@ class ProductController extends AbstractController
         $totalPages = $pagination['totalPages'];
     
         $colors = $productRepo->getColors();
+        $categories = $productRepo->getCategories();
     
         return $this->render('products/index.html.twig', [
             'products' => $productsPaginated,
@@ -49,6 +55,8 @@ class ProductController extends AbstractController
             'totalPages' => $totalPages,
             'colors' => $colors,
             'selectedColor' => $colorId,
+            'categories' => $categories,
+            'selectedCategory' => $categoryId,
         ]);
     }
 
@@ -82,7 +90,6 @@ class ProductController extends AbstractController
             }
 
             foreach ($product->getProductImages() as $image) {
-                /** @var UploadedFile $file */
                 $file = $image->getFile();
                 if ($file) {
                     $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -125,6 +132,12 @@ class ProductController extends AbstractController
             
             $product->setName(ucwords($product->getName()));
 
+            foreach ($product->getProductCategories() as $category)
+            {
+                $category->addProduct($product);
+                $manager->persist($product);
+            }
+
             $manager->persist($product);
             $manager->flush();
     
@@ -154,6 +167,8 @@ class ProductController extends AbstractController
         EntityManagerInterface $manager
     ): Response {
         $user = $this->getUser();
+        $categories = $product->getProductCategories();
+
         $cart = null;
     
         if ($user) {
@@ -231,6 +246,7 @@ class ProductController extends AbstractController
     
         return $this->render('products/show.html.twig', [
             'product' => $product,
+            'categories' => $categories,
             'myForm' => $form->createView(),
         ]);
     }
@@ -272,6 +288,13 @@ class ProductController extends AbstractController
             foreach ($uniqueVariants as $variant) {
                 $product->addProductVariant($variant);
                 $manager->persist($variant);
+            }
+
+            $product->setName(ucwords($product->getName()));
+            foreach ($product->getProductCategories() as $category)
+            {
+                $category->addProduct($product);
+                $manager->persist($product);
             }
     
             $manager->persist($product);

@@ -15,6 +15,7 @@ use App\Entity\LikeComment;
 use App\Entity\Conversation;
 use App\Entity\ProductColor;
 use App\Entity\ProductVariant;
+use App\Entity\ProductCategory;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -141,6 +142,14 @@ class AppFixtures extends Fixture
             $colors[] = $color; // Store colors to use later
         }
 
+        $categories = [];
+        for ($c = 1; $c <= 10; $c++) {
+            $category = new ProductCategory();
+            $category->setName($faker->word());
+            $manager->persist($category);
+            $categories[] = $category;
+        }
+
         $productCount = 50;
 
         for ($i = 0; $i < $productCount; $i++) {
@@ -149,7 +158,13 @@ class AppFixtures extends Fixture
                     ->setName($faker->words(3, true))
                     ->setDescription($faker->paragraph())
                     ->setPrice($faker->randomFloat(2, 5, 500))
-                    ->setColor($colors[array_rand($colors)]);               
+                    ->setColor($colors[array_rand($colors)]);
+            
+            $categoriesAssociated = $faker->randomElements($categories, $faker->numberBetween(1, 3));
+
+            foreach ($categoriesAssociated as $category) {
+                $product->addProductCategory($category);
+            }
             $manager->persist($product);
 
             // Création des variantes pour chaque produit

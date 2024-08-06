@@ -12,9 +12,18 @@
                     <form>
                         <div class="form-group">
                             <select class="form-control" id="color" name="color" onchange="this.form.submit()">
-                                <option value="">Toutes les couleurs</option>
+                                <option value="">All</option>
                                 {% for color in colors %}
                                     <option value="{{ color.id }}" {% if selectedColor == color.id %}selected{% endif %}>{{ color.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <h5 class="card-title">Filter by category</h5>
+                        <div class="form-group">
+                            <select class="form-control" id="category" name="category" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>{{ category.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -24,17 +33,22 @@
         </div>
         <div class="col-md-9">
             <h1 class="mb-4">Our Products</h1>
-            <div class="row">
-                {% for product in products %}
-                    {% include "partials/_cardProduct.html.twig" %}
-                {% endfor %}
-            </div>
-            {% include "partials/_pagination.html.twig" with {
-                'route': 'products_index',
-                'parameters': {},
-                'page': currentPage,
-                'pages': totalPages
-            } %}
+            {% if products|length > 0 %}
+                <div class="row">
+                    
+                    {% for product in products %}
+                        {% include "partials/_cardProduct.html.twig" %}
+                    {% endfor %}
+                </div>
+                {% include "partials/_pagination.html.twig" with {
+                    'route': 'products_index',
+                    'parameters': {},
+                    'page': currentPage,
+                    'pages': totalPages
+                } %}
+            {% else %}
+                <p>No products... yet</p>
+            {% endif %}
         </div>
     </div>
 </div>

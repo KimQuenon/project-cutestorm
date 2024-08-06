@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\ProductColor;
 use App\Form\ApplicationType;
 use App\Form\ProductImageType;
+use App\Entity\ProductCategory;
 use App\Form\ProductVariantType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -36,6 +37,12 @@ class ProductType extends ApplicationType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
+            ])
+            ->add('productCategories', EntityType::class, [
+                'class' => ProductCategory::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
             ])
         ;
 

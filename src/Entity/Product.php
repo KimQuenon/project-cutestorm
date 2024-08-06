@@ -56,10 +56,17 @@ class Product
     #[ORM\OneToMany(targetEntity: ProductImage::class, mappedBy: 'product', orphanRemoval: true)]
     private Collection $productImages;
 
+    /**
+     * @var Collection<int, ProductCategory>
+     */
+    #[ORM\ManyToMany(targetEntity: ProductCategory::class, mappedBy: 'product')]
+    private Collection $productCategories;
+
     public function __construct()
     {
         $this->productVariants = new ArrayCollection();
         $this->productImages = new ArrayCollection();
+        $this->productCategories = new ArrayCollection();
     }
 
     /**
@@ -212,6 +219,33 @@ class Product
             if ($productImage->getProduct() === $this) {
                 $productImage->setProduct(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductCategory>
+     */
+    public function getProductCategories(): Collection
+    {
+        return $this->productCategories;
+    }
+
+    public function addProductCategory(ProductCategory $productCategory): static
+    {
+        if (!$this->productCategories->contains($productCategory)) {
+            $this->productCategories->add($productCategory);
+            $productCategory->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductCategory(ProductCategory $productCategory): static
+    {
+        if ($this->productCategories->removeElement($productCategory)) {
+            $productCategory->removeProduct($this);
         }
 
         return $this;
