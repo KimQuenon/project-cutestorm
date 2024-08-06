@@ -1,4 +1,4 @@
-{% extends 'profile/base.html.twig' %}
+{% extends 'layouts/profile_layout.html.twig' %}
 
 {% block title %}Your Feed - {{ user.pseudo }}{% endblock %}
 
@@ -7,24 +7,26 @@
 {% endblock %}
 
 {% block postList %}
-    {% for post in posts %}
-        <div class="container">
-            {% include "partials/_cardPost.html.twig" with {'post': post} %}
-        </div>
+    {% if posts|length > 0 %}
+        {% for post in posts %}
+            <div class="container">
+                {% include "partials/_cardPost.html.twig" with {'post': post} %}
+            </div>
+        {% endfor %}
+        {% block pagination %}
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'profile_feed',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
+        {% endblock %}
     {% else %}
         <div class="col-12">
             <div class="alert alert-info" role="alert">
                 No posts available.
             </div>
         </div>
-    {% endfor %}
+    {% endif %}
 {% endblock %}
 
-{% block pagination %}
-    {% include "partials/_pagination.html.twig" with {
-        'route': 'profile_feed',
-        'parameters': {},
-        'page': currentPage,
-        'pages': totalPages
-    } %}
-{% endblock %}

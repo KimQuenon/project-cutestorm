@@ -15,7 +15,7 @@ class NotificationController extends AbstractController
 {
     #[Route('profile/notifications/{page<\d+>?1}', name: 'notifications_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo): Response
+    public function index(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
 

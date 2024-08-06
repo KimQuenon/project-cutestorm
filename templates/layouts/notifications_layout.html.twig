@@ -22,12 +22,11 @@
                     </div>
                 {% endfor %}
             </div>
+        {% block pagination %}{% endblock %}
         {% else %}
             <div class="alert alert-info mt-3" role="alert">
                 Aucune notification
             </div>
         {% endif %}
-
-        {% block pagination %}{% endblock %}
     </div>
 {% endblock %}

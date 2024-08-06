@@ -9,16 +9,17 @@
                     {% endblock %}
                 </div>
 
-                {% block postList %}
-                    <div class="col-12">
-                        <div class="alert alert-info">
-                            No posts available.
+                {% if posts|length > 0 %}
+                    {% block postList %}{% endblock %}
+                    {% block pagination %}{% endblock %}
+                {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                No posts available.
+                            </div>
                         </div>
-                    </div>
-                {% endblock %}
+                {% endif %}
 
-                {% block pagination %}
-                {% endblock %}
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-{% extends 'profile/base.html.twig' %}
+{% extends 'layouts/profile_layout.html.twig' %}
 
 {% block title %}Profile of {{ profileUser.pseudo }}{% endblock %}
 
@@ -28,12 +28,6 @@
                 <div class="container">
                     {% include "partials/_cardPost.html.twig" with {'post': post} %}
                 </div>
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info">
-                        No posts available.
-                    </div>
-                </div>
             {% endfor %}
         {% else %}
             <div class="col-12">
@@ -47,12 +41,6 @@
         {% for post in posts %}
             <div class="container">
                 {% include "partials/_cardPost.html.twig" with {'post': post} %}
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    No posts available.
-                </div>
             </div>
         {% endfor %}
     {% endif %}

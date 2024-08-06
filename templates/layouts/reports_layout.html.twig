@@ -58,5 +58,7 @@
             {% endfor %}
         </tbody>
     </table>
-    {% block pagination %}{% endblock %}
+    {% if reports|length > 0 %}
+        {% block pagination %}{% endblock %}
+    {% endif %}
 {% endblock %}
