@@ -8,8 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[UniqueEntity(fields: ['reference'], message: "This reference already exists, please choose another one.")]
 #[ORM\HasLifecycleCallbacks]
 class Product
 {
@@ -19,15 +22,19 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Reference required.")]
     private ?string $reference = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 2, max: 100, minMessage: "This field must be at least 2 characters long.", maxMessage: "This field can't be longer than 100 characters.")]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(min: 10, minMessage: "This field must be at least 10 characters long.")]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Price required.")]
     private ?float $price = null;
 
     #[ORM\Column(length: 255)]
@@ -40,7 +47,7 @@ class Product
     /**
      * @var Collection<int, ProductVariant>
      */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $productVariants;
 
     public function __construct()

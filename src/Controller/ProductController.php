@@ -30,38 +30,53 @@ class ProductController extends AbstractController
     #[Route('/product/new', name: 'product_create')]
     public function create(ProductColorRepository $colorRepo, Request $request, EntityManagerInterface $manager): Response
     {
-
         $product = new Product();
-        $form = $this->createform(ProductType::class, $product);
+        $form = $this->createForm(ProductType::class, $product);
         $colors = $colorRepo->findAll();
-
+    
         $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->IsValid())
-        {
-            foreach ($product->getProductVariants() as $variant) {
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $variants = $product->getProductVariants();
+            $uniqueVariants = [];
+    
+            // Combine stocks of variants with the same size
+            foreach ($variants as $variant) {
+                $size = $variant->getSize();
+                if (!isset($uniqueVariants[$size])) {
+                    $uniqueVariants[$size] = $variant;
+                } else {
+                    $existing = $uniqueVariants[$size];
+                    $existing->setStock($existing->getStock() + $variant->getStock());
+                    $product->removeProductVariant($variant);
+                }
+            }
+    
+            // Persist unique variants
+            foreach ($uniqueVariants as $variant) {
                 $manager->persist($variant);
             }
-
+    
             $manager->persist($product);
-
             $manager->flush();
-
+    
             $this->addFlash(
                 'success',
-                "La fiche de <strong>".$product->getName()."</strong> a bien été enregistrée."
+                "Product <strong>{$product->getName()}</strong> has been saved."
             );
-
+    
             return $this->redirectToRoute('product_show', [
-                'slug'=> $product->getSlug()
+                'slug' => $product->getSlug()
             ]);
         }
-
+    
         return $this->render('products/new.html.twig', [
             'myForm' => $form->createView(),
             'colors' => $colors
         ]);
     }
+    
+    
 
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(
