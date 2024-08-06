@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Entity\CartItem;
 use App\Form\ProductType;
 use App\Form\AddToCartType;
+use App\Entity\ProductVariant;
 use App\Repository\ProductRepository;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,8 +53,7 @@ class ProductController extends AbstractController
                 }
             }
     
-            // Persist unique variants
-            foreach ($uniqueVariants as $variant) {
+            foreach ($variants as $variant) {
                 $manager->persist($variant);
             }
     
@@ -77,6 +77,7 @@ class ProductController extends AbstractController
     }
     
     
+    
 
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(
@@ -98,9 +99,16 @@ class ProductController extends AbstractController
                 $manager->flush();
             }
         }
+
+        $productVariants = $product->getProductVariants()->toArray();
+
+        // Trier les variantes par taille
+        usort($productVariants, function (ProductVariant $a, ProductVariant $b) {
+            return $a->getSize() <=> $b->getSize();
+        });
     
         $form = $this->createForm(AddToCartType::class, null, [
-            'product_variants' => $product->getProductVariants(),
+            'product_variants' => $productVariants,
         ]);
     
         $form->handleRequest($request);
@@ -167,29 +175,47 @@ class ProductController extends AbstractController
     public function edit(ProductRepository $productRepo, Request $request, EntityManagerInterface $manager, Product $product): Response
     {
         $form = $this->createForm(ProductType::class, $product);
-
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($product->getProductVariants() as $variant) {
+            $variants = $product->getProductVariants();
+            $uniqueVariants = [];
+    
+            // Combine stocks of variants with the same size
+            foreach ($variants as $variant) {
+                $size = $variant->getSize();
+                if (!isset($uniqueVariants[$size])) {
+                    $uniqueVariants[$size] = $variant;
+                } else {
+                    $existing = $uniqueVariants[$size];
+                    $existing->setStock($existing->getStock() + $variant->getStock());
+                    $product->removeProductVariant($variant);
+                }
+            }
+    
+            // Clear the existing variants and re-add the unique ones
+            $product->getProductVariants()->clear();
+            foreach ($uniqueVariants as $variant) {
+                $product->addProductVariant($variant);
                 $manager->persist($variant);
             }
-
+    
             $manager->persist($product);
             $manager->flush();
-
+    
             $this->addFlash(
                 'success',
                 "La fiche de <strong>".$product->getName()."</strong> a été mise à jour."
             );
-
+    
             return $this->redirectToRoute('product_show', [
                 'slug' => $product->getSlug()
             ]);
         }
-
+    
         return $this->render('products/edit.html.twig', [
             'myForm' => $form->createView(),
         ]);
     }
+    
 }
