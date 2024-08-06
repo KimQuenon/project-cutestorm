@@ -16,6 +16,26 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    public function findByColor(int $colorId)
+{
+    return $this->createQueryBuilder('p')
+        ->innerJoin('p.color', 'c')
+        ->where('c.id = :colorId')
+        ->setParameter('colorId', $colorId)
+        ->getQuery()
+        ->getResult();
+}
+
+public function getColors()
+{
+    return $this->createQueryBuilder('p')
+        ->innerJoin('p.color', 'c')
+        ->select('c.id, c.name')
+        ->distinct()
+        ->getQuery()
+        ->getResult();
+}
+
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

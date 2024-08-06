@@ -4,17 +4,38 @@
 
 {% block body %}
 <div class="container my-5">
-    <h1 class="mb-4">Our Products</h1>
     <div class="row">
-        {% for product in products %}
-            {% include "partials/_cardProduct.html.twig" %}
-        {% endfor %}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Filter by color</h5>
+                    <form>
+                        <div class="form-group">
+                            <select class="form-control" id="color" name="color" onchange="this.form.submit()">
+                                <option value="">Toutes les couleurs</option>
+                                {% for color in colors %}
+                                    <option value="{{ color.id }}" {% if selectedColor == color.id %}selected{% endif %}>{{ color.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1 class="mb-4">Our Products</h1>
+            <div class="row">
+                {% for product in products %}
+                    {% include "partials/_cardProduct.html.twig" %}
+                {% endfor %}
+            </div>
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'products_index',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
+        </div>
     </div>
-    {% include "partials/_pagination.html.twig" with {
-        'route': 'products_index',
-        'parameters': {},
-        'page': currentPage,
-        'pages': totalPages
-    } %}
 </div>
 {% endblock %}

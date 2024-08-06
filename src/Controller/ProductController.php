@@ -24,21 +24,31 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class ProductController extends AbstractController
 {
     #[Route('/store/{page<\d+>?1}', name: 'products_index')]
-    public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService): Response
+    public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService, Request $request): Response
     {
-        $products = $productRepo->findAll();
-
+        $colorId = $request->query->get('color');
+    
+        if ($colorId) {
+            $products = $productRepo->findByColor($colorId);
+        } else {
+            $products = $productRepo->findBy([], ['id' => 'DESC']);
+        }
+    
         $currentPage = $page;
         $itemsPerPage = 9;
-
+    
         $pagination = $paginationService->paginate($products, $currentPage, $itemsPerPage);
         $productsPaginated = $pagination['items'];
         $totalPages = $pagination['totalPages'];
-
+    
+        $colors = $productRepo->getColors();
+    
         return $this->render('products/index.html.twig', [
             'products' => $productsPaginated,
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
+            'colors' => $colors,
+            'selectedColor' => $colorId,
         ]);
     }
 
