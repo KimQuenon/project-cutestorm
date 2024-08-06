@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Product;
 use App\Entity\ProductColor;
 use App\Form\ApplicationType;
+use App\Form\ProductImageType;
 use App\Form\ProductVariantType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -37,12 +38,24 @@ class ProductType extends ApplicationType
                 'prototype' => true,
             ])
         ;
+
+        if (!$options['is_edit']) {
+            $builder->add('productImages', CollectionType::class, [
+                'entry_type' => ProductImageType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Product::class,
+            'is_edit' => false,
         ]);
     }
 }

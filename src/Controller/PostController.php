@@ -86,7 +86,7 @@ class PostController extends AbstractController
     }
     
 
-    #[Route("/posts/new", name:"post_create")]
+    #[Route("/post/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $manager): Response
     {
@@ -151,7 +151,7 @@ class PostController extends AbstractController
 
     }
 
-    #[Route("/posts/{slug}", name: "post_show")]
+    #[Route("/post/{slug}", name: "post_show")]
     public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo, Request $request, EntityManagerInterface $manager): Response {
         $user = $this->getUser();
         $author = $post->getAuthor();
@@ -229,7 +229,7 @@ class PostController extends AbstractController
     }
     
 
-    #[Route("/posts/{slug}/edit", name: "post_edit")]
+    #[Route("/post/{slug}/edit", name: "post_edit")]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
         subject: new Expression('args["post"].getAuthor()'),
@@ -266,7 +266,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route("/posts/{slug}/delete", name:"post_delete")]
+    #[Route("/post/{slug}/delete", name:"post_delete")]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
         subject: new Expression('args["post"].getAuthor()'),
@@ -299,7 +299,7 @@ class PostController extends AbstractController
             return $this->redirectToRoute('posts_index');
     }
 
-    #[Route("/posts/{slug}/pictures", name: "post_pictures")]
+    #[Route("/post/{slug}/pictures", name: "post_pictures")]
     #[IsGranted('ROLE_USER')]
     public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
     {
@@ -311,7 +311,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route("/posts/{slug}/add-image", name: "post_add_image")]
+    #[Route("/post/{slug}/add-image", name: "post_add_image")]
     #[IsGranted('ROLE_USER')]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
     {
@@ -364,7 +364,7 @@ class PostController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route("picture-delete/{id}", name: "post_picture_delete")]
+    #[Route("post/picture-delete/{id}", name: "post_picture_delete")]
     #[IsGranted('ROLE_USER')]
     public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] PostImage $postImage, EntityManagerInterface $manager): Response
     {

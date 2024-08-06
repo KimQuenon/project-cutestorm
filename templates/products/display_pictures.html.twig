@@ -1,0 +1,11 @@
+{% extends 'layouts/pictures_layout.html.twig' %}
+
+{% block images_title %}Images of {{ product.name }}{% endblock %}
+{% block images_heading %}Images of {{ product.name }}{% endblock %}
+{% block add_image_route %}product_add_image{% endblock %}
+{% block delete_image_route %}product_picture_delete{% endblock %}
+{% block back_route %}product_show{% endblock %}
+{% block slug %}{{ product.slug }}{% endblock %}
+{% block alt_text %}{{ product.name }}{% endblock %}
+{% block back_button_text %}Back to product{% endblock %}
+{% block background_color %}#f8f9fa{% endblock %}
