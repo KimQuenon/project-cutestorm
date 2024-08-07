@@ -1,0 +1,16 @@
+{% extends 'layouts/orders_layout.html.twig' %}
+
+{% block title %}Admin - Paid Orders{% endblock %}
+
+{% block orders_title %}Paid Orders{% endblock %}
+
+{% block orders_total %}{{ totalPaid|number_format(2, ',', '.') }} $/{{ total|number_format(2, ',', '.') }} ${% endblock %}
+
+{% block orders_pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'admin_orders_paid',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

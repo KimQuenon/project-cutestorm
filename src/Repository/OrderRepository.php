@@ -43,6 +43,63 @@ class OrderRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function getTotalPrice(): float
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->select('SUM(o.totalPrice) AS total')
+            ->getQuery();
+
+        $result = $qb->getSingleScalarResult();
+
+        return $result ? (float) $result : 0.0;
+    }
+
+    public function findAllPaidOrders(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.isPaid = :isPaid')
+            ->setParameter('isPaid', true)
+            ->orderBy('o.timestamp', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getTotalPaidOrdersPrice(): float
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->select('SUM(o.totalPrice) AS total')
+            ->where('o.isPaid = :isPaid')
+            ->setParameter('isPaid', true)
+            ->getQuery();
+
+        $result = $qb->getSingleScalarResult();
+
+        return $result ? (float) $result : 0.0;
+    }
+
+    public function findAllUnpaidOrders(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.isPaid = :isPaid')
+            ->setParameter('isPaid', false)
+            ->orderBy('o.timestamp', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getTotalUnpaidOrdersPrice(): float
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->select('SUM(o.totalPrice) AS total')
+            ->where('o.isPaid = :isPaid')
+            ->setParameter('isPaid', false)
+            ->getQuery();
+
+        $result = $qb->getSingleScalarResult();
+
+        return $result ? (float) $result : 0.0;
+    }
+
     //    /**
     //     * @return Order[] Returns an array of Order objects
     //     */

@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Entity\ProductImage;
 use App\Form\ProductImageType;
+use App\Service\PaginationService;
 use App\Repository\ProductRepository;
 use App\Repository\OrderItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,17 +19,26 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AdminProductController extends AbstractController
 {
-    #[Route('/admin/products', name: 'products_index')]
-    public function index(ProductRepository $productRepo, OrderItemRepository $orderItemRepo): Response
+    #[Route('/admin/products/{page<\d+>?1}', name: 'products_index')]
+    public function index(int $page, ProductRepository $productRepo, OrderItemRepository $orderItemRepo, PaginationService $paginationService): Response
     {
         $products = $productRepo->findBy([], ['id' => 'DESC']);
         $bestSeller = $productRepo->findBestSeller();
         $worstSeller = $productRepo->findWorstSeller();
 
+        $currentPage = $page;
+        $itemsPerPage = 9;
+    
+        $pagination = $paginationService->paginate($products, $currentPage, $itemsPerPage);
+        $productsPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
+
         return $this->render('admin/products/index.html.twig', [
-            'products' => $products,
+            'products' => $productsPaginated,
             'bestSeller' => $bestSeller,
-            'worstSeller' => $worstSeller
+            'worstSeller' => $worstSeller,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 
@@ -205,7 +215,7 @@ class AdminProductController extends AbstractController
         ]);
     }
 
-    #[Route("/product/{slug}/add-image", name: "product_add_image")]
+    #[Route("admin/product/{slug}/add-image", name: "product_add_image")]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, Request $request, EntityManagerInterface $manager): Response
     {
         if (count($product->getProductImages()) >= 5) {
@@ -247,6 +257,34 @@ class AdminProductController extends AbstractController
         return $this->render('admin/products/add_image.html.twig', [
             'product' => $product,
             'myForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route("admin/product/picture-delete/{id}", name: "product_picture_delete")]
+    #[IsGranted('ROLE_USER')]
+    public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] ProductImage $productImage, EntityManagerInterface $manager): Response
+    {
+        $product = $productImage->getProduct();
+
+        if (count($product->getProductImages()) <= 1) {
+            $this->addFlash('danger', 'A product must have at least one image. Add another image first before deleting this one.');
+            return $this->redirectToRoute('product_pictures', [
+                'slug' => $product->getSlug(),
+            ]);
+        }
+        
+        // Remove the image file if it exists
+        if (!empty($productImage->getFilename())) {
+            unlink($this->getParameter('uploads_directory') . '/' . $productImage->getFilename());
+            $manager->remove($productImage);
+        }
+        
+        $manager->flush();
+        
+        $this->addFlash('success', 'Picture deleted!');
+        
+        return $this->redirectToRoute('product_pictures', [
+            'slug' => $product->getSlug(),
         ]);
     }
     

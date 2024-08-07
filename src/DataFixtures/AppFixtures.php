@@ -57,7 +57,7 @@ class AppFixtures extends Fixture
         $admin = new User();
 
         $admin->setPseudo('Admin')
-                ->setRoles(['ROLE_ADMIN'])
+                ->setRoles(['ROLE_ADMIN', 'ROLE_MODERATOR'])
                 ->setFirstname('Kim')
                 ->setLastname('Quenon')
                 ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))

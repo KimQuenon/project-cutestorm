@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product List{% endblock %}
+{% block title %}Products Management{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -82,13 +82,15 @@
                             </a> #}
                         </td>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center font-italic">No products found.</td>
-                    </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% include "partials/_pagination.html.twig" with {
+            'route': 'products_index',
+            'parameters': {},
+            'page': currentPage,
+            'pages': totalPages
+        } %}
     </div>
 </div>
 {% endblock %}

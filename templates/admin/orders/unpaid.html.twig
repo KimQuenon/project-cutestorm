@@ -1,0 +1,16 @@
+{% extends 'layouts/orders_layout.html.twig' %}
+
+{% block title %}Admin - Unpaid Orders{% endblock %}
+
+{% block orders_title %}Unpaid Orders{% endblock %}
+
+{% block orders_total %}{{ totalUnpaid|number_format(2, ',', '.') }} $/{{ total|number_format(2, ',', '.') }} ${% endblock %}
+
+{% block orders_pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'admin_orders_unpaid',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}

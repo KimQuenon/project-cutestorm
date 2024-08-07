@@ -153,7 +153,6 @@ class OrderController extends AbstractController
             'user' => $user
         ]);
 
-        $user = $this->getUser();
         $userName = $user->getLastName();
 
         $fileName = sprintf('Order_%s-%s.pdf', $order->getReference(), $userName);

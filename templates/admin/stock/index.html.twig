@@ -10,6 +10,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Product</th>
                         <th>Size</th>
                         <th>Current Stock</th>
@@ -21,6 +22,12 @@
                 <tbody>
                     {% for variant in variants %}
                         <tr>
+                            <td>{% if variant.stock <= 10 %}<span class="badge rounded-pill bg-danger">!</span>
+                            {% elseif variant.stock > 10 and variant.stock < 25 %}
+                                <span class="badge rounded-pill bg-warning">...</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-success">V</span>
+                            {% endif %}</td>
                             <td>{{ variant.product.name }}</td>
                             <td>{{ variant.size }}</td>
                             <td>{{ variant.stock }}</td>
@@ -38,6 +45,12 @@
                 </tbody>
             </table>
         </form>
+        {% include "partials/_pagination.html.twig" with {
+            'route': 'stock_index',
+            'parameters': {},
+            'page': currentPage,
+            'pages': totalPages
+        } %}
     </div>
 {% endblock %}
 
