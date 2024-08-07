@@ -73,7 +73,30 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    private function findSeller($order): ?Product
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p')
+            ->join('p.productVariants', 'pv')
+            ->join('pv.orderItems', 'oi')
+            ->groupBy('p')
+            ->orderBy('COUNT(oi)', $order)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     
+        return $qb;
+    }
+    
+    public function findBestSeller(): ?Product
+    {
+        return $this->findSeller('DESC');
+    }
+    
+    public function findWorstSeller(): ?Product
+    {
+        return $this->findSeller('ASC');
+    }
 
     //    /**
     //     * @return Product[] Returns an array of Product objects

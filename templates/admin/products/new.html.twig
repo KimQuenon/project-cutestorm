@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% block title %}New Product
+{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>New Product</h1>
+
+		{{ form_start(myForm) }}
+		{{ form_row(myForm.reference) }}
+		{{ form_row(myForm.name) }}
+		{{ form_row(myForm.description) }}
+		{{ form_row(myForm.price) }}
+		{{ form_row(myForm.color) }}
+
+		<div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
+			{% for child in myForm.productVariants %}
+				<div class="form-row mb-3">
+					{{ form_widget(child) }}
+				</div>
+			{% endfor %}
+		</div>
+		<button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
+
+		<div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
+			{% for productImage in myForm.productImages %}
+				<div class="image-form row mb-3">
+					<div class="col">
+						{{ form_widget(productImage) }}
+					</div>
+					<div class="col-auto">
+						<button type="button" class="remove-image btn btn-danger mt-2">X</button>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<button type="button" id="add-image" class="btn btn-secondary mt-3">Add Image</button>
+
+		{{ form_end(myForm) }}
+		<button type="submit" class="btn btn-primary mt-3">Submit</button>
+	</div>
+{% endblock %}
+
+{% block form_row %}
+	<div class="form-group mt-2">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ encore_entry_script_tags('removeVariant') }}
+	{{ encore_entry_script_tags('imgActions') }}
+{% endblock %}

@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {% block form_title %}Default Title{% endblock %}
+	Add Image To
+	{% block form_title %}{% endblock %}
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">
-            {% block form_heading %}Default Heading{% endblock %}
-        </h1>
-        {{ form_start(myForm) }}
-            {{ form_widget(myForm) }}
-            <button type="submit" class="btn btn-primary mt-4">
-                {% block form_button_text %}Submit{% endblock %}
-            </button>
-        {{ form_end(myForm) }}
-        <a href="{{ path('default_back_path') }}" class="btn btn-secondary mt-4">
-            {% block form_back_text %}Back{% endblock %}
-        </a>
-    </div>
+	<div class="container mt-4">
+		<h1 class="mb-4">
+			Add Image To
+			{% block form_heading %}{% endblock %}
+		</h1>
+		{{ form_start(myForm) }}
+		{{ form_widget(myForm) }}
+		<button type="submit" class="btn btn-primary mt-4">
+			Add
+		</button>
+		{{ form_end(myForm) }}
+		{% block back_button %}{% endblock %}
+	</div>
 {% endblock %}

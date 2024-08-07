@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>Edit Product</h1>
+        <a href="{{ path('product_pictures', {'slug': product.slug}) }}" class="btn btn-warning btn-sm">
+            <i class="fas fa-picture"></i> View Pictures
+        </a>
+		{{ form_start(myForm) }}
+		{{ form_row(myForm.reference) }}
+		{{ form_row(myForm.name) }}
+		{{ form_row(myForm.description) }}
+		{{ form_row(myForm.price) }}
+		{{ form_row(myForm.color) }}
+
+		<div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
+			{% for child in myForm.productVariants %}
+				<div class="form-row mb-3">
+					{{ form_widget(child) }}
+				</div>
+			{% endfor %}
+		</div>
+		<button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
+
+		{{ form_end(myForm) }}
+		<button type="submit" class="btn btn-primary mt-3">Submit</button>
+	</div>
+{% endblock %}
+
+{% block form_row %}
+	<div class="form-group mt-2">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ encore_entry_script_tags('removeVariant') }}
+{% endblock %}

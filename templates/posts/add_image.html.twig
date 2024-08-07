@@ -1,7 +1,7 @@
 {% extends 'layouts/add_pictures_layout.html.twig' %}
 
-{% block form_title %}Add Image to {{ post.title }}{% endblock %}
-{% block form_heading %}Add Image to {{ post.title }}{% endblock %}
-{% block form_button_text %}Add{% endblock %}
-{% block form_back_text %}Back to Images{% endblock %}
-{% block default_back_path %}{{ path('post_pictures', {'slug': post.slug}) }}{% endblock %}
+{% block form_title %}{{ post.title }}{% endblock %}
+{% block form_heading %}{{ post.title }}{% endblock %}
+{% block back_button %}
+    <a href="{{ path('post_pictures', {'slug': post.slug}) }}" class="btn btn-secondary mt-4">Back to Images</a>
+{% endblock %}

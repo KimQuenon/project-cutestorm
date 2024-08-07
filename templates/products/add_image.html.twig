@@ -1,8 +1,0 @@
-{# templates/product_add_image.html.twig #}
-{% extends 'layouts/add_pictures_layout.html.twig' %}
-
-{% block form_title %}Add Image to {{ product.name }}{% endblock %}
-{% block form_heading %}Add Image to {{ product.name }}{% endblock %}
-{% block form_button_text %}Add{% endblock %}
-{% block form_back_text %}Back to Images{% endblock %}
-{% block default_back_path %}{{ path('product_pictures', {'slug': product.slug}) }}{% endblock %}

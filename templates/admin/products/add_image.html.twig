@@ -1,0 +1,7 @@
+{% extends 'layouts/add_pictures_layout.html.twig' %}
+
+{% block form_title %}{{ product.name }}{% endblock %}
+{% block form_heading %}{{ product.name }}{% endblock %}
+{% block back_button %}
+    <a href="{{ path('product_pictures', {'slug': product.slug}) }}" class="btn btn-secondary mt-4">Back to Images</a>
+{% endblock %}

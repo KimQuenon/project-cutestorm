@@ -54,6 +54,25 @@ class AppFixtures extends Fixture
     
         $manager->persist($anon);
 
+        $admin = new User();
+
+        $admin->setPseudo('Admin')
+                ->setRoles(['ROLE_ADMIN'])
+                ->setFirstname('Kim')
+                ->setLastname('Quenon')
+                ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+                ->setAddress($faker->streetAddress())
+                ->setPostalcode(intval($faker->postcode()))
+                ->setCity($faker->city())
+                ->setCountry($faker->country())
+                ->setEmail('admin@cutestorm.be')
+                ->setPassword($this->passwordHasher->hashPassword($admin, 'admin'))
+                ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
+                ->setPrivate(true);
+
+
+        $manager->persist($admin);
+
         $moderators = [];
         for ($m = 1; $m <= 4; $m++) {
             $moderator = new User();
