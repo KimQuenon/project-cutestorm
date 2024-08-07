@@ -7,6 +7,7 @@ use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Comment;
+use App\Entity\Contact;
 use App\Entity\Message;
 use App\Entity\Product;
 use App\Entity\Delivery;
@@ -70,7 +71,6 @@ class AppFixtures extends Fixture
                 ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
                 ->setPrivate(true);
 
-
         $manager->persist($admin);
 
         $moderators = [];
@@ -131,12 +131,12 @@ class AppFixtures extends Fixture
             [
                 'name' => 'Standard Shipping',
                 'price' => 5.99,
-                'deliveryTime' => "2 weeks" // Delivery time in days
+                'deliveryTime' => "2 weeks"
             ],
             [
                 'name' => 'Express Shipping',
                 'price' => 12.99,
-                'deliveryTime' => "3 days" // Delivery time in days
+                'deliveryTime' => "3 days" 
             ]
         ];
     
@@ -348,6 +348,16 @@ class AppFixtures extends Fixture
                     $conversations[] = $conversation; // Ajouter la conversation au tableau
                 }
             }
+        }
+
+        //contact
+        for ($c=1; $c <=10 ; $c++){
+            $contact = new Contact();
+            $contact->setName($faker->name())
+                    ->setEmail($faker->email())
+                    ->setMessage('<p>'.join('<p></p>',$faker->paragraphs(2)).'</p>');
+
+            $manager->persist($contact);
         }
     
         $manager->flush();
