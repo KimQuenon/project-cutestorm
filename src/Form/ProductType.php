@@ -28,8 +28,8 @@ class ProductType extends ApplicationType
             ->add('price', MoneyType::class, $this->getConfiguration("Price:", '...'))
             ->add('color', EntityType::class, [
                 'class' => ProductColor::class,
-                'choice_label' => 'name', // Choix basé sur le nom de la couleur
-                'required' => true, // Marque le champ comme obligatoire
+                'choice_label' => 'name',
+                'required' => true,
             ])
             ->add('productVariants', CollectionType::class, [
                 'entry_type' => ProductVariantType::class,
@@ -43,6 +43,7 @@ class ProductType extends ApplicationType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
+                'required' => true,
             ])
         ;
 
