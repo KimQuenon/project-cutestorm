@@ -16,6 +16,14 @@ class ContactRepository extends ServiceEntityRepository
         parent::__construct($registry, Contact::class);
     }
 
+    public function markAllAsRead(): void
+    {
+        $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.isRead', 'true')
+            ->getQuery()
+            ->execute();
+    }
     //    /**
     //     * @return Contact[] Returns an array of Contact objects
     //     */

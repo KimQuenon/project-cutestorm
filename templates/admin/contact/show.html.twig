@@ -4,9 +4,10 @@
 
 {% block body %}
     <div class="container full">
-        <h1>Message de {{contact.name}}</h1>
+        <a href="{{path('contact_index')}}" type="button" class="btn btn-secondary">Back</a>
+        <h1>Message from {{contact.name}}</h1>
         <p>{{contact.message}}</p>
         <a href="mailto:{{contact.email}}" type="button" class="btn btn-primary">Répondre</a>
-        <a href="{{path('admin_contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
+        <a href="{{path('contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
     </div>
 {% endblock %}

@@ -4,29 +4,47 @@
 
 {% block body %}
     <div class="container mt-4 ">
+        <a href="{{path('mark_contact_read')}}" type="button" class="btn btn-secondary">Mark all as read</a>
         <div class="row">
             <h1 class="mb-3">Messagerie</h1>
-            <table class="table table-striped">
-                <thead>
-                    <tr class="table-active">
-                        <th class="text-center">Nom</th>
-                        <th class="text-center">Mail</th>
-                        <th class="text-center">Message</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                {% for contact in contacts %}
-                    <tr>
-                        <td class="align-middle">{{contact.name}}</td>
-                        <td class="align-middle">{{contact.email}}</td>
-                        <td class="align-middle">{{contact.message | raw | striptags | slice(0, 50)}}...</td>
-                        <td class="align-middle text-center">
-                            <a href="{{path('admin_contact_show', {'id':contact.id})}}" type="button" class="btn btn-primary">Voir plus...</a>
-                            <a href="{{path('admin_contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </thead>
-            </table>
+            {% if contacts|length > 0 %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="table-active">
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Nom</th>
+                            <th class="text-center">Mail</th>
+                            <th class="text-center">Message</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    {% for contact in contacts %}
+                        <tr>
+                            <td class="align-middle">
+                                {% if contact.IsRead == false %}
+                                    <span class="badge rounded-pill bg-primary">!</span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle">{{contact.name}}</td>
+                            <td class="align-middle">{{contact.email}}</td>
+                            <td class="align-middle">{{contact.message | raw | striptags | slice(0, 50)}}...</td>
+                            <td class="align-middle text-center">
+                                <a href="{{path('contact_show', {'id':contact.id})}}" type="button" class="btn btn-primary">Voir plus...</a>
+                                <a href="{{path('contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </thead>
+                </table>
+
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'contact_index',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
+            {% else %}
+                <p>No messages.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

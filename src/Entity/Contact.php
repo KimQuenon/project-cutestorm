@@ -31,6 +31,9 @@ class Contact
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
+    #[ORM\Column]
+    private ?bool $isRead = false;
+
     #[ORM\PrePersist]
     public function prePersist(): void
     {
@@ -89,6 +92,18 @@ class Contact
     public function setTimestamp(\DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
+
+        return $this;
+    }
+
+    public function isRead(): ?bool
+    {
+        return $this->isRead;
+    }
+
+    public function setRead(bool $isRead): static
+    {
+        $this->isRead = $isRead;
 
         return $this;
     }
