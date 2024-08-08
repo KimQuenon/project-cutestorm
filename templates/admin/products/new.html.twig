@@ -6,43 +6,57 @@
 {% form_theme myForm _self %}
 
 {% block body %}
-	<div class="container mt-4">
-		<h1>New Product</h1>
+    <div class="container mt-4">
+        <h1>New Product</h1>
+        <a href="{{ path('color_new') }}" class="btn btn-secondary mt-3">Add color</a>
 
-		{{ form_start(myForm) }}
-		{{ form_row(myForm.reference) }}
-		{{ form_row(myForm.name) }}
-		{{ form_row(myForm.description) }}
-		{{ form_row(myForm.price) }}
-		{{ form_row(myForm.color) }}
+        {{ form_start(myForm) }}
+        {{ form_row(myForm.reference) }}
+        {{ form_row(myForm.name) }}
+        {{ form_row(myForm.description) }}
+        {{ form_row(myForm.price) }}
 
-		<div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
-			{% for child in myForm.productVariants %}
-				<div class="form-row mb-3">
-					{{ form_widget(child) }}
-				</div>
-			{% endfor %}
-		</div>
-		<button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
+        <div class="form-group">
+            <label for="{{ myForm.color.vars.id }}">Color</label>
+            <div class="color-selector">
+                {% for color in colors %}
+                    <div class="color-option">
+                        <input type="radio" id="color_{{ color.id }}" name="{{ myForm.color.vars.full_name }}" value="{{ color.id }}" {% if color.id == myForm.color.vars.value %} checked{% endif %}>
+                        <label for="color_{{ color.id }}" style="background-color: {{ color.hexCode }}; border-radius: 50%; width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></label>
+                        {{ color.name }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 
-		<div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
-			{% for productImage in myForm.productImages %}
-				<div class="image-form row mb-3">
-					<div class="col">
-						{{ form_widget(productImage) }}
-					</div>
-					<div class="col-auto">
-						<button type="button" class="remove-image btn btn-danger mt-2">X</button>
-					</div>
-				</div>
-			{% endfor %}
-		</div>
-		<button type="button" id="add-image" class="btn btn-secondary mt-3">Add Image</button>
+        <div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
+            {% for child in myForm.productVariants %}
+                <div class="form-row mb-3">
+                    {{ form_widget(child) }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
 
-		{{ form_end(myForm) }}
-		<button type="submit" class="btn btn-primary mt-3">Submit</button>
-	</div>
+        <div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
+            {% for productImage in myForm.productImages %}
+                <div class="image-form row mb-3">
+                    <div class="col">
+                        {{ form_widget(productImage) }}
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="remove-image btn btn-danger mt-2">X</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-image" class="btn btn-secondary mt-3">Add Image</button>
+
+        {{ form_end(myForm) }}
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </div>
 {% endblock %}
+
 
 {% block form_row %}
 	<div class="form-group mt-2">
@@ -56,3 +70,5 @@
 	{{ encore_entry_script_tags('removeVariant') }}
 	{{ encore_entry_script_tags('imgActions') }}
 {% endblock %}
+
+

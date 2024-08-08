@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block title %}New Color{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Create New Color</h1>
+
+        {{ form_start(myForm) }}
+            {{ form_widget(myForm) }}
+        <button type="submit" class="btn btn-primary mt-3">Save Color</button>
+        <a href="{{ path('product_new') }}" class="btn btn-secondary mt-3">Back to Products</a>
+        {{ form_end(myForm) }}
+    </div>
+{% endblock %}
+
+{% block form_row %}
+    <div class="form-group mt-2">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}

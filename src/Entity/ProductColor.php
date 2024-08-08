@@ -6,8 +6,11 @@ use App\Repository\ProductColorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ProductColorRepository::class)]
+#[UniqueEntity(fields: ['hexCode'], message: "This code is already at use.")]
 class ProductColor
 {
     #[ORM\Id]
@@ -16,9 +19,11 @@ class ProductColor
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 3, max:25, minMessage:"This field must be at least 3 characters long.", maxMessage: "This field can't be longer than 25 characters.")]
     private ?string $name = null;
 
-    #[ORM\Column(length: 7)] 
+    #[ORM\Column(length: 7)]
+    #[Assert\Length(min: 3, max:7, minMessage:"This field must be at least 3 characters long.", maxMessage: "This field can't be longer than 7 characters.")]
     private ?string $hexCode = null;
 
     /**

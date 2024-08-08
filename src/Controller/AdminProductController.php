@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Entity\ProductColor;
 use App\Entity\ProductImage;
+use App\Form\ProductColorType;
 use App\Form\ProductImageType;
 use App\Service\PaginationService;
 use App\Repository\ProductRepository;
@@ -140,6 +142,33 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    #[Route("admin/color/new", name: "color_new")]
+    public function newColor(Request $request, EntityManagerInterface $manager): Response
+    {
+        $color = new ProductColor();
+        $form = $this->createForm(ProductColorType::class, $color);
+    
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $manager->persist($color);
+            $manager->flush();
+    
+            $this->addFlash(
+                'success',
+                "Color <strong>{$color->getName()}</strong> created !"
+            );
+    
+            return $this->redirectToRoute('product_new');
+        }
+    
+        return $this->render('admin/products/add_color.html.twig', [
+            'myForm' => $form->createView(),
+            'color' => $color
+        ]);
+    }
+
     #[Route('admin/product/{slug}/edit', name: 'product_edit')]
     public function edit(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, Request $request, EntityManagerInterface $manager): Response
     {
@@ -254,7 +283,6 @@ class AdminProductController extends AbstractController
     }
 
     #[Route("admin/product/{slug}/pictures", name: "product_pictures")]
-    #[IsGranted('ROLE_USER')]
     public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product): Response
     {
         $images = $product->getProductImages();
