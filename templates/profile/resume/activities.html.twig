@@ -1,0 +1,56 @@
+{# templates/profile/resume/activities.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Activity Summary{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Activity Summary</h1>
+
+        <section>
+            <h2>Liked Posts</h2>
+            {% if posts is not empty %}
+                    {% for post in posts %}
+                        {% include "partials/_cardPost.html.twig" %}
+                    {% endfor %}
+            {% else %}
+                <p>No liked posts.</p>
+            {% endif %}
+        </section>
+
+        <section>
+            <h2>Followers</h2>
+            {% if followers is not empty %}
+                <ul class="list-group">
+                    {% for follower in followers %}
+                        <li class="list-group-item">
+                            <a href="{{ path('profile_show', {'slug': follower.slug}) }}">
+                                {{ follower.pseudo }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No followers.</p>
+            {% endif %}
+        </section>
+
+        <section>
+            <h2>Recent Followings (3 most recent)</h2>
+            {% if followings is not empty %}
+                <ul class="list-group">
+                    {% for following in followings %}
+                        <li class="list-group-item">
+                            <a href="{{ path('profile_show', {'slug': following.slug}) }}">
+                                {{ following.pseudo }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent followings.</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

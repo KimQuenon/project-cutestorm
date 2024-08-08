@@ -89,6 +89,22 @@ class PostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findLikedPostsByUser(User $user, ?int $limit = null): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->innerJoin('p.likes', 'l')
+            ->where('l.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('l.id', 'DESC'); // Optionally sort by like date
+
+        // Apply the limit if provided
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Post[] Returns an array of Post objects
     //     */

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Report;
+use App\Entity\Following;
 use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -100,9 +101,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'relatedUser', cascade: ['remove'], orphanRemoval: true)]
     private Collection $relatedNotifications;
 
-    #[ORM\OneToMany(mappedBy: 'followerUser', cascade: ['remove'], targetEntity: Following::class),]
+    // Users that this user is following
+    #[ORM\OneToMany(mappedBy: 'followerUser', cascade: ['remove'], targetEntity: Following::class)]
     private Collection $followings;
 
+    // Users that are following this user
     #[ORM\OneToMany(mappedBy: 'followedUser', cascade: ['remove'], targetEntity: Following::class)]
     private Collection $followedByUsers;
 
@@ -541,29 +544,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFolloweds(): Collection
+    /**
+     * @return Collection<int, Following>
+     */
+    public function getFollowedByUsers(): Collection
     {
-        return $this->followeds;
+        return $this->followedByUsers;
     }
 
-    public function addFollowed(Following $followed): static
+    /**
+     * @param Following $following
+     * @return $this
+     */
+    public function addFollowedByUser(Following $following): self
     {
-        if (!$this->followeds->contains($followed)) {
-            $this->followeds->add($followed);
-            $followed->setFollowed($this);
+        if (!$this->followedByUsers->contains($following)) {
+            $this->followedByUsers->add($following);
+            $following->setFollowedUser($this);
         }
-
         return $this;
     }
 
-    public function removeFollowed(Following $followed): static
+    /**
+     * @param Following $following
+     * @return $this
+     */
+    public function removeFollowedByUser(Following $following): self
     {
-        if ($this->followeds->removeElement($followed)) {
-            if ($followed->getFollowed() === $this) {
-                $followed->setFollowed(null);
+        if ($this->followedByUsers->removeElement($following)) {
+            // set the owning side to null (unless already changed)
+            if ($following->getFollowedUser() === $this) {
+                $following->setFollowedUser(null);
             }
         }
-
         return $this;
     }
 

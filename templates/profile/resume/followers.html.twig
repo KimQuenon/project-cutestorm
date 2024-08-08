@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Your followers{% endblock %}
+
+{% block body %}
+    {% for follower in followers %}
+        <a href="{{ path('profile_show', {'slug': follower.slug}) }}">
+            <p>{{ follower.pseudo }}</p>
+        </a>
+    {% endfor %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'resume_followers',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %}
