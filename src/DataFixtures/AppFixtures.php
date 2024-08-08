@@ -6,6 +6,7 @@ use Faker\Factory;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\Review;
 use App\Entity\Comment;
 use App\Entity\Contact;
 use App\Entity\Message;
@@ -184,6 +185,18 @@ class AppFixtures extends Fixture
             foreach ($categoriesAssociated as $category) {
                 $product->addProductCategory($category);
             }
+
+            $reviews = [];
+
+            $review = new Review();
+            $review->setAuthor($users[rand(0, count($users)-1)])
+                    ->setProduct($product)
+                    ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month')) 
+                    ->setContent($faker->paragraph())
+                    ->setRating(rand(1,5));
+            $manager->persist($review);
+            $reviews[] = $review;
+        
             $manager->persist($product);
 
             // Création des variantes pour chaque produit

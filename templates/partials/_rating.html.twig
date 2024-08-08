@@ -1,0 +1,11 @@
+<span class='rating'>
+    {% set filledStars = rating | round(0, 'floor') %}
+    
+    {% for i in 1..5 %}
+        {% if i <= filledStars %}
+            <i class='fas fa-star star-filled'></i>
+        {% else %}
+            <i class='far fa-star star-empty'></i>
+        {% endif %}
+    {% endfor %}
+</span>

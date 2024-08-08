@@ -3,14 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\Review;
 use App\Entity\Product;
 use App\Entity\CartItem;
+use App\Form\ReviewType;
 use App\Form\ProductType;
 use App\Form\AddToCartType;
 use App\Entity\ProductImage;
 use App\Entity\ProductVariant;
 use App\Form\ProductImageType;
 use App\Service\PaginationService;
+use App\Repository\ReviewRepository;
 use App\Repository\ProductRepository;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,11 +68,13 @@ class ProductController extends AbstractController
         #[MapEntity(mapping: ['slug' => 'slug'])] Product $product,
         ProductRepository $productRepo,
         CartItemRepository $cartItemRepo,
+        ReviewRepository $reviewRepo,
         Request $request,
         EntityManagerInterface $manager
     ): Response {
         $user = $this->getUser();
         $categories = $product->getProductCategories();
+        $reviews = $product->getReviews();
 
         $cart = null;
     
@@ -145,11 +150,48 @@ class ProductController extends AbstractController
                 'slug' => $product->getSlug(),
             ]);
         }
+
+
+        /*---------------------------------REVIEW-----------------------------------*/
+
+        $averageRating = $reviewRepo->getAverageRating($product->getId());
+
+        $existingReview = $reviewRepo->findOneBy([
+            'author' => $user,
+            'product' => $product,
+        ]);
+
+
+        $review = new Review();
+        $reviewForm = $this->createform(ReviewType::class, $review);
+        $reviewForm->handleRequest($request);
+
+        if($reviewForm->isSubmitted() && $reviewForm->IsValid())
+        {
+            $review->setAuthor($user);
+            $review->setProduct($product);
+
+            $manager->persist($review);    
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "Thank you for this feedback !"
+            );
+
+            return $this->redirectToRoute('product_show', [
+                'slug' => $product->getSlug(),
+            ]);
+        }
     
         return $this->render('products/show.html.twig', [
             'product' => $product,
             'categories' => $categories,
             'myForm' => $form->createView(),
+            'reviews' => $reviews,
+            'reviewForm' => $reviewForm->createView(),
+            'existingReview'=> $existingReview,
+            'averageRating' => $averageRating
         ]);
     }
 }

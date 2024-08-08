@@ -62,4 +62,30 @@
         </div>
     </div>
 </div>
+
+<div class="container">
+    {% if app.user and not existingReview %}
+        {{ form_start(reviewForm) }}
+                {{form_widget(reviewForm)}}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        {{ form_end(myForm) }}
+    {% elseif existingReview %}
+        <p>You have already reviewed this product.</p>
+    {% else %}
+        <p>You must be logged in to review this product.</p>
+    {% endif %}
+</div>
+
+<div class="container">
+    {% if reviews|length > 0 %}
+        <strong>{{averageRating}}</strong><br>
+        {% for review in reviews %}
+           {% include "partials/_rating.html.twig" with {'rating': review.rating} %}
+            <p>{{review.content}}</p>
+        {% endfor %}
+    {% else %}
+        No reviews... yet.
+    {% endif %}
+</div>
+
 {% endblock %}
