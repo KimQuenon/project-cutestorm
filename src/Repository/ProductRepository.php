@@ -16,30 +16,40 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findByColorAndCategory(int $colorId, int $categoryId)
+    public function findByColorAndCategory(int $colorId, int $categoryId, array $orderBy = ['id' => 'DESC'])
     {
-        return $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('p')
             ->innerJoin('p.color', 'c')
             ->innerJoin('p.productCategories', 'pc')
             ->where('c.id = :colorId')
             ->andWhere('pc.id = :categoryId')
             ->setParameter('colorId', $colorId)
-            ->setParameter('categoryId', $categoryId)
-            ->orderBy('p.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('categoryId', $categoryId);
+    
+        foreach ($orderBy as $field => $order) {
+            $qb->addOrderBy('p.' . $field, strtoupper($order));
+        }
+    
+        return $qb->getQuery()->getResult();
     }
+    
+    
 
-    public function findByColor(int $colorId)
+    public function findByColor(int $colorId, array $orderBy = ['id' => 'DESC'])
     {
-        return $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('p')
             ->innerJoin('p.color', 'c')
             ->where('c.id = :colorId')
-            ->setParameter('colorId', $colorId)
-            ->orderBy('p.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('colorId', $colorId);
+    
+        foreach ($orderBy as $field => $order) {
+            $qb->addOrderBy('p.' . $field, strtoupper($order));
+        }
+    
+        return $qb->getQuery()->getResult();
     }
+    
+    
 
     public function getColors()
     {
@@ -51,16 +61,21 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByCategory(int $categoryId)
+    public function findByCategory(int $categoryId, array $orderBy = ['id' => 'DESC'])
     {
-        return $this->createQueryBuilder('p')
-            ->innerJoin('p.productCategories', 'pc')
+        $qb = $this->createQueryBuilder('p')
+            ->join('p.productCategories', 'pc')
             ->where('pc.id = :categoryId')
-            ->setParameter('categoryId', $categoryId)
-            ->orderBy('p.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('categoryId', $categoryId);
+    
+        foreach ($orderBy as $field => $order) {
+            $qb->addOrderBy('p.' . $field, strtoupper($order));
+        }
+    
+        return $qb->getQuery()->getResult();
     }
+    
+    
 
     public function getCategories()
     {

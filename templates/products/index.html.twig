@@ -9,25 +9,37 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Filter by color</h5>
-                    <form>
-                        <div class="form-group">
-                            <select class="form-control" id="color" name="color" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                {% for color in colors %}
-                                    <option value="{{ color.id }}" {% if selectedColor == color.id %}selected{% endif %}>{{ color.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <h5 class="card-title">Filter by category</h5>
-                        <div class="form-group">
-                            <select class="form-control" id="category" name="category" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                {% for category in categories %}
-                                    <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>{{ category.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </form>
+<form>
+    <div class="form-group">
+        <select class="form-control" id="color" name="color" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for color in colors %}
+                <option value="{{ color.id }}" {% if selectedColor == color.id %}selected{% endif %}>{{ color.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <h5 class="card-title">Filter by category</h5>
+    <div class="form-group">
+        <select class="form-control" id="category" name="category" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <h5 class="card-title">Sort by</h5>
+    <div class="form-group">
+        <select class="form-control" id="sort" name="sort" onchange="this.form.submit()">
+            <option value="">Default</option>
+            <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>Name A-Z</option>
+            <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Name Z-A</option>
+            <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Date Oldest First</option>
+            <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Date Newest First</option>
+        </select>
+    </div>
+</form>
+
+
                 </div>
             </div>
         </div>

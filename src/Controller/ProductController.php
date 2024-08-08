@@ -31,15 +31,35 @@ class ProductController extends AbstractController
     {
         $colorId = $request->query->get('color');
         $categoryId = $request->query->get('category');
+        $sort = $request->query->get('sort');
+    
+        $orderBy = [];
+        switch ($sort) {
+            case 'name_asc':
+                $orderBy = ['name' => 'ASC'];
+                break;
+            case 'name_desc':
+                $orderBy = ['name' => 'DESC'];
+                break;
+            case 'date_asc':
+                $orderBy = ['id' => 'ASC'];
+                break;
+            case 'date_desc':
+                $orderBy = ['id' => 'DESC'];
+                break;
+            default:
+                $orderBy = ['id' => 'DESC'];
+                break;
+        }
     
         if ($colorId && $categoryId) {
-            $products = $productRepo->findByColorAndCategory($colorId, $categoryId);
+            $products = $productRepo->findByColorAndCategory($colorId, $categoryId, $orderBy);
         } elseif ($colorId) {
-            $products = $productRepo->findByColor($colorId);
+            $products = $productRepo->findByColor($colorId, $orderBy);
         } elseif ($categoryId) {
-            $products = $productRepo->findByCategory($categoryId);
+            $products = $productRepo->findByCategory($categoryId, $orderBy);
         } else {
-            $products = $productRepo->findBy([], ['id' => 'DESC']);
+            $products = $productRepo->findBy([], $orderBy);
         }
     
         $currentPage = $page;
@@ -60,8 +80,11 @@ class ProductController extends AbstractController
             'selectedColor' => $colorId,
             'categories' => $categories,
             'selectedCategory' => $categoryId,
+            'sort' => $sort // Passe le paramètre de tri au template
         ]);
     }
+    
+    
 
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(
