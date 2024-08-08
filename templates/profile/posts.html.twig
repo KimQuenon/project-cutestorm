@@ -1,22 +1,22 @@
 {% extends 'layouts/profile_layout.html.twig' %}
 
-{% block title %}Your Feed - {{ user.pseudo }}{% endblock %}
+{% block title %}Your Posts - {{ user.pseudo }}{% endblock %}
 
 {% block profileHeader %}
     {% include 'partials/_profileHeader.html.twig' with { user: user } %}
 {% endblock %}
 
 {% block postList %}
-    {% for post in posts %}
-        <div class="container">
-            {% include "partials/_cardPost.html.twig" with {'post': post} %}
-        </div>
-    {% endfor %}
+        {% for post in posts %}
+            <div class="container">
+                {% include "partials/_cardPost.html.twig" with {'post': post} %}
+            </div>
+        {% endfor %}
 {% endblock %}
 
 {% block pagination %}
     {% include "partials/_pagination.html.twig" with {
-        'route': 'profile_feed',
+        'route': 'profile_posts',
         'parameters': {},
         'page': currentPage,
         'pages': totalPages

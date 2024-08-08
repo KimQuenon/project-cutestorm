@@ -45,6 +45,37 @@ class ProfileController extends AbstractController
         );
     }
 
+    #[Route('/profile/posts/{page<\d+>?1}', name: 'profile_posts')]
+    #[IsGranted('ROLE_USER')]
+    public function userPosts(
+        int $page,
+        Request $request,
+        PostRepository $postRepo,
+        UserRepository $userRepo,
+        LikeRepository $likeRepo,
+        ReportRepository $reportRepo,
+        PaginationService $paginationService
+    ): Response {
+        $user = $this->getUser();
+
+        // Fetch posts by the logged-in user
+        $posts = $postRepo->sortPostsByUser($user);
+
+        // Render the profile page with user's own posts
+        return $this->renderProfilePage(
+            $user,
+            $posts,
+            $page,
+            $likeRepo,
+            $reportRepo,
+            $paginationService,
+            $postRepo,
+            $userRepo,
+            'profile/posts.html.twig'
+        );
+    }
+
+
     #[Route('/profile/{slug}/{page<\d+>?1}', name: 'profile_show')]
     public function viewProfile(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser,
