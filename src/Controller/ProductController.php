@@ -156,12 +156,17 @@ class ProductController extends AbstractController
 
         $averageRating = $reviewRepo->getAverageRating($product->getId());
 
-        $existingReview = $reviewRepo->findOneBy([
-            'author' => $user,
-            'product' => $product,
-        ]);
+        $existingReview = null;
+        $productBought = false;
 
-        $productBought = $reviewRepo->hasUserBoughtProduct($user, $product);
+        if ($user) {
+            $existingReview = $reviewRepo->findOneBy([
+                'author' => $user,
+                'product' => $product,
+            ]);
+    
+            $productBought = $reviewRepo->hasUserBoughtProduct($user, $product);
+        }
 
         $review = new Review();
         $reviewForm = $this->createform(ReviewType::class, $review);

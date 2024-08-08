@@ -170,6 +170,23 @@ class AppFixtures extends Fixture
             $categories[] = $category;
         }
 
+        $productDeleted = new Product();
+
+        $productDeleted->setReference('XXXXXXXXXXXXXXXXXXXXXXXX')
+                        ->setName('Deleted Product')
+                        ->setDescription('This product has been deleted from our store.')
+                        ->setPrice('0')
+                        ->setColor($colors[array_rand($colors)]);
+
+        $manager->persist($productDeleted);
+
+        $variantDeleted = new ProductVariant();
+        $variantDeleted->setSize(0)
+                       ->setStock(0)
+                       ->setProduct($productDeleted); // Associate with ProductDeleted
+    
+        $manager->persist($variantDeleted);
+
         $productCount = 50;
 
         for ($i = 0; $i < $productCount; $i++) {

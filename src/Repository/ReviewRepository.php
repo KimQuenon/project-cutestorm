@@ -35,6 +35,10 @@ class ReviewRepository extends ServiceEntityRepository
 
     public function hasUserBoughtProduct(User $user, Product $product)
     {
+        if ($user === null) {
+            return false;
+        }
+        
         $query = $this->getEntityManager()->getRepository(OrderItem::class)
             ->createQueryBuilder('oi')
             ->select('1') // select a dummy value, we only care about the existence

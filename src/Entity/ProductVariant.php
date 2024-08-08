@@ -28,7 +28,7 @@ class ProductVariant
     /**
      * @var Collection<int, CartItem>
      */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'productVariant', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'productVariant', orphanRemoval: true, cascade: ['remove'])]
     private Collection $cartItems;
 
     /**

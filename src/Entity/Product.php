@@ -65,7 +65,7 @@ class Product
     /**
      * @var Collection<int, Review>
      */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'product', cascade: ['remove'], orphanRemoval: true)]
     private Collection $reviews;
 
     public function __construct()

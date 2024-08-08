@@ -11,6 +11,7 @@ use App\Repository\ProductRepository;
 use App\Repository\OrderItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductColorRepository;
+use App\Repository\ProductVariantRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -201,6 +202,55 @@ class AdminProductController extends AbstractController
             'myForm' => $form->createView(),
             'product' => $product
         ]);
+    }
+
+    #[Route("admin/product/{slug}/delete", name:"product_delete")]
+    public function delete(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, ProductVariantRepository $productVariantRepo, EntityManagerInterface $manager, OrderItemRepository $orderItemRepository): Response
+    {
+        $deletedProduct = $productRepo->findOneBy(['name' => 'Deleted Product']);
+        $deletedProductVariant = $deletedProduct->getProductVariants()->first();
+        
+        foreach ($product->getProductVariants() as $variant) {
+            $orderItems = $orderItemRepository->findBy(['productVariant' => $variant]);
+            foreach ($orderItems as $orderItem) {
+                $orderItem->setProductVariant($deletedProductVariant);
+                $amountToSubtract = $orderItem->getQuantity() * $variant->getProduct()->getPrice();
+                $order = $orderItem->getOrderRelated();
+                $newTotal = $order->getTotalPrice() - $amountToSubtract;
+                $deliveryPrice = $order->getDelivery()->getPrice();
+
+                if ($newTotal <= $deliveryPrice) {
+                    $order->setTotalPrice('0')
+                        ->setPaid(true);
+                } else {
+                    $order->setTotalPrice($newTotal);
+                }
+                $orderItem->setProductVariant($deletedProductVariant);
+                $manager->persist($orderItem);
+                $manager->persist($order);
+            }
+        }
+        
+        foreach ($product->getProductImages() as $image) {
+            if (!empty($image->getFilename())) {
+                $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+        
+            $manager->remove($image);
+        }
+        
+        $manager->remove($product);
+        $manager->flush();
+        
+        $this->addFlash(
+            'success',
+            "<strong>".$product->getName()."</strong> deleted successfully !"
+        );
+        
+        return $this->redirectToRoute('products_index');
     }
 
     #[Route("admin/product/{slug}/pictures", name: "product_pictures")]
