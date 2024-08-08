@@ -152,6 +152,8 @@ class AdminProductController extends AbstractController
     
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $color->setName(ucwords($color->getName()));
+
             $manager->persist($color);
             $manager->flush();
     

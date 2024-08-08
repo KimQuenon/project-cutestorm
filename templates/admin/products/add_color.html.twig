@@ -1,25 +1,58 @@
 {% extends "base.html.twig" %}
-
-{% block title %}New Color{% endblock %}
-
-{% form_theme myForm _self %}
-
 {% block body %}
     <div class="container mt-4">
         <h1>Create New Color</h1>
 
+        <div >
+            <input type="text" id="colorPicker" />
+        </div>
         {{ form_start(myForm) }}
             {{ form_widget(myForm) }}
         <button type="submit" class="btn btn-primary mt-3">Save Color</button>
-        <a href="{{ path('product_new') }}" class="btn btn-secondary mt-3">Back to Products</a>
         {{ form_end(myForm) }}
+        <a href="{{ path('product_new') }}" class="btn btn-secondary mt-3">Back to Products</a>
     </div>
 {% endblock %}
 
-{% block form_row %}
-    <div class="form-group mt-2">
-        {{ form_label(form) }}
-        {{ form_widget(form) }}
-        {{ form_errors(form) }}
-    </div>
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colorPickerElement = document.getElementById('colorPicker');
+    if (!colorPickerElement) {
+        console.error('Element with ID "colorPicker" not found');
+        return;
+    }
+
+    const pickr = Pickr.create({
+        el: colorPickerElement,
+        theme: 'classic',
+
+        swatches: [
+            '#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff',
+            'rgba(255, 0, 0, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(0, 0, 255, 0.5)'
+        ],
+
+        components: {
+            // Main components
+            preview: true,
+            opacity: true,
+            hue: true,
+
+            // Input / output Options
+            interaction: {
+                hex: true,
+                rgba: true,
+                hsla: true,
+                input: true,
+                clear: true,
+                save: true
+            }
+        }
+    });
+
+    pickr.on('change', (color) => {
+        colorPickerElement.value = color.toHEXA().toString();
+    });
+});
+</script>
 {% endblock %}
