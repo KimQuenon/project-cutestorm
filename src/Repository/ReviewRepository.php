@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Review;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Product;
+use App\Entity\OrderItem;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Review>
@@ -29,6 +32,24 @@ class ReviewRepository extends ServiceEntityRepository
         // Return the average rating formatted to one decimal place
         return $result ? round((float) $result, 1) : null;
     }
+
+    public function hasUserBoughtProduct(User $user, Product $product)
+    {
+        $query = $this->getEntityManager()->getRepository(OrderItem::class)
+            ->createQueryBuilder('oi')
+            ->select('1') // select a dummy value, we only care about the existence
+            ->innerJoin('oi.orderRelated', 'o')
+            ->innerJoin('oi.productVariant', 'pv')
+            ->where('o.user = :user')
+            ->andWhere('pv.product = :product')
+            ->andWhere('o.isPaid = true')
+            ->setParameter('user', $user)
+            ->setParameter('product', $product)
+            ->setMaxResults(1); // we only need to know if at least one row exists
+    
+        return $query->getQuery()->getOneOrNullResult() !== null;
+    }
+
 
     //    /**
     //     * @return Review[] Returns an array of Review objects

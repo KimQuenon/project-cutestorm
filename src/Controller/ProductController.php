@@ -161,6 +161,7 @@ class ProductController extends AbstractController
             'product' => $product,
         ]);
 
+        $productBought = $reviewRepo->hasUserBoughtProduct($user, $product);
 
         $review = new Review();
         $reviewForm = $this->createform(ReviewType::class, $review);
@@ -191,7 +192,8 @@ class ProductController extends AbstractController
             'reviews' => $reviews,
             'reviewForm' => $reviewForm->createView(),
             'existingReview'=> $existingReview,
-            'averageRating' => $averageRating
+            'averageRating' => $averageRating,
+            'productBought' => $productBought
         ]);
     }
 }

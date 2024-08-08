@@ -118,13 +118,7 @@ class OrderController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
     {
-        if ($order->getUser() !== $user) {
-            $this->addFlash(
-                'danger',
-                "You do not have permission to access this."
-            );
-            return $this->redirectToRoute('products_index');
-        }
+        $user = $this->getUser();
 
         $orderItems = $order->getOrderItems();
     
