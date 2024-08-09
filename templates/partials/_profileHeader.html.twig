@@ -1,33 +1,39 @@
-<div class="card-header">
-    {% if app.user.avatar %}
-        <img src="/uploads/{{app.user.avatar}}" alt="avatar de {{app.user.pseudo}}" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
-    {% endif %}
-    <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
-    {% include 'partials/_badge.html.twig' with {
-        position: mostLikedPost,
-        iconClass: 'fas fa-crown'
-    } only %}
+<div class="card">
+    <div class="card-banner">
+        <div class="card-header" style="background-image: url('/uploads/{{ app.user.banner }}');">
+            {% if app.user.avatar %}
+                <img src="/uploads/{{ app.user.avatar }}" alt="avatar de {{ app.user.pseudo }}" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+            {% endif %}
+            <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
+            {% include 'partials/_badge.html.twig' with {
+                position: mostLikedPost,
+                iconClass: 'fas fa-crown'
+            } only %}
 
-    {% include 'partials/_badge.html.twig' with {
-        position: mostCommentedPost,
-        iconClass: 'fas fa-star'
-    } only %}
+            {% include 'partials/_badge.html.twig' with {
+                position: mostCommentedPost,
+                iconClass: 'fas fa-star'
+            } only %}
 
-    {% include 'partials/_badge.html.twig' with {
-        position: mostLikedUser,
-        iconClass: 'fas fa-heart'
-    } only %}
+            {% include 'partials/_badge.html.twig' with {
+                position: mostLikedUser,
+                iconClass: 'fas fa-heart'
+            } only %}
 
-    {% include 'partials/_badge.html.twig' with {
-        position: mostActiveUser,
-        iconClass: 'fas fa-edit'
-    } only %}
-    {% include 'partials/_badge.html.twig' with {
-        position: mostFollowedUser,
-        iconClass: 'fas fa-sun'
-    } only %}
-</div>
-<div class="card-body">
-    <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-    <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
+            {% include 'partials/_badge.html.twig' with {
+                position: mostActiveUser,
+                iconClass: 'fas fa-edit'
+            } only %}
+
+            {% include 'partials/_badge.html.twig' with {
+                position: mostFollowedUser,
+                iconClass: 'fas fa-sun'
+            } only %}
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
+                <a href="{{ path('profile_banner_change') }}" class="btn btn-primary">Changer la bannière</a>
+        </div>
+    </div>
 </div>
