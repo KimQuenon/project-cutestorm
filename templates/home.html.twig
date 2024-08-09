@@ -6,7 +6,20 @@
 {% block body %}
 <div class="container">
     <h1>Hello</h1>
+    <div class="container">
+    {% for team in teams %}
+        <strong>{{team.name}}</strong>
+        <p>{{team.fonction}}</p>
+        {% if team.instagram %}
+            <p>{{team.instagram}}</p>
+        {% elseif team.linkedin %}
+            <p>{{team.linkedin}}</p>
+        {% endif %}
+    {% endfor %}
+    </div>
 </div>
+
+<div class="container">
 
     <h1>Contactez-nous</strong></h1>
 
@@ -16,5 +29,6 @@
         <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
 
     {{form_end(myForm)}}
+</div>
 
 {% endblock %}

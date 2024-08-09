@@ -434,10 +434,10 @@ class AccountController extends AbstractController
                         $this->addFlash('warning', 'You still have unpaid invoices, please pay them before saying goodbye...');
                         return $this->redirectToRoute('orders_index');
                     } else {
-                        $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
-                        $convRepo->replaceUserInConversations($user, $anon);
-                        $commentRepo->replaceAuthorInComments($user, $anon);
-                        $orderRepo->replaceUserInOrders($user, $anon);
+                        $del = $userRepo->findOneBy(['email'=>'deleted@noreply.com']);
+                        $convRepo->replaceUserInConversations($user, $del);
+                        $commentRepo->replaceAuthorInComments($user, $del);
+                        $orderRepo->replaceUserInOrders($user, $del);
         
                         foreach ($user->getLikeComments() as $likeComment) {
                             $manager->remove($likeComment);

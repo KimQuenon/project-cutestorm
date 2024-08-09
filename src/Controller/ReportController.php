@@ -243,10 +243,10 @@ class ReportController extends AbstractController
                 if ($unpaidOrders) {
                     $this->addFlash('warning', 'The user cannot be deleted as they have unpaid invoices.');
                 } else {
-                    $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
-                    $convRepo->replaceUserInConversations($user, $anon);
-                    $commentRepo->replaceAuthorInComments($user, $anon);
-                    $orderRepo->replaceUserInOrders($user, $anon);
+                    $del = $userRepo->findOneBy(['email'=>'deleted@noreply.com']);
+                    $convRepo->replaceUserInConversations($user, $del);
+                    $commentRepo->replaceAuthorInComments($user, $del);
+                    $orderRepo->replaceUserInOrders($user, $del);
     
                     foreach ($user->getLikeComments() as $likeComment) {
                         $manager->remove($likeComment);

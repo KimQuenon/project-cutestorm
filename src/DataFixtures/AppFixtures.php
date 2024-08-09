@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use App\Entity\Like;
 use App\Entity\Post;
+use App\Entity\Team;
 use App\Entity\User;
 use App\Entity\Review;
 use App\Entity\Comment;
@@ -56,6 +57,26 @@ class AppFixtures extends Fixture
     
         $manager->persist($anon);
 
+        $userDeleted = new User();
+        $hash = $this->passwordHasher->hashPassword($userDeleted, 'password');
+
+        $userDeleted->setPseudo('Deleted User')
+            ->setFirstname('Deleted')
+            ->setLastname('User')
+            ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+            ->setAddress('XXXXXXXXXXXXXXXXXXXXXXXXXX')
+            ->setPostalcode('00000')
+            ->setCity('XXXXXX')
+            ->setCountry('XXXXXXXXX')
+            ->setEmail("deleted@noreply.com")
+            ->setPassword($hash)
+            ->setBio('XXXXXXXXXXXXXXXXXXXXX')
+            ->setAvatar('')
+            ->setBanner('')
+            ->setPrivate(true);
+    
+        $manager->persist($userDeleted);
+
         $admin = new User();
 
         $admin->setPseudo('Admin')
@@ -74,116 +95,128 @@ class AppFixtures extends Fixture
 
         $manager->persist($admin);
 
+        
         $moderators = [];
         for ($m = 1; $m <= 4; $m++) {
             $moderator = new User();
             $hash = $this->passwordHasher->hashPassword($moderator, 'password');
-
+            
             $moderator->setPseudo($faker->name())
-                    ->setRoles(['ROLE_MODERATOR'])
-                    ->setFirstname($faker->firstName())
-                    ->setLastname($faker->lastName())
-                    ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
-                    ->setAddress($faker->streetAddress())
-                    ->setPostalcode(intval($faker->postcode()))
-                    ->setCity($faker->city())
-                    ->setCountry($faker->country())
-                    ->setEmail($faker->email())
-                    ->setPassword($hash)
-                    ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
-                    ->setAvatar('https://picsum.photos/seed/picsum/500/500')
-                    ->setBanner('https://picsum.photos/seed/picsum/500/500')
-                    ->setPrivate(true);
-
+            ->setRoles(['ROLE_MODERATOR'])
+            ->setFirstname($faker->firstName())
+            ->setLastname($faker->lastName())
+            ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+            ->setAddress($faker->streetAddress())
+            ->setPostalcode(intval($faker->postcode()))
+            ->setCity($faker->city())
+            ->setCountry($faker->country())
+            ->setEmail($faker->email())
+            ->setPassword($hash)
+            ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
+            ->setAvatar('https://picsum.photos/seed/picsum/500/500')
+            ->setBanner('https://picsum.photos/seed/picsum/500/500')
+            ->setPrivate(true);
+            
             $manager->persist($moderator);
-
+            
             $moderators[] = $moderator;
         }
-    
+        
         $users = []; // Array to store users
         $userCount = 20; // Number of users to create
-    
+        
         // Create users
         for ($u = 1; $u <= $userCount; $u++) {
             $user = new User();
             $hash = $this->passwordHasher->hashPassword($user, 'password');
-    
+            
             $user->setPseudo($faker->name())
-                ->setFirstname($faker->firstName())
-                ->setLastname($faker->lastName())
-                ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
-                ->setAddress($faker->streetAddress())
-                ->setPostalcode(intval($faker->postcode()))
-                ->setCity($faker->city())
-                ->setCountry($faker->country())
-                ->setEmail($faker->email())
-                ->setPassword($hash)
-                ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
-                ->setAvatar('')
-                ->setBanner('')
+            ->setFirstname($faker->firstName())
+            ->setLastname($faker->lastName())
+            ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month'))
+            ->setAddress($faker->streetAddress())
+            ->setPostalcode(intval($faker->postcode()))
+            ->setCity($faker->city())
+            ->setCountry($faker->country())
+            ->setEmail($faker->email())
+            ->setPassword($hash)
+            ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
+            ->setAvatar('')
+            ->setBanner('')
                 ->setPrivate($faker->boolean());
-    
-            $manager->persist($user);
-            $users[] = $user; // Add user to the array
-        }
+                
+                $manager->persist($user);
+                $users[] = $user; // Add user to the array
+            }
+            
+            //create Delivery options
+            $deliveryOptions = [
+                [
+                    'name' => 'Standard Shipping',
+                    'price' => 5.99,
+                    'deliveryTime' => "2 weeks"
+                ],
+                [
+                    'name' => 'Express Shipping',
+                    'price' => 12.99,
+                    'deliveryTime' => "3 days" 
+                    ]
+                ];
+                
+                foreach ($deliveryOptions as $optionData) {
+                    $deliveryOption = new Delivery();
+                    $deliveryOption->setName($optionData['name'])
+                    ->setPrice($optionData['price'])
+                    ->setDeliveryTime($optionData['deliveryTime']);
+                    
+                    $manager->persist($deliveryOption);
+                }
+                
+                // Create colors
+                $colors = [];
+                $colorNames = ['Red', 'Green', 'Blue', 'Black', 'White', 'Yellow', 'Purple'];
+                foreach ($colorNames as $colorName) {
+                    $color = new ProductColor();
+                    $color->setName($colorName);
+                    $color->setHexCode($faker->hexColor());
+                    
+                    $manager->persist($color);
+                    $colors[] = $color; // Store colors to use later
+                }
+                
+                $categories = [];
+                for ($c = 1; $c <= 10; $c++) {
+                    $category = new ProductCategory();
+                    $category->setName($faker->word());
+                    $manager->persist($category);
+                    $categories[] = $category;
+                }
 
-        //create Delivery options
-        $deliveryOptions = [
-            [
-                'name' => 'Standard Shipping',
-                'price' => 5.99,
-                'deliveryTime' => "2 weeks"
-            ],
-            [
-                'name' => 'Express Shipping',
-                'price' => 12.99,
-                'deliveryTime' => "3 days" 
-            ]
-        ];
-    
-        foreach ($deliveryOptions as $optionData) {
-            $deliveryOption = new Delivery();
-            $deliveryOption->setName($optionData['name'])
-                           ->setPrice($optionData['price'])
-                           ->setDeliveryTime($optionData['deliveryTime']);
-    
-            $manager->persist($deliveryOption);
-        }
+        for ($t = 1; $t <= 8; $t++) {
+            $team = new Team();
 
-        // Create colors
-        $colors = [];
-        $colorNames = ['Red', 'Green', 'Blue', 'Black', 'White', 'Yellow', 'Purple'];
-        foreach ($colorNames as $colorName) {
-            $color = new ProductColor();
-            $color->setName($colorName);
-            $color->setHexCode($faker->hexColor());
+            $team->setName($faker->name())
+                ->setFonction($faker->word())
+                ->setInstagram('')
+                ->setLinkedin('');
 
-            $manager->persist($color);
-            $colors[] = $color; // Store colors to use later
-        }
-
-        $categories = [];
-        for ($c = 1; $c <= 10; $c++) {
-            $category = new ProductCategory();
-            $category->setName($faker->word());
-            $manager->persist($category);
-            $categories[] = $category;
+            $manager->persist($team);
         }
 
         $productDeleted = new Product();
 
         $productDeleted->setReference('XXXXXXXXXXXXXXXXXXXXXXXX')
-                        ->setName('Deleted Product')
+        ->setName('Deleted Product')
                         ->setDescription('This product has been deleted from our store.')
                         ->setPrice('0')
                         ->setColor($colors[array_rand($colors)]);
-
-        $manager->persist($productDeleted);
-
-        $variantDeleted = new ProductVariant();
-        $variantDeleted->setSize(0)
-                       ->setStock(0)
-                       ->setProduct($productDeleted); // Associate with ProductDeleted
+                        
+                        $manager->persist($productDeleted);
+                        
+                        $variantDeleted = new ProductVariant();
+                        $variantDeleted->setSize(0)
+                        ->setStock(0)
+                        ->setProduct($productDeleted); // Associate with ProductDeleted
     
         $manager->persist($variantDeleted);
 
