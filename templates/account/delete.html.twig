@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete your profile{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+	<div class="container">
+		<h1>Delete your profile</h1>
+		<p>We are sorry to see you leave... Would you like to tell us the reason of your departure ?</p>
+		<a href="{{path('homepage')}}" class="btn btn-secondary"><i class="fa-solid fa-envelope"></i>Contact us</a>
+		{{form_start(myForm)}}
+		{{form_widget(myForm)}}
+		<button type="submit" class="btn btn-primary"><i class="fa-solid fa-trash-can"></i> Delete</button>
+		{{form_end(myForm)}}
+	</div>
+{% endblock %}
+
+{% block form_row %}
+    <div class="container">
+        <div class="form-group row">
+            <div class="col-4">
+                {{form_label(form)}}
+            </div>
+            <div class="col-8 space">
+                {{form_widget(form)}}
+                {{form_errors(form)}}
+            </div>
+        </div>
+    </div>
+{% endblock %}

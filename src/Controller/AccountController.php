@@ -7,8 +7,14 @@ use App\Entity\Avatar;
 use App\Entity\Banner;
 use App\Form\AvatarType;
 use App\Form\BannerType;
+use App\Form\DeleteType;
 use App\Form\RegistrationType;
+use App\Repository\UserRepository;
+use App\Repository\OrderRepository;
+use App\Repository\ReportRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,6 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 
 class AccountController extends AbstractController
@@ -324,6 +331,83 @@ class AccountController extends AbstractController
         $this->addFlash('success', 'Banner set back to default.');
 
         return $this->redirectToRoute('profile_feed');
+    }
+
+    #[Route("/profile/delete", name: "profile_delete")]
+    #[IsGranted('ROLE_USER')]
+    public function deleteAccount(UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, OrderRepository $orderRepo, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage): Response
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(DeleteType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $submittedEmail = $data['email'];
+            $submittedPassword = $data['password'];
+
+            //email address in db?
+            if ($user->getEmail() === $submittedEmail) {
+                $isPasswordValid = $hasher->isPasswordValid($user, $submittedPassword);
+
+                //password verify
+                if ($isPasswordValid) {
+
+                    $unpaidOrders = $orderRepo->findUnpaidOrders($user);
+    
+                    if ($unpaidOrders) {
+                        $this->addFlash('warning', 'You still have unpaid invoices, please pay them before saying goodbye...');
+                        return $this->redirectToRoute('orders_index');
+                    } else {
+                        $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
+                        $convRepo->replaceUserInConversations($user, $anon);
+                        $commentRepo->replaceAuthorInComments($user, $anon);
+                        $orderRepo->replaceUserInOrders($user, $anon);
+        
+                        foreach ($user->getLikeComments() as $likeComment) {
+                            $manager->remove($likeComment);
+                        }
+        
+                        $reportsByUser = $reportRepo->findBy(['reportedBy' => $user]);
+                        foreach ($reportsByUser as $userReport) {
+                            $manager->remove($userReport);
+                        }
+    
+                        if ($user->getAvatar() && $user->getAvatar() !== 'default-avatar.jpg') {
+                            unlink($this->getParameter('uploads_directory').'/'.$user->getAvatar());
+                        }
+    
+                        if ($user->getBanner() && !in_array($user->getBanner(), ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'])) {
+                            unlink($this->getParameter('uploads_directory').'/'.$user->getBanner());
+                        }
+                    }
+
+                    //set connexion token to null
+                    $tokenStorage->setToken(null);
+                    //remove
+                    $manager->remove($user);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        'Account deleted, see you soon maybe ?'
+                    );
+
+                    return $this->redirectToRoute('homepage');
+                }
+            }
+
+            $this->addFlash(
+                'danger',
+                'Incorrect email address and/or password.'
+            );
+            return $this->redirectToRoute('profile_delete');
+        }
+
+        return $this->render('account/delete.html.twig', [
+            'myForm' => $form->createView()
+        ]);
     }
 
 }

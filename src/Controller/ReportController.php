@@ -256,6 +256,14 @@ class ReportController extends AbstractController
                     foreach ($reportsByUser as $userReport) {
                         $manager->remove($userReport);
                     }
+
+                    if ($user->getAvatar() && $user->getAvatar() !== 'default-avatar.jpg') {
+                        unlink($this->getParameter('uploads_directory').'/'.$user->getAvatar());
+                    }
+
+                    if ($user->getBanner() && !in_array($user->getBanner(), ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'])) {
+                        unlink($this->getParameter('uploads_directory').'/'.$user->getBanner());
+                    }
     
                     // Notify user before deleting
                     // $email = (new Email())
