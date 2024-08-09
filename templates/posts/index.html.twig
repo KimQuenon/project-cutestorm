@@ -6,6 +6,16 @@
 {% block body %}
 	<div class="container">
 		<div class="row mt-4">
+			<div class="search-bar">
+				<form class="d-flex" id="search-form">
+					<div class="dropdown">
+						<input class="form-control" type="text" id="search-input" placeholder="Search...">
+						<div class="dropdown-menu" id="search-results" style="display: none;">
+							<ul class="list-unstyled p-3"></ul>
+						</div>
+					</div>
+				</form>
+			</div>
 			{% for post in posts %}
 				<div class="col-md-4">
 					{% include "partials/_cardPost.html.twig" with {'post': post} %}
@@ -23,4 +33,47 @@
 
 {% block javascripts %}
 	{{encore_entry_script_tags('like')}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('#search-input');
+        const searchResults = document.querySelector('#search-results');
+        const resultsList = searchResults.querySelector('ul');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim();
+
+            if (query.length > 1) {
+                fetch(`/posts/search/ajax?query=${encodeURIComponent(query)}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        resultsList.innerHTML = '';
+
+                        if (data.length > 0) {
+                            searchResults.style.display = 'block';
+
+                            data.forEach((result) => {
+                                const item = document.createElement('li');
+                                const link = document.createElement('a');
+                                link.href = `/post/${result.slug}`;
+                                link.textContent = `${result.title} - ${result.author}`;
+                                item.appendChild(link);
+                                resultsList.appendChild(item);
+                            });
+                        } else {
+                            searchResults.style.display = 'none';
+                        }
+                    });
+            } else {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                searchResults.style.display = 'none';
+            }, 200);
+        });
+    });
+</script>
+
 {% endblock %}

@@ -21,6 +21,7 @@ use App\Repository\ProductColorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -84,7 +85,30 @@ class ProductController extends AbstractController
         ]);
     }
     
-    
+    #[Route('/store/search/ajax', name: 'store_search_ajax', methods: ['GET'])]
+    public function searchAjax(Request $request, ProductRepository $productRepo): JsonResponse
+    {
+        $query = $request->query->get('query', '');
+
+        if (empty($query)) {
+            return new JsonResponse([]);
+        }
+
+        $results = $productRepo->findByProductNameQuery($query)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        $jsonResults = array_map(function ($product) {
+            return [
+                'name' => $product->getName(),
+                'slug' => $product->getSlug(),
+            ];
+        }, $results);
+
+        return new JsonResponse($jsonResults);
+    }
+
 
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(

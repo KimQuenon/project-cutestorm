@@ -20,6 +20,7 @@ use App\Repository\LikeCommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,6 +86,30 @@ class PostController extends AbstractController
         ]);
     }
     
+    #[Route('/posts/search/ajax', name: 'posts_search_ajax', methods: ['GET'])]
+    public function searchAjax(Request $request, PostRepository $postRepo): JsonResponse
+    {
+        $query = $request->query->get('query', '');
+
+        if (empty($query)) {
+            return new JsonResponse([]);
+        }
+
+        $results = $postRepo->findByTitleOrPseudoQuery($query)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        $jsonResults = array_map(function ($post) {
+            return [
+                'title' => $post->getTitle(),
+                'author'=> $post->getAuthor()->getPseudo(),
+                'slug' => $post->getSlug(),
+            ];
+        }, $results);
+
+        return new JsonResponse($jsonResults);
+    }
 
     #[Route("/post/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]

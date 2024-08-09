@@ -127,3 +127,17 @@
     height: 200px;
     overflow-y: auto;
 }
+
+#search-input{
+    border-radius: 80px;
+}
+#search-results ul li{
+    border-bottom: 1px solid black;
+    padding: 8px;
+    &:last-of-type{
+        border:none;
+    }
+}
+#search-results ul li a, .dropdown-item{
+    color: gray!important;
+}

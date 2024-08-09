@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -103,6 +104,14 @@ class PostRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findByTitleOrPseudoQuery(string $term): QueryBuilder
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.author', 'a') // Assuming 'author' is the property name for the user relationship
+            ->where('p.title LIKE :term OR a.pseudo LIKE :term')
+            ->setParameter('term', '%' . $term . '%');
     }
 
     //    /**

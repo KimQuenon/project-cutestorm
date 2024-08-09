@@ -78,16 +78,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $qb = $this->createQueryBuilder('u')
             ->innerJoin('u.followings', 'f')
-            ->where('f.followerUser = :user')
+            ->where('f.followedUser = :user')
             ->setParameter('user', $user)
             ->orderBy('f.id', 'DESC'); // Assurez-vous d'avoir un champ de date pour le tri
-    
+        
         if ($limit) {
             $qb->setMaxResults($limit);
         }
-    
+        
         return $qb->getQuery()->getResult();
     }
+    
     
     
     public function findFollowings(User $user, $limit = null): array

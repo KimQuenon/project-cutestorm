@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -112,6 +113,14 @@ class ProductRepository extends ServiceEntityRepository
     {
         return $this->findSeller('ASC');
     }
+
+    public function findByProductNameQuery(string $term): QueryBuilder
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.name LIKE :term')
+            ->setParameter('term', '%' . $term . '%');
+    }
+
 
     //    /**
     //     * @return Product[] Returns an array of Product objects
