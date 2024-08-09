@@ -1,4 +1,7 @@
 <div class="card-header">
+    {% if app.user.avatar %}
+        <img src="/uploads/{{app.user.avatar}}" alt="avatar de {{app.user.pseudo}}" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+    {% endif %}
     <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
     {% include 'partials/_badge.html.twig' with {
         position: mostLikedPost,

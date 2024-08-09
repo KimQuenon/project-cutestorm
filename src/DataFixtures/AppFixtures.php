@@ -119,8 +119,8 @@ class AppFixtures extends Fixture
                 ->setEmail($faker->email())
                 ->setPassword($hash)
                 ->setBio('<p>' . join('<p></p>', $faker->paragraphs(1)) . '</p>')
-                ->setAvatar('https://picsum.photos/seed/picsum/500/500')
-                ->setBanner('https://picsum.photos/seed/picsum/500/500')
+                ->setAvatar('')
+                ->setBanner('')
                 ->setPrivate($faker->boolean());
     
             $manager->persist($user);

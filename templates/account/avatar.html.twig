@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Edit your avatar{% endblock %}
+
+{% block body %}
+        <h1 class="space">Edit your avatar</h1>
+        {# {% if app.user.picture %}
+            <img src="/uploads/{{app.user.picture}}" alt="avatar de {{app.user.email}}">
+        {% endif %} #}
+        {{form_start(myForm)}}
+            {{form_widget(myForm)}}
+            <button type="submit" class="btn4 align">Edit</button>
+        {{form_end(myForm)}}
+{% endblock %}
