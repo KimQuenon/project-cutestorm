@@ -8,6 +8,11 @@
         <h1>Message from {{contact.name}}</h1>
         <p>{{contact.message}}</p>
         <a href="mailto:{{contact.email}}" type="button" class="btn btn-primary">Répondre</a>
-        <a href="{{path('contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
+        <a href="#deleteModal{{ contact.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ contact.id }}">Delete</a>
+        {% include 'partials/_deleteModal.html.twig' with {
+            'modalId': 'deleteModal' ~ contact.id,
+            'modalAction': path('contact_delete', {'id':contact.id})
+            } 
+        %}
     </div>
 {% endblock %}

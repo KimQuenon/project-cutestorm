@@ -19,7 +19,12 @@
                 <div>
                     <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-warning btn-sm me-2">Edit post</a>
                     <a href="{{ path('post_pictures', {'slug': post.slug}) }}" class="btn btn-primary btn-sm me-2">Edit pictures</a>
-                    <a href="{{ path('post_delete', {'slug': post.slug}) }}" class="btn btn-danger btn-sm">Delete post</a>
+                    <a href="#deleteModal{{ post.slug }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ post.slug }}">Delete</a>
+                    {% include 'partials/_deleteModal.html.twig' with {
+                        'modalId': 'deleteModal' ~ post.slug,
+                        'modalAction': path('post_delete', {'slug': post.slug})
+                        } 
+                    %}
                 </div>
             {% endif %}
         </div>

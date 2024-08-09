@@ -10,7 +10,12 @@
             <li>
                 {{ request.sentBy.pseudo }} wants to follow you.
                 <a href="{{ path('request_accept', { 'id': request.id }) }}">Accept</a>
-                <a href="{{ path('request_reject', { 'id': request.id }) }}">Reject</a>
+                <a href="#deleteModal{{ request.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ request.id }}">Reject</a>
+                {% include 'partials/_deleteModal.html.twig' with {
+                    'modalId': 'deleteModal' ~ request.id,
+                    'modalAction': path('request_reject', { 'id': request.id })
+                    } 
+                %}
             </li>
         {% else %}
             <li>No follow requests.</li>

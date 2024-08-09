@@ -17,7 +17,12 @@
             } %}
         {% if app.user == post.author %}
             <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
-            <a href="{{ path('post_delete', {'slug': post.slug}) }}" class="btn btn-danger mt-2">Delete</a>
+            <a href="#deleteModal{{ post.slug }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ post.slug }}">Delete</a>
+            {% include 'partials/_deleteModal.html.twig' with {
+                'modalId': 'deleteModal' ~ post.slug,
+                'modalAction': path('post_delete', {'slug': post.slug})
+                } 
+            %}
         {% elseif post.id in reportedPostIds %}
             <span class="text-muted">Vous avez déjà signalé ce post</span>
         {% else %}

@@ -44,9 +44,12 @@
                             <td class="text-right">{{ cartItem.productVariant.product.price|number_format(2, ',', '.')}} $</td>
                             <td class="text-right" id="total-{{ cartItem.id }}">{{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}} $</td>
                             <td class="text-center">
-                                <a href="{{ path('cart_remove', { id: cartItem.id }) }}" class="btn btn-sm btn-danger">
-                                    Remove
-                                </a>
+                                <a href="#deleteModal{{ cartItem.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ cartItem.id }}">Remove</a>
+                                {% include 'partials/_deleteModal.html.twig' with {
+                                    'modalId': 'deleteModal' ~ cartItem.id,
+                                    'modalAction': path('cart_remove', { id: cartItem.id }) 
+                                    } 
+                                %}
                             </td>
                         </tr>
                     {% endfor %}

@@ -29,7 +29,12 @@
                             <td class="align-middle">{{contact.message | raw | striptags | slice(0, 50)}}...</td>
                             <td class="align-middle text-center">
                                 <a href="{{path('contact_show', {'id':contact.id})}}" type="button" class="btn btn-primary">Voir plus...</a>
-                                <a href="{{path('contact_delete', {'id':contact.id})}}" type="button" class="btn btn-danger">Supprimer</a>
+                                <a href="#deleteModal{{ contact.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ contact.id }}">Delete</a>
+                                {% include 'partials/_deleteModal.html.twig' with {
+                                    'modalId': 'deleteModal' ~ contact.id,
+                                    'modalAction': path('contact_delete', {'id':contact.id})
+                                    } 
+                                %}
                             </td>
                         </tr>
                     {% endfor %}

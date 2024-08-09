@@ -19,14 +19,17 @@
                     <div class="card">
                         <img src="{{ asset('uploads/' ~ image.filename) }}" class="card-img-top img-fluid" alt="Image for {{ block('alt_text') }}">
                     </div>
-                    <a href="{{ path(block('delete_image_route'), { 'id': image.id }) }}" class="btn btn-danger mt-4">
-                        {% block remove_button_text %}Remove{% endblock %}
-                    </a>
+                    <a href="#deleteModal{{ image.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ image.id }}">Remove</a>
+                    {% include 'partials/_deleteModal.html.twig' with {
+                        'modalId': 'deleteModal' ~ image.id,
+                        'modalAction': path(block('delete_image_route'), { 'id': image.id })
+                        } 
+                    %}
                 </div>
             {% endfor %}
         </div>
         <a href="{{ path(block('back_route'), { 'slug': block('slug') }) }}" class="btn btn-primary mt-4">
-            {% block back_button_text %}Back{% endblock %}
+            Back
         </a>
     </div>
 </div>

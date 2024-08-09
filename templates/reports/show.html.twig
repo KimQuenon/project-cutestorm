@@ -20,7 +20,13 @@
     {% endif %}
 </ul>
 
-<a href="{{ path('report_validate', { id: report.id }) }}" class="btn btn-danger">Supprimer</a>
+<a href="#deleteModal{{ report.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ report.id }}">Delete</a>
+{% include 'partials/_deleteModal.html.twig' with {
+    'modalId': 'deleteModal' ~ report.id,
+    'modalAction': path('report_validate', { id: report.id })
+    } 
+%}
+
 <a href="{{ path('report_reject', { id: report.id }) }}" class="btn btn-warning">Garder</a>
 
 <a href="{{ path('reports_index') }}">Back to list</a>
