@@ -9,11 +9,14 @@ use App\Form\EditType;
 use App\Form\AvatarType;
 use App\Form\BannerType;
 use App\Form\DeleteType;
+use App\Entity\PasswordEdit;
+use App\Form\PasswordEditType;
 use App\Form\RegistrationType;
 use App\Repository\UserRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ReportRepository;
 use App\Repository\CommentRepository;
+use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -183,6 +186,47 @@ class AccountController extends AbstractController
         $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
 
         return $this->redirectToRoute('account_settings');
+    }
+
+    #[Route("/profile/password-modify", name:"profile_password")]
+    #[IsGranted('ROLE_USER')]
+    public function modifyPassword(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher):Response
+    {
+        $passwordModify = new PasswordEdit();
+        $user = $this->getUser();
+        $form = $this->createForm(PasswordEditType::class, $passwordModify);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //compare given password & db password
+            if (!password_verify($passwordModify->getOldPassword(), $user->getPassword())) {
+                $form->get('oldPassword')->addError(new FormError("This doesn't seem to be your current password..."));
+            }else{
+                $newPassword = $passwordModify->getNewPassword();
+
+                // new password = old password?
+                if ($newPassword === $passwordModify->getOldPassword()) {
+                    $form->get('newPassword')->addError(new FormError("The new password can't be the old one..."));
+                } else {
+                    $hash = $hasher->hashPassword($user, $newPassword);
+
+                    $user->setPassword($hash);
+                    $manager->persist($user);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        'Password edited successfully !'
+                    );
+
+                    return $this->redirectToRoute('account_settings');
+                }
+            }
+        }
+
+        return $this->render("account/password.html.twig",[
+            'myForm' => $form->createView()
+        ]);
     }
 
     #[Route("profile/avatar", name:"profile_avatar")]
