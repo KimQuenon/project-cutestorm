@@ -94,4 +94,17 @@
     {% endif %}
 </div>
 
+
+
+
+<div class="container">
+    <div class="row">
+        {% for recentProduct in recentProducts %}
+            {% include "partials/_cardProduct.html.twig" with {'product': recentProduct}%}
+        {% endfor %}
+    </div>
+</div>
+
+
+
 {% endblock %}

@@ -108,31 +108,6 @@ class ProductController extends AbstractController
         return new JsonResponse($results);
     }
 
-    // #[Route('/store/search/ajax', name: 'store_search_ajax', methods: ['GET'])]
-    // public function searchAjax(Request $request, ProductRepository $productRepo): JsonResponse
-    // {
-    //     $query = $request->query->get('query', '');
-
-    //     if (empty($query)) {
-    //         return new JsonResponse([]);
-    //     }
-
-    //     $results = $productRepo->findByProductNameQuery($query)
-    //         ->setMaxResults(10)
-    //         ->getQuery()
-    //         ->getResult();
-
-    //     $jsonResults = array_map(function ($product) {
-    //         return [
-    //             'name' => $product->getName(),
-    //             'slug' => $product->getSlug(),
-    //         ];
-    //     }, $results);
-
-    //     return new JsonResponse($jsonResults);
-    // }
-
-
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(
         #[MapEntity(mapping: ['slug' => 'slug'])] Product $product,
@@ -260,6 +235,11 @@ class ProductController extends AbstractController
             ]);
         }
     
+
+
+        $recentProducts = array_slice(array_filter($productRepo->findBy([], ['id' => 'DESC']), fn($p) => $p !== $product), 0, 3);
+
+
         return $this->render('products/show.html.twig', [
             'product' => $product,
             'categories' => $categories,
@@ -268,7 +248,8 @@ class ProductController extends AbstractController
             'reviewForm' => $reviewForm->createView(),
             'existingReview'=> $existingReview,
             'averageRating' => $averageRating,
-            'productBought' => $productBought
+            'productBought' => $productBought,
+            'recentProducts' => $recentProducts
         ]);
     }
 }
