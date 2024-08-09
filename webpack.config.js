@@ -27,6 +27,8 @@ Encore
     .addEntry('removeVariant', './assets/js/removeVariant.js')
     .addEntry('replyAdd', './assets/js/replyAdd.js')
     .addEntry('replyDisplay', './assets/js/replyDisplay.js')
+    .addEntry('search', './assets/js/search.js')
+
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

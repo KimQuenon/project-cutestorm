@@ -45,16 +45,7 @@
 			</div>
 			<div class="col-md-9">
 				<h1 class="mb-4">Our Products</h1>
-                <div class="search-bar">
-                    <form class="d-flex" id="search-form">
-                        <div class="dropdown">
-                            <input class="form-control" type="text" id="search-input" placeholder="Search...">
-                            <div class="dropdown-menu" id="search-results" style="display: none;">
-                                <ul class="list-unstyled p-3"></ul>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                {% include "partials/_search.html.twig" %}
 				{% if products|length > 0 %}
 					<div class="row">
 
@@ -77,47 +68,5 @@
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.querySelector('#search-input');
-        const searchResults = document.querySelector('#search-results');
-        const resultsList = searchResults.querySelector('ul');
-
-        searchInput.addEventListener('input', function () {
-            const query = this.value.trim();
-
-            if (query.length > 1) {
-                fetch(`/store/search/ajax?query=${encodeURIComponent(query)}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        resultsList.innerHTML = '';
-
-                        if (data.length > 0) {
-                            searchResults.style.display = 'block';
-
-                            data.forEach((result) => {
-                                const item = document.createElement('li');
-                                const link = document.createElement('a');
-                                link.href = `/product/${result.slug}`;
-                                link.textContent = `${result.name}`;
-                                item.appendChild(link);
-                                resultsList.appendChild(item);
-                            });
-                        } else {
-                            searchResults.style.display = 'none';
-                        }
-                    });
-            } else {
-                searchResults.style.display = 'none';
-            }
-        });
-
-        searchInput.addEventListener('blur', () => {
-            setTimeout(() => {
-                searchResults.style.display = 'none';
-            }, 200);
-        });
-    });
-</script>
-
+	{{encore_entry_script_tags('search')}}
 {% endblock %}

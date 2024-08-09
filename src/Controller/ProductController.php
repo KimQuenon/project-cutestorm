@@ -12,6 +12,7 @@ use App\Form\AddToCartType;
 use App\Entity\ProductImage;
 use App\Entity\ProductVariant;
 use App\Form\ProductImageType;
+use App\Service\SearchService;
 use App\Service\PaginationService;
 use App\Repository\ReviewRepository;
 use App\Repository\ProductRepository;
@@ -27,6 +28,14 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class ProductController extends AbstractController
 {
+    private $searchService;
+
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
+    
     #[Route('/store/{page<\d+>?1}', name: 'store')]
     public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService, Request $request): Response
     {
@@ -86,7 +95,7 @@ class ProductController extends AbstractController
     }
     
     #[Route('/store/search/ajax', name: 'store_search_ajax', methods: ['GET'])]
-    public function searchAjax(Request $request, ProductRepository $productRepo): JsonResponse
+    public function searchAjax(Request $request): JsonResponse
     {
         $query = $request->query->get('query', '');
 
@@ -94,20 +103,34 @@ class ProductController extends AbstractController
             return new JsonResponse([]);
         }
 
-        $results = $productRepo->findByProductNameQuery($query)
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
+        $results = $this->searchService->search($query, 'product');
 
-        $jsonResults = array_map(function ($product) {
-            return [
-                'name' => $product->getName(),
-                'slug' => $product->getSlug(),
-            ];
-        }, $results);
-
-        return new JsonResponse($jsonResults);
+        return new JsonResponse($results);
     }
+
+    // #[Route('/store/search/ajax', name: 'store_search_ajax', methods: ['GET'])]
+    // public function searchAjax(Request $request, ProductRepository $productRepo): JsonResponse
+    // {
+    //     $query = $request->query->get('query', '');
+
+    //     if (empty($query)) {
+    //         return new JsonResponse([]);
+    //     }
+
+    //     $results = $productRepo->findByProductNameQuery($query)
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult();
+
+    //     $jsonResults = array_map(function ($product) {
+    //         return [
+    //             'name' => $product->getName(),
+    //             'slug' => $product->getSlug(),
+    //         ];
+    //     }, $results);
+
+    //     return new JsonResponse($jsonResults);
+    // }
 
 
     #[Route('/product/{slug}', name: 'product_show')]

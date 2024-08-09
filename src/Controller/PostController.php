@@ -9,6 +9,7 @@ use App\Form\ReplyType;
 use App\Entity\PostImage;
 use App\Form\CommentType;
 use App\Form\PostImageType;
+use App\Service\SearchService;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
 use App\Service\PaginationService;
@@ -27,10 +28,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PostController extends AbstractController
 {
-    public function __construct(NotificationService $notificationService, EntityManagerInterface $entityManager)
+    private $searchService;
+    public function __construct(NotificationService $notificationService, EntityManagerInterface $entityManager, SearchService $searchService)
     {
         $this->notificationService = $notificationService;
         $this->entityManager = $entityManager;
+        $this->searchService = $searchService;
     }
     
     /**
@@ -87,7 +90,7 @@ class PostController extends AbstractController
     }
     
     #[Route('/posts/search/ajax', name: 'posts_search_ajax', methods: ['GET'])]
-    public function searchAjax(Request $request, PostRepository $postRepo): JsonResponse
+    public function searchAjax(Request $request): JsonResponse
     {
         $query = $request->query->get('query', '');
 
@@ -95,21 +98,35 @@ class PostController extends AbstractController
             return new JsonResponse([]);
         }
 
-        $results = $postRepo->findByTitleOrPseudoQuery($query)
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
+        $results = $this->searchService->search($query, 'post');
 
-        $jsonResults = array_map(function ($post) {
-            return [
-                'title' => $post->getTitle(),
-                'author'=> $post->getAuthor()->getPseudo(),
-                'slug' => $post->getSlug(),
-            ];
-        }, $results);
-
-        return new JsonResponse($jsonResults);
+        return new JsonResponse($results);
     }
+    
+    // #[Route('/posts/search/ajax', name: 'posts_search_ajax', methods: ['GET'])]
+    // public function searchAjax(Request $request, PostRepository $postRepo): JsonResponse
+    // {
+    //     $query = $request->query->get('query', '');
+
+    //     if (empty($query)) {
+    //         return new JsonResponse([]);
+    //     }
+
+    //     $results = $postRepo->findByTitleOrPseudoQuery($query)
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult();
+
+    //     $jsonResults = array_map(function ($post) {
+    //         return [
+    //             'title' => $post->getTitle(),
+    //             'author'=> $post->getAuthor()->getPseudo(),
+    //             'slug' => $post->getSlug(),
+    //         ];
+    //     }, $results);
+
+    //     return new JsonResponse($jsonResults);
+    // }
 
     #[Route("/post/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]

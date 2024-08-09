@@ -26,4 +26,7 @@ services:
     App\Service\PaginationService:
     App\Service\PdfGeneratorService:
         public: true
+    App\Service\SearchService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
     # please note that last definitions always *replace* previous ones

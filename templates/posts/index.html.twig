@@ -6,16 +6,7 @@
 {% block body %}
 	<div class="container">
 		<div class="row mt-4">
-			<div class="search-bar">
-				<form class="d-flex" id="search-form">
-					<div class="dropdown">
-						<input class="form-control" type="text" id="search-input" placeholder="Search...">
-						<div class="dropdown-menu" id="search-results" style="display: none;">
-							<ul class="list-unstyled p-3"></ul>
-						</div>
-					</div>
-				</form>
-			</div>
+			{% include "partials/_search.html.twig" %}
 			{% for post in posts %}
 				<div class="col-md-4">
 					{% include "partials/_cardPost.html.twig" with {'post': post} %}
@@ -33,7 +24,8 @@
 
 {% block javascripts %}
 	{{encore_entry_script_tags('like')}}
-<script>
+	{{encore_entry_script_tags('search')}}
+{# <script>
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.querySelector('#search-input');
         const searchResults = document.querySelector('#search-results');
@@ -74,6 +66,6 @@
             }, 200);
         });
     });
-</script>
+</script> #}
 
 {% endblock %}
