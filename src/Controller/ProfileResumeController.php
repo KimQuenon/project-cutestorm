@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\SearchService;
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
@@ -12,7 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProfileResumeController extends AbstractController
-{
+{   
     #[Route('/profile/resume/activities', name: 'resume_activities')]
     #[IsGranted('ROLE_USER')]
     public function index(LikeRepository $likeRepo, UserRepository $userRepo, PostRepository $postRepo): Response

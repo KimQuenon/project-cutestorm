@@ -25,47 +25,4 @@
 {% block javascripts %}
 	{{encore_entry_script_tags('like')}}
 	{{encore_entry_script_tags('search')}}
-{# <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.querySelector('#search-input');
-        const searchResults = document.querySelector('#search-results');
-        const resultsList = searchResults.querySelector('ul');
-
-        searchInput.addEventListener('input', function () {
-            const query = this.value.trim();
-
-            if (query.length > 1) {
-                fetch(`/posts/search/ajax?query=${encodeURIComponent(query)}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        resultsList.innerHTML = '';
-
-                        if (data.length > 0) {
-                            searchResults.style.display = 'block';
-
-                            data.forEach((result) => {
-                                const item = document.createElement('li');
-                                const link = document.createElement('a');
-                                link.href = `/post/${result.slug}`;
-                                link.textContent = `${result.title} - ${result.author}`;
-                                item.appendChild(link);
-                                resultsList.appendChild(item);
-                            });
-                        } else {
-                            searchResults.style.display = 'none';
-                        }
-                    });
-            } else {
-                searchResults.style.display = 'none';
-            }
-        });
-
-        searchInput.addEventListener('blur', () => {
-            setTimeout(() => {
-                searchResults.style.display = 'none';
-            }, 200);
-        });
-    });
-</script> #}
-
 {% endblock %}

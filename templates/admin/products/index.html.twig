@@ -52,6 +52,7 @@
         </div>
     </div>
 
+    {% include "partials/_search.html.twig" %}
     <div class="table-responsive">
         <table class="table table-bordered table-hover shadow-sm">
             <thead class="thead-light">
@@ -77,7 +78,7 @@
                             <a href="{{ path('product_edit', {'slug': product.slug}) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
-                            <a href="#deleteModal{{ product.slug }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.slug }}">Delete</a>
+                            <a href="#deleteModal{{ product.slug }}" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.slug }}">Delete</a>
                             {% include 'partials/_deleteModal.html.twig' with {
                                 'modalId': 'deleteModal' ~ product.slug,
                                 'modalAction': path('product_delete', {'slug': product.slug})
@@ -96,4 +97,8 @@
         } %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+	{{encore_entry_script_tags('search')}}
 {% endblock %}

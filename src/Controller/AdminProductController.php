@@ -8,6 +8,7 @@ use App\Entity\ProductColor;
 use App\Entity\ProductImage;
 use App\Form\ProductColorType;
 use App\Form\ProductImageType;
+use App\Service\SearchService;
 use App\Service\PaginationService;
 use App\Repository\ProductRepository;
 use App\Repository\OrderItemRepository;
@@ -22,6 +23,13 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AdminProductController extends AbstractController
 {
+    private $searchService;
+
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+    
     #[Route('/admin/products/{page<\d+>?1}', name: 'products_index')]
     public function index(int $page, ProductRepository $productRepo, OrderItemRepository $orderItemRepo, PaginationService $paginationService): Response
     {
@@ -43,6 +51,20 @@ class AdminProductController extends AbstractController
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
         ]);
+    }
+
+    #[Route('/admin/products/search/ajax', name: 'admin_search_ajax', methods: ['GET'])]
+    public function searchAjax(Request $request): JsonResponse
+    {
+        $query = $request->query->get('query', '');
+
+        if (empty($query)) {
+            return new JsonResponse([]);
+        }
+
+        $results = $this->searchService->search($query, 'product');
+
+        return new JsonResponse($results);
     }
 
     #[Route('admin/product/new', name: 'product_new')]

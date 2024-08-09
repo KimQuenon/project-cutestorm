@@ -13,7 +13,7 @@ class SearchService
         $this->entityManager = $entityManager;
     }
 
-    public function search(string $query, string $entityType): array
+    public function search(string $query, string $entityType, ?int $userId = null): array
     {
         switch ($entityType) {
             case 'product':
@@ -58,3 +58,4 @@ class SearchService
         }, $results);
     }
 }
+
