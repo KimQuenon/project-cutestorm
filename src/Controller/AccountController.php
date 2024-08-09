@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Avatar;
 use App\Entity\Banner;
+use App\Form\EditType;
 use App\Form\AvatarType;
 use App\Form\BannerType;
 use App\Form\DeleteType;
@@ -123,6 +124,35 @@ class AccountController extends AbstractController
         }
 
         return $this->render("account/registration.html.twig",[
+            'myForm'=>$form->createView()
+        ]);
+    }
+
+    #[Route("/profile/edit", name:"profile_edit")]
+    #[IsGranted('ROLE_USER')]
+    public function edit(Request $request, EntityManagerInterface $manager): Response
+    {
+        $user = $this->getUser(); //get connected user
+        
+        //edit form
+        $form = $this->createForm(EditType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $user->setSlug('');
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+            'success',
+            'Data has been saved successfully'    
+            );
+            return $this->redirectToRoute('account_settings');
+        }
+
+        return $this->render("account/edit.html.twig",[
             'myForm'=>$form->createView()
         ]);
     }

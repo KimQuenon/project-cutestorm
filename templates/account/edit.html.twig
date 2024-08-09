@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete your profile{% endblock %}
+
+{% form_theme myForm _self %}
+
+{% block body %}
+	<div class="container">
+		{{form_start(myForm)}}
+		{{form_widget(myForm)}}
+		<button type="submit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i> Edit</button>
+		{{form_end(myForm)}}
+	</div>
+{% endblock %}
+
+{% block form_row %}
+    <div class="container">
+        <div class="form-group row">
+            <div class="col-4">
+                {{form_label(form)}}
+            </div>
+            <div class="col-8">
+                {{form_widget(form)}}
+                {{form_errors(form)}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
