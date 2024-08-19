@@ -3,35 +3,36 @@
 {% block title %}Connexion au site{% endblock %}
 
 {% block body %}
-    <div class="container full">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 bg-light p-3">
-                <h1>Connexion</h1>
-                {% if hasError %}
-                    <div class="alert alert-danger">
-                        Une erreur est survenue, le nom d'utilisateur ou le mot de passe est invalide.
-                    </div>
-                {% endif %}
-                {% if loginError %}
-                    <div class="alert alert-danger">
-                        {{loginError}}
-                    </div>
-                {% endif %}
-                <form action="{{path('account_login')}}" method="POST">
-                    <div class="form-group my-2">
-                        <label for="email">E-mail</label>
-                        <input type="text" name="_username" id="email" class="form-control" placeholder="Email address..." required value="{{username}}">
-                    </div>
-                    <div class="form-group my-2">
-                        <label for="password">Password:</label>
-                        <input type="password" name="_password" id="password" class="form-control" placeholder="Password..." required>
-                    </div>
-                    <div class="form-group my-2">
-                        <button type="submit" class="btn btn-success my-3">Connexion</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="container mx-auto flex justify-center items-center min-h-screen">
+        <div class="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+            <h1 class="text-2xl font-semibold mb-6">Connexion</h1>
 
+            {% if hasError %}
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                    Une erreur est survenue, le nom d'utilisateur ou le mot de passe est invalide.
+                </div>
+            {% endif %}
+            {% if loginError %}
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                    {{ loginError }}
+                </div>
+            {% endif %}
+
+            <form action="{{ path('account_login') }}" method="POST">
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700">E-mail</label>
+                    <input type="text" name="_username" id="email" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Adresse e-mail..." required value="{{ username }}">
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700">Mot de passe</label>
+                    <input type="password" name="_password" id="password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Mot de passe..." required>
+                </div>
+
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors">Connexion</button>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}

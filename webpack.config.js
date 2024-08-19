@@ -66,6 +66,16 @@ Encore
     // enables Sass/SCSS support
     .enableSassLoader()
 
+    .enablePostCssLoader(options => {
+        options.postcssOptions = {
+            plugins: [
+                require('tailwindcss'),
+                require('autoprefixer'),
+            ],
+        };
+    })
+
+
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
 
