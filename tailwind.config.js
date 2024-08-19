@@ -11,10 +11,12 @@ module.exports = {
         primary: {
           DEFAULT: '#E189FF',
           dark: '#BD00FF',
+          hover: '#A005D6',
         },
         secondary: {
           DEFAULT: '#FFD600',
           dark: '#FFA500',
+          hover: '#E8C305'
         },
         tertiary: {
           light: '#CEC8D5',
@@ -22,6 +24,7 @@ module.exports = {
         },
         background: {
           DEFAULT: '#F3EBFF',
+          hover: '#E8DCF9',
         },
         success: {
           DEFAULT: '#32CD32',

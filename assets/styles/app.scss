@@ -1,11 +1,56 @@
-@import 'font.scss';
+@import 'fonts.scss';
+@import 'variables.scss';
+@import 'mixins.scss';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body{
+    color:$tertiary;
+}
+
 .font-gliker {
     font-family: 'Gliker Black Condensed', sans-serif;
+}
+
+.slide{
+    width:100%;
+}
+.container{
+    width:90%;
+    margin: 0 auto;
+}
+
+p, a{
+    font-size: 14px;
+}
+
+.title{
+    font-family: 'Gliker Black Condensed', sans-serif;
+    font-size: 80px;
+    @media all and (max-width: 768px){
+        font-size: 40px;
+    }
+}
+
+.subtitle{
+    font-size: 17px;
+    font-weight: 900;
+}
+
+/*----NAV----*/
+.mega-menu-img{
+    @include imgCover(cover);
+    background-image: url(../../public/images/mega-menu.jpg);
+    height:30vh;
+}
+
+.mega-menu-background{
+    @include imgCover(cover);
+    background-image: url(../../public/images/mega-menu-background.svg);
+    width:65%;
+    height:50vh;
 }
 
 .like-button {

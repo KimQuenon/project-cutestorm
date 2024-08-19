@@ -6,8 +6,9 @@
  * which should already be in your base.html.twig.
  */
 import './styles/app.scss';
-import './styles/font.scss';
-import './styles/variable.scss';
+import './styles/fonts.scss';
+import './styles/variables.scss';
+import './styles/mixins.scss';
 // import './styles/bootstrap.min.css'
 // import 'bootstrap/dist/js/bootstrap.bundle'
 

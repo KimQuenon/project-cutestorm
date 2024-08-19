@@ -1,0 +1,264 @@
+<header class="absolute top-0 left-0 z-50 w-full">
+	<div class="slide mx-auto flex items-center justify-between py-5 lg:px-20 px-5 pr-16 relative">
+		<div>
+			<a href="#" class="flex items-center">
+				<img src="/images/cutestorm-logo.svg" alt="Logo" class="h-8 mr-3">
+				<div>
+					<p class="font-gliker">CUTESTORM</p>
+					<p class="text-xs">ONLINE MEDIA</p>
+				</div>
+			</a>
+		</div>
+
+        <div class="w-1/2 flex items-center justify-end">
+            <div class="lg:flex hidden w-full items-center" id="nav-link">
+                <div class="w-full flex justify-center items-center gap-3 hover:font-bold group">
+                    <span class="w-2.5 h-2.5 bg-secondary border-2 border-tertiary rounded-full scale-0 transition-transform duration-300 group-hover:scale-100"></span>
+                    <a href="{{path('homepage')}}" class="relative flex items-center">HOME</a>
+                </div>
+                <div class="w-full flex justify-center items-center gap-3 hover:font-bold group">
+                    <span class="w-2.5 h-2.5 bg-secondary border-2 border-tertiary rounded-full scale-0 transition-transform duration-300 group-hover:scale-100"></span>
+                    <a href="{{path('store')}}" class="relative flex items-center">STORE</a>
+                </div>
+                <div class="w-full flex justify-center items-center gap-3 hover:font-bold group">
+                    <span class="w-2.5 h-2.5 bg-secondary border-2 border-tertiary rounded-full scale-0 transition-transform duration-300 group-hover:scale-100"></span>
+                    <a href="#" class="relative flex items-center">COMMUNITY</a>
+                </div>
+                <div class="w-full flex justify-center items-center gap-3 hover:font-bold group">
+                    <span class="w-2.5 h-2.5 bg-secondary border-2 border-tertiary rounded-full scale-0 transition-transform duration-300 group-hover:scale-100"></span>
+                    <a href="{{path('account_register')}}" class="relative flex items-center">JOIN US</a>
+                </div>
+
+                <!-- Mega menu -->
+                <div class="lg:absolute relative top-full left-0 px-20 py-8 bg-background w-full hidden z-50 flex flex-row gap-10 justify-between" id="mega-menu">
+                    <div class="w-1/3 flex justify-between mt-8">
+                        <ul>
+                            <li class="mb-4">
+                                <a href="{{path('homepage')}}" class="subtitle">HOME</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#">Concept</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#">About us</a>
+                            </li>
+                            <li>
+                                <a href="#">Contact us</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="mb-4">
+                                <a href="{{path('store')}}" class="subtitle">STORE</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#">Filtres</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#">Filtres</a>
+                            </li>
+                            <li>
+                                <a href="#">Filtres</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="mb-4">
+                                <a href="#" class="subtitle">COMMUNITY</a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#">Posts</a>
+                            </li>
+                            <li>
+                                <a href="#">Awards</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-2/3 mx-auto flex items-center justify-center mega-menu-background">
+                        <div class="w-2/3 mx-auto flex flex-col items-center gap-2">
+                            <div class="w-1/5 h-36 border-4 border-tertiary rounded-xl mega-menu-img"></div>
+                            <a href="{{path('account_login')}}" class="w-full bg-primary-dark hover:bg-primary-hover font-semibold rounded-full py-1 text-center border-2 border-tertiary">LOGIN ></a>
+                            <a href="{{path('account_register')}}" class="w-full bg-secondary hover:bg-secondary-hover font-semibold rounded-full py-1 text-center border-2 border-tertiary">REGISTER ></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{path('account_login')}}" class="bg-secondary hover:bg-secondary-hover font-bold px-10 py-2 rounded-full border-2 border-tertiary flex items-center justify-center transition-all duration-300">
+                LOGIN
+            </a>
+            <div class="lg:hidden flex items-center absolute z-50 right-6">
+                <button id="burger-menu" class="flex flex-col gap-1.5 justify-center items-center">
+                    <span id="burger-bar-1" class="block w-8 h-0.5 bg-tertiary transition-transform duration-300"></span>
+                    <span id="burger-bar-2" class="block w-8 h-0.5 bg-tertiary transition-transform duration-300"></span>
+                    <span id="burger-bar-3" class="block w-8 h-0.5 bg-tertiary transition-transform duration-300"></span>
+                </button>
+            </div>
+
+
+            <div class="lg:hidden bg-primary w-full fixed inset-0 flex flex-col justify-center z-1 h-screen hidden" id="burger-menu-container">
+                <div class="w-5/6 mx-auto">
+                    <div class="flex justify-between items-end md:flex-nowrap flex-wrap">
+                        <div>
+                            <img src="/images/cutestorm-logo.svg" alt="Logo" class="md:h-24 h-8 mr-3">
+                            <h1 class="title">CUTESTORM</h1>
+                        </div>
+                        <div class="md:mb-8 flex flex-col gap-2 w-full items-end">
+                            <a href="{{path('account_login')}}" class="md:w-52 w-full bg-secondary hover:bg-secondary-hover font-bold py-2 rounded-full border-2 border-tertiary flex items-center justify-center transition-all duration-300">
+                                LOGIN >
+                            </a>
+                            <a href="{{path('account_register')}}" class="md:w-52 w-full bg-background hover:bg-background-hover font-bold py-2 rounded-full border-2 border-tertiary flex items-center justify-center transition-all duration-300">
+                                REGISTER >
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex flex-row gap-10 justify-between md:my-12 my-8" id="burger-menu-content">
+                            <ul>
+                                <li class="mb-4">
+                                    <a href="{{path('homepage')}}" class="subtitle">HOME</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#">Concept</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#">About us</a>
+                                </li>
+                                <li>
+                                    <a href="#">Contact us</a>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li class="mb-4">
+                                    <a href="{{path('store')}}" class="subtitle">STORE</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#">Filtres</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#">Filtres</a>
+                                </li>
+                                <li>
+                                    <a href="#">Filtres</a>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li class="mb-4">
+                                    <a href="#" class="subtitle">COMMUNITY</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#">Posts</a>
+                                </li>
+                                <li>
+                                    <a href="#">Awards</a>
+                                </li>
+                            </ul>
+                    </div>
+                    <div class="w-full h-40 border-4 border-tertiary rounded-xl mega-menu-img"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</header>
+
+<script>
+const nav = document.getElementById('nav-link');
+const megaMenu = document.getElementById('mega-menu');
+const burgerMenu = document.getElementById('burger-menu');
+const burgerMenuContainer = document.getElementById('burger-menu-container');
+const bar1 = document.getElementById('burger-bar-1');
+const bar2 = document.getElementById('burger-bar-2');
+const bar3 = document.getElementById('burger-bar-3');
+
+nav.addEventListener('mouseover', () => {
+  megaMenu.classList.remove('hidden');
+});
+
+megaMenu.addEventListener('mouseout', () => {
+  megaMenu.classList.add('hidden');
+});
+
+burgerMenu.addEventListener('click', () => {
+    // Afficher/masquer le menu burger avec animation
+    if (burgerMenuContainer.classList.contains('hidden')) {
+        burgerMenuContainer.classList.remove('hidden');
+        burgerMenuContainer.classList.add('slide-in');
+        document.body.classList.add('overflow-hidden');
+    } else {
+        burgerMenuContainer.classList.remove('slide-in');
+        burgerMenuContainer.classList.add('slide-out');
+        document.body.classList.remove('overflow-hidden');
+
+        // Réinitialiser les classes après l'animation
+        burgerMenuContainer.addEventListener('animationend', () => {
+            if (burgerMenuContainer.classList.contains('slide-out')) {
+                burgerMenuContainer.classList.add('hidden');
+                burgerMenuContainer.classList.remove('slide-out');
+            }
+        }, { once: true });
+    }
+
+    // Transformer les barres en croix
+    bar1.classList.toggle('rotate-45');
+    bar1.classList.toggle('translate-y-2');
+
+    bar2.classList.toggle('opacity-0');
+
+    bar3.classList.toggle('-rotate-45');
+    bar3.classList.toggle('-translate-y-2');
+});
+
+// Fermer le menu burger en cliquant en dehors
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#burger-menu-container') && !e.target.closest('#burger-menu')) {
+        burgerMenuContainer.classList.remove('slide-in');
+        burgerMenuContainer.classList.add('slide-out');
+        document.body.classList.remove('overflow-hidden');
+
+        // Réinitialiser les classes après l'animation
+        burgerMenuContainer.addEventListener('animationend', () => {
+            if (burgerMenuContainer.classList.contains('slide-out')) {
+                burgerMenuContainer.classList.add('hidden');
+                burgerMenuContainer.classList.remove('slide-out');
+            }
+        }, { once: true });
+
+        // Réinitialiser les barres du menu burger
+        bar1.classList.remove('rotate-45', 'translate-y-2');
+        bar2.classList.remove('opacity-0');
+        bar3.classList.remove('-rotate-45', '-translate-y-2');
+    }
+});
+
+</script>
+
+<style>
+
+
+@keyframes slide-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.slide-in {
+  animation: slide-in 0.5s forwards;
+}
+
+.slide-out {
+  animation: slide-out 0.5s forwards;
+}
+
+</style>
