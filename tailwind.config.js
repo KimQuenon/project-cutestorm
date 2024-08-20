@@ -20,7 +20,8 @@ module.exports = {
         },
         tertiary: {
           light: '#CEC8D5',
-          DEFAULT: '#474747',
+          DEFAULT: '#888888',
+          dark: '#474747',
         },
         background: {
           DEFAULT: '#F3EBFF',
@@ -34,6 +35,9 @@ module.exports = {
         },
         highlight: {
           DEFAULT: '#00BFFF',
+        },
+        white: {
+          DEFAULT: '#FBF9FF',
         },
       },
       fontFamily: {

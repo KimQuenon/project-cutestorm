@@ -1,69 +1,135 @@
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Homepage{% endblock %}
+{% block title %}Homepage
+{% endblock %}
 
 {% block body %}
-{# ------------------------------SLIDE 1 - HOME------------------------------ #}
-<div class="slide flex lg:items-center items-start bg-background lg:pt-20 pt-0">
-    <div class="h-40 bg-tertiary p-4 rounded-e-xl fixed lg:block hidden">
-        <div class="w-full flex flex-col gap-4">
-            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-                <i class="fab fa-facebook"></i>
+	{# ------------------------------SLIDE 1 - HOME------------------------------ #}
+	<div class="slide flex lg:items-center items-start bg-background lg:pt-20 pt-0">
+		<div class="h-40 bg-tertiary-dark p-4 rounded-e-xl fixed lg:block hidden z-50">
+			<div class="w-full flex flex-col gap-4">
+				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+					<i class="fab fa-facebook"></i>
+				</div>
+				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+					<i class="fa-brands fa-twitter"></i>
+				</div>
+				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+					<i class="fa-brands fa-instagram"></i>
+				</div>
+				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+					<i class="fa-brands fa-tiktok"></i>
+				</div>
+			</div>
+		</div>
+		<div class="container relative" id="homepage-hero">
+			<div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
+				<h1 class="title lg:text-7xl text-4xl mb-5 text-tertiary-dark">CUTESTORM</h1>
+				<p class="mb-5 text-end">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam amet, tempore magnam incidunt doloremque! Maxime, nemo alias accusamus autem voluptate doloribus accusantium rem voluptas iste distinctio temporibus recusandae!</p>
+				<a href="{{path('store')}}" class="w-52 btn-purple">
+					VISIT OUR STORE >
+				</a>
+			</div>
+		</div>
+	</div>
+
+	{# ------------------------------SLIDE 2 - CONCEPT------------------------------ #}
+	<div class="slide bg-background" id="concept-slide">
+		<div class="container flex flex-row flex-wrap h-screen justify-between items-center lg:gap-0 gap-10">
+			<div class="lg:w-2/5 w-full lg:pr-5 pr-0">
+				<h2 class="title text-primary-dark">Our concept</h2>
+				<p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula.</p>
+				<a href="{{path('store')}}" class="w-52 btn-purple mb-12 lg:ml-auto">
+					CHECK OUR STORE >
+				</a>
+				<div class="md:w-5/6 w-full md:ml-auto border-tertiary-dark shadow rounded-xl">
+					<div class="bg-primary-dark border-2 border-b-0 border-tertiary-dark p-4 rounded-t-xl flex justify-between items-center">
+						<div class="flex flex-col gap-2">
+							<span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+							<span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+							<span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+						</div>
+                        <div class="flex gap-2">
+                            <span class="w-3 h-3 bg-danger border-2 border-tertiary-dark rounded-full"></span>
+                            <span class="w-3 h-3 bg-secondary border-2 border-tertiary-dark rounded-full"></span>
+                            <span class="w-3 h-3 bg-highlight border-2 border-tertiary-dark rounded-full"></span>
+                        </div>
+					</div>
+					<div class="bg-white border-2 border-tertiary-dark p-6 py-8 rounded-b-xl">
+						<div class="flex flex-col gap-10">
+							<div class="flex gap-8 items-center justify-center">
+                                <div class="w-20 relative">
+                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="w-20 h-20 bg-danger border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                        <p class="text-5xl font-gliker text-background">1</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="subtitle">Buy it !</p>
+                                    <p>Get brand new clothes in our store or grab whatever piece of clothing sitting in your closet.</p>
+                                </div>
+                            </div>
+							<div class="flex gap-8 items-center justify-center">
+                                <div class="w-20 relative">
+                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="w-20 h-20 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                        <p class="text-5xl font-gliker text-background">2</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="subtitle">Sketch it !</p>
+                                    <p>Start drawing whatever is on your mind, be creative and confident about your art.</p>
+                                </div>
+                            </div>
+							<div class="flex gap-8 items-center justify-center">
+                                <div class="w-20 relative">
+                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="w-20 h-20 bg-highlight border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                        <p class="text-5xl font-gliker text-background">3</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="subtitle">Share it !</p>
+                                    <p>Post a picture of your creation on our social media and meet new creators.</p>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="lg:w-3/5 w-full linear-background lg:h-full h-40 flex justify-center items-center">
+                <div class="w-full h-full lg:mt-40 mt-0" id="concept-img"></div>
             </div>
-            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-                <i class="fa-brands fa-twitter"></i>
-            </div>
-            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-                <i class="fa-brands fa-instagram"></i>
-            </div>
-            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-                <i class="fa-brands fa-tiktok"></i>
-            </div>
-        </div>
-    </div>
-    <div class="container relative" id="homepage-hero">
-        <div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
-            <h1 class="title lg:text-7xl text-4xl mb-5">CUTESTORM</h1>
-            <p class="mb-5 text-end">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam amet, tempore magnam incidunt doloremque! Maxime, nemo alias accusamus autem voluptate doloribus accusantium rem voluptas iste distinctio temporibus recusandae!</p>
-            <a href="{{path('store')}}" class="w-52 btn-purple">
-                VISIT OUR STORE >
-            </a>
-        </div>
-    </div>
-</div>
-
-{# ------------------------------SLIDE 2 - CONCEPT------------------------------ #}
-<div class="bg-background">
-    <div class="container pt-20">
-        <h1>Hello</h1>
-        <div class="container">
-        {% for team in teams %}
-            <strong>{{team.name}}</strong>
-            <p>{{team.fonction}}</p>
-            {% if team.instagram %}
-                <p>{{team.instagram}}</p>
-            {% elseif team.linkedin %}
-                <p>{{team.linkedin}}</p>
-            {% endif %}
-        {% endfor %}
-        </div>
-    </div>
-
-    <div class="container">
-
-        <h1>Contactez-nous</strong></h1>
-
-        {{form_start(myForm)}}
-
-            {{form_widget(myForm)}}
-            <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
-
-        {{form_end(myForm)}}
-    </div>
-</div>
+		</div>
+	</div>
 
 
+	<div class="bg-background">
+		<div class="container pt-20">
+			<h1>Hello</h1>
+			<div class="container">
+				{% for team in teams %}
+					<strong>{{team.name}}</strong>
+					<p>{{team.fonction}}</p>
+					{% if team.instagram %}
+						<p>{{team.instagram}}</p>
+					{% elseif team.linkedin %}
+						<p>{{team.linkedin}}</p>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
 
+		<div class="container">
 
-{% endblock %}
+			<h1>Contactez-nous</strong>
+		</h1>
+
+		{{form_start(myForm)}}
+
+		{{form_widget(myForm)}}
+		<button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+
+		{{form_end(myForm)}}
+	</div>
+</div>{% endblock %}
