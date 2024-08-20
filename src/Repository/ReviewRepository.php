@@ -54,6 +54,17 @@ class ReviewRepository extends ServiceEntityRepository
         return $query->getQuery()->getOneOrNullResult() !== null;
     }
 
+    public function findTopRatedReviews(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.rating >= :minRating')
+            ->setParameter('minRating', 4)
+            ->orderBy('r.rating', 'DESC')
+            ->addOrderBy('r.timestamp', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 
     //    /**
     //     * @return Review[] Returns an array of Review objects

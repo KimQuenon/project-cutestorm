@@ -153,7 +153,10 @@ to {
 
 #concept-slide{
     @media all and (max-width: 1200px){
-        min-height:120vh;
+        min-height:130vh;
+    }
+    @media all and (max-width: 768px){
+        min-height:140vh;
     }
 }
 
@@ -170,7 +173,37 @@ to {
     }  
 }
 
+#reviews-slide{
+    @include imgCover(cover);
+    background-image: url(../../public/images/reviews.webp);
+    height:55vh;
+    @media all and (max-width: 1200px){
+        height:40vh;
+    }
+    @media all and (max-width: 768px){
+        background-position: 75% 50%;
+        height:65vh;
+    }  
+}
 
+.swiper-container {
+    height: 35vh;
+    overflow-x: hidden;
+    @media all and (max-width: 1200px){
+        height:25vh;
+    }
+    @media all and (max-width: 768px){
+        height:48vh;
+    }
+}
+
+.swiper-width{
+    width:99%;
+}
+
+.swiper-pagination-bullet-active{
+    background-color: $background;
+}
 .like-button {
     border: none;
     background: none;

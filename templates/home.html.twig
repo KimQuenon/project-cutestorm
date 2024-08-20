@@ -103,6 +103,53 @@
 		</div>
 	</div>
 
+	{# ------------------------------SLIDE 3 - REVIEWS------------------------------ #}
+<div class="w-full flex flex-col justify-center bg-background" id="reviews-slide">
+    <div class="container ">
+        <h2 class="title text-background lg:pt-4">Reviews</h2>
+        <div class="swiper-container lg:w-7/12 w-full relative">
+            <div class="swiper-wrapper">
+                {% for review in reviews %}
+                    <div class="swiper-slide w-full rounded-xl flex flex-col">
+                        <div class="border-tertiary-dark rounded-xl shadow swiper-width">
+                            <div class="w-full bg-tertiary border-2 border-b-0 border-tertiary-dark p-4 rounded-t-xl flex justify-between items-center">
+                                <div class="flex flex-col gap-2">
+                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="w-3 h-3 bg-danger border-2 border-tertiary-dark rounded-full"></span>
+                                    <span class="w-3 h-3 bg-secondary border-2 border-tertiary-dark rounded-full"></span>
+                                    <span class="w-3 h-3 bg-highlight border-2 border-tertiary-dark rounded-full"></span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-white border-2 border-tertiary-dark p-6 py-8 rounded-b-xl">
+                                <div class="flex flex-row flex-wrap md:gap-8 gap-2">
+                                    <div class="w-20 relative ">
+                                        <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                            <img src="/uploads/{{ review.author.avatar }}" alt="avatar of {{ review.author.pseudo}}" class="w-20 h-20 border-2 border-tertiary-dark rounded-full relative"></img>
+                                        </div>
+                                    <div class="md:w-5/6 w-full">
+                                        <div class="flex flex-row flex-wrap justify-between">
+                                            <p class="text-lg"><span class="subtitle">{{review.author.pseudo}}</span> - User since {{ review.author.timestamp|date('Y') }}</p>
+                                            {% include "partials/_rating.html.twig" with {'rating': review.rating} %}
+                                        </div>
+                                        <p>"{{review.content}}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</div>
+
+
+
 
 	<div class="bg-background">
 		<div class="container pt-20">
@@ -133,3 +180,23 @@
 		{{form_end(myForm)}}
 	</div>
 </div>{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var swiper = new Swiper('.swiper-container', {
+                slidesPerView: 1,
+                spaceBetween: 10,
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                autoplay: {
+                    delay: 5000,
+                },
+            });
+        });
+    </script>
+{% endblock %}
+

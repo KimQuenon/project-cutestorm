@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Repository\TeamRepository;
+use App\Repository\ReviewRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +16,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(TeamRepository $teamRepo, Request $request, EntityManagerInterface $manager): Response
+    public function index(ReviewRepository $reviewRepo, TeamRepository $teamRepo, Request $request, EntityManagerInterface $manager): Response
     {
+        $reviews = $reviewRepo->findTopRatedReviews();
         $teams = $teamRepo->findAll();
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
@@ -41,6 +43,7 @@ class HomeController extends AbstractController
 
         return $this->render('home.html.twig', [
             'myForm' => $form->createView(),
+            'reviews' => $reviews,
             'teams' => $teams
         ]);
     }
