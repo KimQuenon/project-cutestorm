@@ -4,6 +4,36 @@
 {% block title %}Homepage{% endblock %}
 
 {% block body %}
+{# ------------------------------SLIDE 1 - HOME------------------------------ #}
+<div class="slide flex lg:items-center items-start bg-background lg:pt-20 pt-0">
+    <div class="h-40 bg-tertiary p-4 rounded-e-xl fixed lg:block hidden">
+        <div class="w-full flex flex-col gap-4">
+            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+                <i class="fab fa-facebook"></i>
+            </div>
+            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+                <i class="fa-brands fa-twitter"></i>
+            </div>
+            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+                <i class="fa-brands fa-instagram"></i>
+            </div>
+            <div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
+                <i class="fa-brands fa-tiktok"></i>
+            </div>
+        </div>
+    </div>
+    <div class="container relative" id="homepage-hero">
+        <div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
+            <h1 class="title lg:text-7xl text-4xl mb-5">CUTESTORM</h1>
+            <p class="mb-5 text-end">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam amet, tempore magnam incidunt doloremque! Maxime, nemo alias accusamus autem voluptate doloribus accusantium rem voluptas iste distinctio temporibus recusandae!</p>
+            <a href="{{path('store')}}" class="w-52 btn-purple">
+                VISIT OUR STORE >
+            </a>
+        </div>
+    </div>
+</div>
+
+{# ------------------------------SLIDE 2 - CONCEPT------------------------------ #}
 <div class="bg-background">
     <div class="container pt-20">
         <h1>Hello</h1>

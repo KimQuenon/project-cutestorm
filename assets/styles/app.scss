@@ -16,6 +16,8 @@ body{
 
 .slide{
     width:100%;
+    // min-height: 100vh;
+    position:relative;
 }
 .container{
     width:90%;
@@ -39,6 +41,21 @@ p, a{
     font-weight: 900;
 }
 
+.btn-purple{
+    background-color: $primaryDark;
+    border-radius: 50px;
+    color:$background;
+    border: 2px solid $tertiary;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 900;
+    padding: 8px 20px;
+    transition: all 0.5s;
+    &:hover{
+        background-color: $primaryHover;
+    }
+}
+
 /*----NAV----*/
 .mega-menu-img{
     @include imgCover(cover);
@@ -52,6 +69,52 @@ p, a{
     width:65%;
     height:50vh;
 }
+
+@keyframes slide-in {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+@keyframes slide-out {
+from {
+    transform: translateY(0);
+    opacity: 1;
+}
+to {
+    transform: translateY(100%);
+    opacity: 0;
+}
+}
+
+.slide-in {
+    animation: slide-in 0.5s forwards;
+}
+
+.slide-out {
+    animation: slide-out 0.5s forwards;
+}
+
+
+/*-----HOME-----*/
+#homepage-hero{
+    @include imgCover(contain);
+    background-image: url(../../public/images/homepage-hero.png);
+    width:90%;
+    height:80vh;
+    @media all and (max-width: 1200px){
+        height:65vh;
+    }
+    @media all and (max-width: 768px){
+        height:80vh;
+    }
+}
+
 
 .like-button {
     border: none;
