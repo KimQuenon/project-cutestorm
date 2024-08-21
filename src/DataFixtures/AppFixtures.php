@@ -149,56 +149,83 @@ class AppFixtures extends Fixture
                 $users[] = $user; // Add user to the array
             }
             
-            //create Delivery options
-            $deliveryOptions = [
-                [
-                    'name' => 'Standard Shipping',
-                    'price' => 5.99,
-                    'deliveryTime' => "2 weeks"
-                ],
-                [
-                    'name' => 'Express Shipping',
-                    'price' => 12.99,
-                    'deliveryTime' => "3 days" 
-                    ]
-                ];
+        //create Delivery options
+        $deliveryOptions = [
+            [
+                'name' => 'Standard Shipping',
+                'price' => 5.99,
+                'deliveryTime' => "2 weeks"
+            ],
+            [
+                'name' => 'Express Shipping',
+                'price' => 12.99,
+                'deliveryTime' => "3 days" 
+                ]
+            ];
+            
+            foreach ($deliveryOptions as $optionData) {
+                $deliveryOption = new Delivery();
+                $deliveryOption->setName($optionData['name'])
+                ->setPrice($optionData['price'])
+                ->setDeliveryTime($optionData['deliveryTime']);
                 
-                foreach ($deliveryOptions as $optionData) {
-                    $deliveryOption = new Delivery();
-                    $deliveryOption->setName($optionData['name'])
-                    ->setPrice($optionData['price'])
-                    ->setDeliveryTime($optionData['deliveryTime']);
-                    
-                    $manager->persist($deliveryOption);
-                }
+                $manager->persist($deliveryOption);
+            }
                 
-                // Create colors
-                $colors = [];
-                $colorNames = ['Red', 'Green', 'Blue', 'Black', 'White', 'Yellow', 'Purple'];
-                foreach ($colorNames as $colorName) {
-                    $color = new ProductColor();
-                    $color->setName($colorName);
-                    $color->setHexCode($faker->hexColor());
-                    
-                    $manager->persist($color);
-                    $colors[] = $color; // Store colors to use later
-                }
-                
-                $categories = [];
-                for ($c = 1; $c <= 10; $c++) {
-                    $category = new ProductCategory();
-                    $category->setName($faker->word());
-                    $manager->persist($category);
-                    $categories[] = $category;
-                }
+            // Create colors
+        $colors = [];
+        $colorNames = ['Red', 'Green', 'Blue', 'Black', 'White', 'Yellow', 'Purple'];
+        foreach ($colorNames as $colorName) {
+            $color = new ProductColor();
+            $color->setName($colorName);
+            $color->setHexCode($faker->hexColor());
+            
+            $manager->persist($color);
+            $colors[] = $color; // Store colors to use later
+        }
+        
+        $categories = [];
+        for ($c = 1; $c <= 10; $c++) {
+            $category = new ProductCategory();
+            $category->setName($faker->word());
+            $manager->persist($category);
+            $categories[] = $category;
+        }
 
-        for ($t = 1; $t <= 8; $t++) {
+        
+        $avatars = [
+            'https://i.pravatar.cc/150?img=1',
+            'https://i.pravatar.cc/150?img=2',
+            'https://i.pravatar.cc/150?img=3',
+            'https://i.pravatar.cc/150?img=4',
+            'https://i.pravatar.cc/150?img=5',
+            'https://i.pravatar.cc/150?img=6',
+            'https://i.pravatar.cc/150?img=7',
+            'https://i.pravatar.cc/150?img=8',
+            'https://i.pravatar.cc/150?img=9',
+        ];
+
+        $levels = [1, 2, 2, 2, 2, 3, 3, 3, 3];
+
+        $networkOptions = ['instagram', 'linkedin'];
+
+        for ($t = 1; $t <= 9; $t++) {
             $team = new Team();
+
+            $socialNetwork = $faker->randomElement($networkOptions);
 
             $team->setName($faker->name())
                 ->setFonction($faker->word())
-                ->setInstagram('')
-                ->setLinkedin('');
+                ->setLevel($levels[$t - 1])
+                ->setAvatar($avatars[$t - 1]);
+
+                if ($socialNetwork === 'instagram') {
+                    $team->setInstagram('https://instagram.com/' . $faker->userName());
+                    $team->setLinkedin(null);
+                } else {
+                    $team->setInstagram(null);
+                    $team->setLinkedin('https://linkedin.com/in/' . $faker->userName());
+                }
 
             $manager->persist($team);
         }

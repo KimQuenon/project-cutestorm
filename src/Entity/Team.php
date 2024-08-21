@@ -25,6 +25,12 @@ class Team
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkedin = null;
 
+    #[ORM\Column]
+    private ?int $level = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +80,30 @@ class Team
     public function setLinkedin(?string $linkedin): static
     {
         $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(int $level): static
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

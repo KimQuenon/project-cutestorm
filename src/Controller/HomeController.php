@@ -20,6 +20,11 @@ class HomeController extends AbstractController
     {
         $reviews = $reviewRepo->findTopRatedReviews();
         $teams = $teamRepo->findAll();
+
+        $team1 = $teamRepo->findBy(['level' => 1]);
+        $teams2 = $teamRepo->findBy(['level' => 2]);
+        $teams3 = $teamRepo->findBy(['level' => 3]);
+
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
         //handle form
@@ -44,7 +49,9 @@ class HomeController extends AbstractController
         return $this->render('home.html.twig', [
             'myForm' => $form->createView(),
             'reviews' => $reviews,
-            'teams' => $teams
+            'team1' => $team1,
+            'teams2' => $teams2,
+            'teams3' => $teams3,
         ]);
     }
 

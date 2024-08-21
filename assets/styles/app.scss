@@ -86,9 +86,17 @@ p, a{
 .logo-eyes{
     @include imgCover(contain);
     background-image: url(../../public/images/cutestorm-logo.svg);
+}
+.normal-eyes{
     height:3.5vh;
     @media all and (max-width: 1200px){
         height:2.5vh;
+    }
+}
+.miniature-eyes{
+    height:2vh;
+    @media all and (max-width: 1200px){
+        height:1vh;
     }
 }
 
@@ -152,6 +160,7 @@ to {
 }
 
 #concept-slide{
+    min-height: 130vh;
     @media all and (max-width: 1200px){
         min-height:130vh;
     }
@@ -193,7 +202,7 @@ to {
         height:25vh;
     }
     @media all and (max-width: 768px){
-        height:48vh;
+        height:50vh;
     }
 }
 
@@ -203,6 +212,81 @@ to {
 
 .swiper-pagination-bullet-active{
     background-color: $background;
+}
+
+.rank{
+    @include imgCover(cover);
+    height:5vh;
+    width:77%!important;
+    @media all and (max-width: 1200px){
+        height:2vh;
+     }
+    &#rank1{
+        background-image: url(../../public/images/rank1.svg);
+    }
+    &#rank2{
+        background-image: url(../../public/images/rank2.svg);
+        @media all and (max-width: 768px){
+            // width:20%;
+            background-size: contain!important;
+         }
+    }
+}
+
+
+.flip-card{
+    width: 80px;
+    height: 10vh;
+    perspective: 1000px;
+    cursor: pointer;
+    background-color: transparent;
+    padding-bottom: 80px;
+    @media all and (max-width: 1200px){
+       height:5vh;
+    }
+    @media all and (max-width: 768px){
+       width:65px;
+       padding-bottom: 70px;
+    }
+    &:hover .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+      &:hover .flip-card-inner.active {
+        transform: rotateY(0deg);
+      }
+    .flip-card-inner{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s;
+        transform-style: preserve-3d;
+    }
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+    }
+    .flip-card-front{
+        transform: rotateY(0deg);
+    }
+    .flip-card-back{
+        transform: rotateY(180deg);
+    }
+}
+
+@media all and (max-width: 1200px) {
+    .flip-card.active .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+}
+
+#slide-store{
+    background-image: url(../../public/images/slide-store.webp);
+}
+
+#slide-community{
+    background-image: url(../../public/images/slide-community.webp);
 }
 .like-button {
     border: none;

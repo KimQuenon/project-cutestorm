@@ -12,7 +12,7 @@
 					<i class="fab fa-facebook"></i>
 				</div>
 				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-					<i class="fa-brands fa-twitter"></i>
+					<i class="fa-brands fa-x-twitter"></i>
 				</div>
 				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
 					<i class="fa-brands fa-instagram"></i>
@@ -26,9 +26,7 @@
 			<div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
 				<h1 class="title lg:text-7xl text-4xl mb-5 text-tertiary-dark">CUTESTORM</h1>
 				<p class="mb-5 text-end">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam amet, tempore magnam incidunt doloremque! Maxime, nemo alias accusamus autem voluptate doloribus accusantium rem voluptas iste distinctio temporibus recusandae!</p>
-				<a href="{{path('store')}}" class="w-52 btn-purple">
-					VISIT OUR STORE >
-				</a>
+				<a href="{{path('store')}}" class="w-52 btn-purple">CHECK OUR STORE ></a>
 			</div>
 		</div>
 	</div>
@@ -59,7 +57,7 @@
 						<div class="flex flex-col gap-10">
 							<div class="flex gap-8 items-center justify-center">
                                 <div class="w-20 relative">
-                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="logo-eyes normal-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
                                     <div class="w-20 h-20 bg-danger border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
                                         <p class="text-5xl font-gliker text-background">1</p>
                                     </div>
@@ -71,7 +69,7 @@
                             </div>
 							<div class="flex gap-8 items-center justify-center">
                                 <div class="w-20 relative">
-                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="logo-eyes normal-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
                                     <div class="w-20 h-20 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
                                         <p class="text-5xl font-gliker text-background">2</p>
                                     </div>
@@ -83,7 +81,7 @@
                             </div>
 							<div class="flex gap-8 items-center justify-center">
                                 <div class="w-20 relative">
-                                    <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                    <div class="logo-eyes normal-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
                                     <div class="w-20 h-20 bg-highlight border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
                                         <p class="text-5xl font-gliker text-background">3</p>
                                     </div>
@@ -104,68 +102,213 @@
 	</div>
 
 	{# ------------------------------SLIDE 3 - REVIEWS------------------------------ #}
-<div class="w-full flex flex-col justify-center bg-background" id="reviews-slide">
-    <div class="container ">
-        <h2 class="title text-background lg:pt-4">Reviews</h2>
-        <div class="swiper-container lg:w-7/12 w-full relative">
-            <div class="swiper-wrapper">
-                {% for review in reviews %}
-                    <div class="swiper-slide w-full rounded-xl flex flex-col">
-                        <div class="border-tertiary-dark rounded-xl shadow swiper-width">
-                            <div class="w-full bg-tertiary border-2 border-b-0 border-tertiary-dark p-4 rounded-t-xl flex justify-between items-center">
-                                <div class="flex flex-col gap-2">
-                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
-                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
-                                    <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+    <div class="w-full flex flex-col justify-center bg-background" id="reviews-slide">
+        <div class="container ">
+            <h2 class="title text-background lg:pt-4">Reviews</h2>
+            <div class="swiper-container lg:w-7/12 w-full relative">
+                <div class="swiper-wrapper">
+                    {% for review in reviews %}
+                        <div class="swiper-slide w-full rounded-xl flex flex-col">
+                            <div class="border-tertiary-dark rounded-xl shadow swiper-width">
+                                <div class="w-full bg-tertiary border-2 border-b-0 border-tertiary-dark p-4 rounded-t-xl flex justify-between items-center">
+                                    <div class="flex flex-col gap-2">
+                                        <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                        <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                        <span class="block w-8 h-0.5 bg-tertiary-dark"></span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <span class="w-3 h-3 bg-danger border-2 border-tertiary-dark rounded-full"></span>
+                                        <span class="w-3 h-3 bg-secondary border-2 border-tertiary-dark rounded-full"></span>
+                                        <span class="w-3 h-3 bg-highlight border-2 border-tertiary-dark rounded-full"></span>
+                                    </div>
                                 </div>
-                                <div class="flex gap-2">
-                                    <span class="w-3 h-3 bg-danger border-2 border-tertiary-dark rounded-full"></span>
-                                    <span class="w-3 h-3 bg-secondary border-2 border-tertiary-dark rounded-full"></span>
-                                    <span class="w-3 h-3 bg-highlight border-2 border-tertiary-dark rounded-full"></span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-white border-2 border-tertiary-dark p-6 py-8 rounded-b-xl">
-                                <div class="flex flex-row flex-wrap md:gap-8 gap-2">
-                                    <div class="w-20 relative ">
-                                        <div class="logo-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
-                                            <img src="/uploads/{{ review.author.avatar }}" alt="avatar of {{ review.author.pseudo}}" class="w-20 h-20 border-2 border-tertiary-dark rounded-full relative"></img>
+                                <div class="w-full bg-white border-2 border-tertiary-dark p-6 py-8 rounded-b-xl">
+                                    <div class="flex md:flex-row flex-col md:gap-8 gap-2">
+                                        <div class="w-20 relative ">
+                                            <div class="logo-eyes normal-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                                <img src="/uploads/{{ review.author.avatar }}" alt="avatar of {{ review.author.pseudo}}" class="w-20 h-20 border-2 border-tertiary-dark rounded-full relative"></img>
+                                            </div>
+                                        <div class="lg:w-5/6 w-full">
+                                            <div class="flex flex-row flex-wrap justify-between">
+                                                <p class="text-lg"><span class="subtitle">{{review.author.pseudo}}</span> - User since {{ review.author.timestamp|date('Y') }}</p>
+                                                {% include "partials/_rating.html.twig" with {'rating': review.rating} %}
+                                            </div>
+                                            <p>"{{review.content}}"</p>
                                         </div>
-                                    <div class="md:w-5/6 w-full">
-                                        <div class="flex flex-row flex-wrap justify-between">
-                                            <p class="text-lg"><span class="subtitle">{{review.author.pseudo}}</span> - User since {{ review.author.timestamp|date('Y') }}</p>
-                                            {% include "partials/_rating.html.twig" with {'rating': review.rating} %}
-                                        </div>
-                                        <p>"{{review.content}}"</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
             </div>
-            <div class="swiper-pagination"></div>
         </div>
     </div>
-</div>
 
+	{# ------------------------------SLIDE 4 - ABOUT------------------------------ #}
+    <div class="slide bg-background md:h-full h-[150vh]">
+        <div class="container flex lg:flex-row flex-col-reverse gap-10">
+            <div class="lg:w-1/2 w-full linear-background flex flex-col h-full justify-between">
+                <div class="container flex flex-col items-center">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
+                                    style="background-image: url('{{ team1[0].avatar }}');">
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
+                                    {% if team1[0].instagram %}
+                                        <a href="{{ team1[0].instagram }}" class="text-3xl">
+                                            <i class="fa-brands fa-instagram"></i>
+                                        </a>
+                                    {% elseif team1[0].linkedin %}
+                                        <a href="{{ team1[0].linkedin }}" class="text-3xl">
+                                            <i class="fa-brands fa-linkedin"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="font-bold text-tertiary-dark">{{team1[0].name}}</p>
+                    <p>{{team1[0].fonction}}</p>
+                </div>
+                <div class="container rank" id="rank1"></div>
+                <div class="container flex justify-between">
+                    {% for team in teams2 %}
+                        <div class="flex flex-col items-center">
+                            <div class="flip-card">
+                                <div class="flip-card-inner">
+                                    <div class="flip-card-front">
+                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
+                                            style="background-image: url('{{ team.avatar }}');">
+                                        </div>
+                                    </div>
+                                    <div class="flip-card-back">
+                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
+                                            {% if team.instagram %}
+                                                <a href="{{ team.instagram }}" class="text-3xl">
+                                                    <i class="fa-brands fa-instagram"></i>
+                                                </a>
+                                            {% elseif team.linkedin %}
+                                                <a href="{{ team.linkedin }}" class="text-3xl">
+                                                    <i class="fa-brands fa-linkedin"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-bold text-tertiary-dark text-center">{{team.name}}</p>
+                            <p>{{team.fonction}}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="container py-8 rank" id="rank2"></div>
+                <div class="container flex justify-between">
+                    {% for team in teams3 %}
+                        <div class="flex flex-col items-center">
+                            <div class="flip-card">
+                                <div class="flip-card-inner">
+                                    <div class="flip-card-front">
+                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
+                                            style="background-image: url('{{ team.avatar }}');">
+                                        </div>
+                                    </div>
+                                    <div class="flip-card-back">
+                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
+                                            {% if team.instagram %}
+                                                <a href="{{ team.instagram }}" class="text-3xl">
+                                                    <i class="fa-brands fa-instagram"></i>
+                                                </a>
+                                            {% elseif team.linkedin %}
+                                                <a href="{{ team.linkedin }}" class="text-3xl">
+                                                    <i class="fa-brands fa-linkedin"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-bold text-tertiary-dark text-center">{{team.name}}</p>
+                            <p>{{team.fonction}}</p> 
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="lg:w-1/2 w-full flex flex-col justify-between">
+                <div>
+                    <p class="title text-primary-dark">About us</p>
+                    <p class="mb-4"><span class="font-bold">Lorem ipsum dolor sit amet</span>, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor vel nec nunc. <span class="font-bold">Vivamus blandit tristique gravida</span>.Curabitur egestas pellentesque efficitur.</p>
+                    <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span class="font-bold">Aenean semper ultricies fermentum.</span> Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis <span class="font-bold">libero vehicula tempor vel nec nunc</span>. Vivamus blandit tristique gravida. Curabitur egestas pellentesque efficitur.</p>
+                    <a href="{{path('store')}}" class="w-52 btn-purple ml-auto">Join us ></a>
+                </div>
+                {# <div class="relative">
+                    <img src="/images/paper-plane.svg" alt="paper plane" class="w-full h-48 bg-cover bg-no-repeat absolute"></img>
+                </div> #}
+                <div class="md:w-5/6 w-full lg:ml-auto mx-auto flex lg:flex-col md:flex-row flex-col lg:justify-center justify-between gap-6 lg:py-0 py-10">
+                    <div class="flex flex-col gap-6">
+                        <div class="lg:w-full w-1/2 flex items-center gap-4">
+                            <div class="w-10 relative">
+                                <div class="logo-eyes miniature-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                <div class="w-10 h-10 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                    <p class="text-xl text-tertiary-dark"><i class="fa-brands fa-facebook"></i></p>
+                                </div>
+                            </div>
+                            <p class="subtitle">@cutestorm_store</p>
+                        </div>
+                        <div class="lg:w-full w-1/2 flex items-center gap-4">
+                            <div class="w-10 relative">
+                                <div class="logo-eyes miniature-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                <div class="w-10 h-10 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                    <p class="text-xl text-tertiary-dark"><i class="fa-brands fa-x-twitter"></i></p>
+                                </div>
+                            </div>
+                            <p class="subtitle">@cutestorm_store</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 relative">
+                                <div class="logo-eyes miniature-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                <div class="w-10 h-10 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                    <p class="text-xl text-tertiary-dark"><i class="fa-brands fa-instagram"></i></p>
+                                </div>
+                            </div>
+                            <p class="subtitle">@cutestorm_store</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 relative">
+                                <div class="logo-eyes miniature-eyes transform scale-x-[-1] absolute -top-1.5 left-1/2 -translate-x-1/2 z-10"></div>
+                                <div class="w-10 h-10 bg-secondary border-2 border-tertiary-dark rounded-full relative flex justify-center items-center">
+                                    <p class="text-xl text-tertiary-dark"><i class="fa-brands fa-tiktok"></i></p>
+                                </div>
+                            </div>
+                            <p class="subtitle">@cutestorm_store</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    {# ------------------------------SLIDE 5 - STORE & COMMUNITY------------------------------ #}
+    {# <div class="w-full flex h-screen">
+        <div class="w-1/2 group relative overflow-hidden h-full">
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform transition-transform duration-500 group-hover:scale-110" id="slide-store">
+            </div>
+        </div>
+        <div class="w-1/2 group relative overflow-hidden">
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform transition-transform duration-500 group-hover:scale-110" id="slide-community">
+            </div>
+        </div>
+    </div> #}
 
+	{# <div class="bg-background">
 
-	<div class="bg-background">
-		<div class="container pt-20">
-			<h1>Hello</h1>
-			<div class="container">
-				{% for team in teams %}
-					<strong>{{team.name}}</strong>
-					<p>{{team.fonction}}</p>
-					{% if team.instagram %}
-						<p>{{team.instagram}}</p>
-					{% elseif team.linkedin %}
-						<p>{{team.linkedin}}</p>
-					{% endif %}
-				{% endfor %}
-			</div>
-		</div>
 
 		<div class="container">
 
@@ -179,7 +322,8 @@
 
 		{{form_end(myForm)}}
 	</div>
-</div>{% endblock %}
+</div> #}
+{% endblock %}
 
 {% block javascripts %}
     <script>
@@ -197,6 +341,16 @@
                 },
             });
         });
+
+
+
+    const flipCards = document.querySelectorAll('.flip-card');
+
+    flipCards.forEach((link) => {
+    link.addEventListener('click', () => {
+        link.classList.toggle('active');
+    });
+    })
     </script>
 {% endblock %}
 
