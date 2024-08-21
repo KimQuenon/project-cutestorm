@@ -1,0 +1,24 @@
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
+                style="background-image: url('{{ team.avatar }}');">
+            </div>
+        </div>
+        <div class="flip-card-back">
+            <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
+                {% if team.instagram %}
+                    <a href="{{ team.instagram }}" class="text-3xl">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                {% elseif team.linkedin %}
+                    <a href="{{ team1[0].linkedin }}" class="text-3xl">
+                        <i class="fa-brands fa-linkedin"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<p class="font-bold text-tertiary-dark text-center">{{team.name}}</p>
+<p class="text-center">{{team.fonction}}</p>

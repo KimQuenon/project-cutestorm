@@ -147,63 +147,17 @@
     </div>
 
 	{# ------------------------------SLIDE 4 - ABOUT------------------------------ #}
-    <div class="slide bg-background md:h-full h-[150vh]">
-        <div class="container flex lg:flex-row flex-col-reverse gap-10">
+    <div class="slide bg-background md:h-full h-[160vh]">
+        <div class="container flex items-center lg:flex-row flex-col-reverse gap-10">
             <div class="lg:w-1/2 w-full linear-background flex flex-col h-full justify-between">
                 <div class="container flex flex-col items-center">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
-                                    style="background-image: url('{{ team1[0].avatar }}');">
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
-                                    {% if team1[0].instagram %}
-                                        <a href="{{ team1[0].instagram }}" class="text-3xl">
-                                            <i class="fa-brands fa-instagram"></i>
-                                        </a>
-                                    {% elseif team1[0].linkedin %}
-                                        <a href="{{ team1[0].linkedin }}" class="text-3xl">
-                                            <i class="fa-brands fa-linkedin"></i>
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="font-bold text-tertiary-dark">{{team1[0].name}}</p>
-                    <p>{{team1[0].fonction}}</p>
+                    {% include 'partials/_teamMember.html.twig' with { team: team1[0] } %}
                 </div>
                 <div class="container rank" id="rank1"></div>
                 <div class="container flex justify-between">
                     {% for team in teams2 %}
                         <div class="flex flex-col items-center">
-                            <div class="flip-card">
-                                <div class="flip-card-inner">
-                                    <div class="flip-card-front">
-                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
-                                            style="background-image: url('{{ team.avatar }}');">
-                                        </div>
-                                    </div>
-                                    <div class="flip-card-back">
-                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
-                                            {% if team.instagram %}
-                                                <a href="{{ team.instagram }}" class="text-3xl">
-                                                    <i class="fa-brands fa-instagram"></i>
-                                                </a>
-                                            {% elseif team.linkedin %}
-                                                <a href="{{ team.linkedin }}" class="text-3xl">
-                                                    <i class="fa-brands fa-linkedin"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="font-bold text-tertiary-dark text-center">{{team.name}}</p>
-                            <p>{{team.fonction}}</p>
+                            {% include 'partials/_teamMember.html.twig' with { team: team } %}
                         </div>
                     {% endfor %}
                 </div>
@@ -211,30 +165,7 @@
                 <div class="container flex justify-between">
                     {% for team in teams3 %}
                         <div class="flex flex-col items-center">
-                            <div class="flip-card">
-                                <div class="flip-card-inner">
-                                    <div class="flip-card-front">
-                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-cover bg-center"
-                                            style="background-image: url('{{ team.avatar }}');">
-                                        </div>
-                                    </div>
-                                    <div class="flip-card-back">
-                                        <div class="md:w-20 md:h-20 w-16 h-16 rounded-full border-2 border-tertiary-dark bg-secondary flex items-center justify-center text-tertiary-dark">
-                                            {% if team.instagram %}
-                                                <a href="{{ team.instagram }}" class="text-3xl">
-                                                    <i class="fa-brands fa-instagram"></i>
-                                                </a>
-                                            {% elseif team.linkedin %}
-                                                <a href="{{ team.linkedin }}" class="text-3xl">
-                                                    <i class="fa-brands fa-linkedin"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="font-bold text-tertiary-dark text-center">{{team.name}}</p>
-                            <p>{{team.fonction}}</p> 
+                            {% include 'partials/_teamMember.html.twig' with { team: team } %}
                         </div>
                     {% endfor %}
                 </div>
