@@ -26,7 +26,7 @@
 			<div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
 				<h1 class="title lg:text-7xl text-4xl mb-5 text-tertiary-dark">CUTESTORM</h1>
 				<p class="mb-5 text-end">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Numquam amet, tempore magnam incidunt doloremque! Maxime, nemo alias accusamus autem voluptate doloribus accusantium rem voluptas iste distinctio temporibus recusandae!</p>
-				<a href="{{path('store')}}" class="w-52 btn-purple">CHECK OUR STORE ></a>
+				<a href="{{path('store')}}" class="w-52 btn btn-purple">CHECK OUR STORE ></a>
 			</div>
 		</div>
 	</div>
@@ -37,7 +37,7 @@
 			<div class="lg:w-2/5 w-full lg:pr-5 pr-0">
 				<h2 class="title text-primary-dark">Our concept</h2>
 				<p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula.</p>
-				<a href="{{path('store')}}" class="w-52 btn-purple mb-12 lg:ml-auto">
+				<a href="{{path('store')}}" class="w-52 btn btn-purple mb-12 lg:ml-auto">
 					CHECK OUR STORE >
 				</a>
 				<div class="md:w-5/6 w-full md:ml-auto border-tertiary-dark shadow rounded-xl">
@@ -172,10 +172,10 @@
             </div>
             <div class="lg:w-1/2 w-full flex flex-col justify-between">
                 <div>
-                    <p class="title text-primary-dark">About us</p>
+                    <h2 class="title text-primary-dark">About us</h2>
                     <p class="mb-4"><span class="font-bold">Lorem ipsum dolor sit amet</span>, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor vel nec nunc. <span class="font-bold">Vivamus blandit tristique gravida</span>.Curabitur egestas pellentesque efficitur.</p>
                     <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span class="font-bold">Aenean semper ultricies fermentum.</span> Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis <span class="font-bold">libero vehicula tempor vel nec nunc</span>. Vivamus blandit tristique gravida. Curabitur egestas pellentesque efficitur.</p>
-                    <a href="{{path('store')}}" class="w-52 btn-purple ml-auto">Join us ></a>
+                    <a href="{{path('store')}}" class="w-52 btn btn-purple ml-auto">Join us ></a>
                 </div>
                 {# <div class="relative">
                     <img src="/images/paper-plane.svg" alt="paper plane" class="w-full h-48 bg-cover bg-no-repeat absolute"></img>
@@ -227,16 +227,26 @@
     </div>
 
     {# ------------------------------SLIDE 5 - STORE & COMMUNITY------------------------------ #}
-    {# <div class="w-full flex h-screen">
-        <div class="w-1/2 group relative overflow-hidden h-full">
-            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform transition-transform duration-500 group-hover:scale-110" id="slide-store">
+    <div class="w-full flex flex-row flex-wrap h-screen">
+        <div class="lg:w-1/2 w-full group relative overflow-hidden lg:h-full h-1/2">
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110" id="slide-store"></div>
+            <div class="relative z-10 container lg:py-20 py-12 md:px-10 px-0 flex flex-col md:justify-end justify-center md:items-start items-center h-full">
+                <h2 class="title text-background">STORE</h2>
+                <i class="fa-solid fa-arrow-left text-background text-3xl mb-3"></i>
+                <p class="text-background font-bold md:text-left text-center mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor.</p>
+                <a href="{{path('store')}}" class="w-52 btn btn-white">< CHECK OUR STORE</a>
             </div>
         </div>
-        <div class="w-1/2 group relative overflow-hidden">
-            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform transition-transform duration-500 group-hover:scale-110" id="slide-community">
+        <div class="lg:w-1/2 w-full group relative overflow-hidden lg:h-full h-1/2">
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110" id="slide-community"></div>
+            <div class="relative z-10 container lg:py-20 py-12 md:px-10 px-0 flex flex-col md:justify-end justify-center md:items-end items-center h-full">
+                <h2 class="title text-background">COMMUNITY</h2>
+                <i class="fa-solid fa-arrow-right text-background text-3xl mb-3"></i>
+                <p class="text-background font-bold md:text-end text-center mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae sollicitudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor.</p>
+                <a href="{{path('store')}}" class="w-52 btn btn-white">JOIN US ></a>
             </div>
         </div>
-    </div> #}
+    </div>
 
 	{# <div class="bg-background">
 

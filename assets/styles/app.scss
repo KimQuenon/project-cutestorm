@@ -48,19 +48,35 @@ p, a{
     color: $tertiaryDark;
 }
 
-.btn-purple{
+.btn{
     display:block;
-    background-color: $primaryDark;
     border-radius: 50px;
-    color:$background;
     border: 2px solid $tertiaryDark;
     text-align: center;
     text-transform: uppercase;
     font-weight: 900;
     padding: 8px 20px;
     transition: all 0.5s;
-    &:hover{
-        background-color: $primaryHover;
+    &-purple{
+        color: $background;
+        background-color: $primaryDark;
+        &:hover{
+            background-color: $primaryHover;
+        }
+    }
+    &-yellow{
+        color: $tertiaryDark;
+        background-color: $secondary;
+        &:hover{
+            background-color: $secondaryHover;
+        }
+    }
+    &-white{
+        color: $tertiaryDark;
+        background-color: $background;
+        &:hover{
+            background-color: $backgroundHover;
+        }
     }
 }
 
