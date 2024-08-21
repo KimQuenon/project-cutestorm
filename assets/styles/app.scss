@@ -80,7 +80,17 @@ p, a{
     }
 }
 
+textarea{
+    resize: none;
+    &#contact_message{
+        height:200px!important;
+    }
+}
 
+.invalid-feedback{
+    color:$danger;
+    margin-top: 5px;
+}
 .linear-background{
     @include imgCover(cover);
     background-image: url(../../public/images/linear-background.svg);
@@ -88,10 +98,10 @@ p, a{
     width:50%;
     @media all and (max-width: 1200px){
         width:100%;
-        height:50%;
+        // height:100%;
     }
     @media all and (max-width: 768px){
-        height:30%;
+        // height:30%;
     }
 }
 
@@ -194,7 +204,7 @@ to {
         height:40vh;
     }
     @media all and (max-width: 768px){
-        height:100vh;
+        height:40vh;
     }  
 }
 
