@@ -91,6 +91,7 @@ textarea{
     color:$danger;
     margin-top: 5px;
 }
+
 .linear-background{
     @include imgCover(cover);
     background-image: url(../../public/images/linear-background.svg);
@@ -103,6 +104,25 @@ textarea{
     @media all and (max-width: 768px){
         // height:30%;
     }
+}
+
+.card, .opacity-0 {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.card{
+    @media all and (max-width: 1200px){
+        opacity: 1;
+    }
+}
+
+.card-visible, .opacity-100 {
+    opacity: 1;
+}
+  
+.opacity-100 {
+    transition: opacity 0.5s;
 }
 
 .shadow{
@@ -228,7 +248,7 @@ to {
         height:25vh;
     }
     @media all and (max-width: 768px){
-        height:50vh;
+        height:55vh;
     }
 }
 

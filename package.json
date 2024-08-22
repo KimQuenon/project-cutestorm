@@ -24,6 +24,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "aos": "^2.3.4",
         "autoprefixer": "^10.4.20",
         "bootstrap": "^5.3.3",
         "file-loader": "^6.2.0",

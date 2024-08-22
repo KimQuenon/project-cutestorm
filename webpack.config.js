@@ -22,7 +22,10 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('header', './assets/js/header.js')
+    .addEntry('fadeAnim', './assets/js/fadeAnim.js')
+    .addEntry('flipCard', './assets/js/flipCard.js')
     .addEntry('imgActions', './assets/js/imgActions.js')
+    .addEntry('keepInTouch', './assets/js/keepInTouch.js')
     .addEntry('like', './assets/js/like.js')
     .addEntry('likeComment', './assets/js/likeComment.js')
     .addEntry('removeVariant', './assets/js/removeVariant.js')
