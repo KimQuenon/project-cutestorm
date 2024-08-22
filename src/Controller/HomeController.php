@@ -42,7 +42,6 @@ class HomeController extends AbstractController
                 'Thank you for your request ! We will get back to you as soon as possible !'    
             );
             return new RedirectResponse($this->generateUrl('homepage').'#contact-slide');
-            // $this->redirect($this->generateUrl('homepage') . '#slide-contact');
         }
 
 

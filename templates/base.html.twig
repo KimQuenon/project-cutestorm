@@ -20,14 +20,37 @@
     <body>
         {% include "partials/_header.html.twig" %}
         {% for label, messages in app.flashes %}
-            <div class="container">
-                <div class="alert alert-{{label}}">
+            <div class="container px-4 py-2 absolute top-10 left-1/2 transform -translate-x-1/2 z-50">
+                <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark
+                    {% if label == 'danger' %}
+                        bg-danger-dark text-white
+                    {% elseif label == 'warning' %}
+                        bg-secondary text-white
+                    {% elseif label == 'success' %}
+                        bg-success text-white
+                    {% elseif label == 'info' %}
+                        bg-highlight text-white
+                    {% endif %}
+                ">
                     {% for message in messages %}
-                        <p>{{message | raw}} </p>
+                        <div class="flex gap-2 items-center">
+                            {% if label == 'danger' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% elseif label == 'warning' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elseif label == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elseif label == 'info' %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                            <p>{{ message|raw }}</p>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
         {% endfor %}
+
+
 
         {% block body %}{% endblock %}
         {% block javascripts %}
