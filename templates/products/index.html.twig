@@ -67,7 +67,11 @@
 					</div>
 					{% include "partials/_pagination.html.twig" with {
 						'route': 'store',
-						'parameters': {},
+						    'parameters': {
+								'color': selectedColor,
+								'category': selectedCategory,
+								'sort': sort
+							},
 						'page': currentPage,
 						'pages': totalPages
 					} %}
