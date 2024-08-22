@@ -31,10 +31,13 @@ module.exports = {
           DEFAULT: '#32CD32',
         },
         danger: {
+          light: '#FF84DC',
           DEFAULT: '#FF00B8',
+          dark:'#FF004D',
         },
         highlight: {
           DEFAULT: '#00BFFF',
+          dark: '#0075FF',
         },
         white: {
           DEFAULT: '#FBF9FF',
