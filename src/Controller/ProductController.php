@@ -17,6 +17,7 @@ use App\Service\PaginationService;
 use App\Repository\ReviewRepository;
 use App\Repository\ProductRepository;
 use App\Repository\CartItemRepository;
+use App\Repository\DeliveryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductColorRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,12 +115,14 @@ class ProductController extends AbstractController
         ProductRepository $productRepo,
         CartItemRepository $cartItemRepo,
         ReviewRepository $reviewRepo,
+        DeliveryRepository $deliveryRepo,
         Request $request,
         EntityManagerInterface $manager
     ): Response {
         $user = $this->getUser();
         $categories = $product->getProductCategories();
         $reviews = $product->getReviews();
+        $delivery = $deliveryRepo->findAll();
 
         $cart = null;
     
@@ -249,7 +252,8 @@ class ProductController extends AbstractController
             'existingReview'=> $existingReview,
             'averageRating' => $averageRating,
             'productBought' => $productBought,
-            'recentProducts' => $recentProducts
+            'recentProducts' => $recentProducts,
+            'delivery' => $delivery
         ]);
     }
 }

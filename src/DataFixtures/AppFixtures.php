@@ -233,7 +233,7 @@ class AppFixtures extends Fixture
         $productDeleted = new Product();
 
         $productDeleted->setReference('XXXXXXXXXXXXXXXXXXXXXXXX')
-        ->setName('Deleted Product')
+                        ->setName('Deleted Product')
                         ->setDescription('This product has been deleted from our store.')
                         ->setPrice('0')
                         ->setColor($colors[array_rand($colors)]);
@@ -243,7 +243,7 @@ class AppFixtures extends Fixture
                         $variantDeleted = new ProductVariant();
                         $variantDeleted->setSize(0)
                         ->setStock(0)
-                        ->setProduct($productDeleted); // Associate with ProductDeleted
+                        ->setProduct($productDeleted);
     
         $manager->persist($variantDeleted);
 

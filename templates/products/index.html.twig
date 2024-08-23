@@ -14,74 +14,74 @@
             </div>
             <div class="countdown"></div>
         </div>
-<div class="slide bg-background min-h-full">
-	<div class="container mx-auto my-5 px-4 min-h-full">
-	<div class="flex flex-wrap -mx-4 min-h-full">
-			<!-- Filter Sidebar -->
-			<div class="w-full md:w-1/4 px-4 mb-4 min-h-full">
-				<div class="bg-white border border-gray-200 rounded-lg shadow-md p-4 h-fit sticky top-4 z-10">
-					<h5 class="text-lg font-semibold mb-4">Filter by color</h5>
-					<form>
-						<div class="mb-4">
-							<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="color" name="color" onchange="this.form.submit()">
-								<option value="">All</option>
-								{% for color in colors %}
-									<option value="{{ color.id }}" {% if selectedColor == color.id %} selected {% endif %}>{{ color.name }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<h5 class="text-lg font-semibold mb-4">Filter by category</h5>
-						<div class="mb-4">
-							<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="category" name="category" onchange="this.form.submit()">
-								<option value="">All</option>
-								{% for category in categories %}
-									<option value="{{ category.id }}" {% if selectedCategory == category.id %} selected {% endif %}>{{ category.name }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<h5 class="text-lg font-semibold mb-4">Sort by</h5>
-						<div class="mb-4">
-							<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="sort" name="sort" onchange="this.form.submit()">
-								<option value="">Default</option>
-								<option value="name_asc" {% if sort == 'name_asc' %} selected {% endif %}>Name A-Z</option>
-								<option value="name_desc" {% if sort == 'name_desc' %} selected {% endif %}>Name Z-A</option>
-								<option value="date_asc" {% if sort == 'date_asc' %} selected {% endif %}>Date Oldest First</option>
-								<option value="date_desc" {% if sort == 'date_desc' %} selected {% endif %}>Date Newest First</option>
-							</select>
-						</div>
-					</form>
-				</div>
-			</div>
-
-			<!-- Products Grid -->
-			<div class="w-full md:w-3/4 px-4">
-				<div class="flex justify-between">
-					<h2 class="text-3xl font-bold mb-4 text-tertiary-dark">Our Products</h2>
-					{% include "partials/_search.html.twig" %}
-				</div>
-				{% if products|length > 0 %}
-					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-						{% for product in products %}
-							{% include "partials/_cardProduct.html.twig" %}
-						{% endfor %}
+	<div class="slide bg-background min-h-screen">
+		<div class="container mx-auto my-5 px-4 min-h-full">
+		<div class="flex flex-wrap -mx-4 min-h-full">
+				<!-- Filter Sidebar -->
+				<div class="w-full md:w-1/4 px-4 mb-4 min-h-full">
+					<div class="bg-white border border-gray-200 rounded-lg shadow-md p-4 h-fit sticky top-4 z-10">
+						<h5 class="text-lg font-semibold mb-4">Filter by color</h5>
+						<form>
+							<div class="mb-4">
+								<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="color" name="color" onchange="this.form.submit()">
+									<option value="">All</option>
+									{% for color in colors %}
+										<option value="{{ color.id }}" {% if selectedColor == color.id %} selected {% endif %}>{{ color.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<h5 class="text-lg font-semibold mb-4">Filter by category</h5>
+							<div class="mb-4">
+								<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="category" name="category" onchange="this.form.submit()">
+									<option value="">All</option>
+									{% for category in categories %}
+										<option value="{{ category.id }}" {% if selectedCategory == category.id %} selected {% endif %}>{{ category.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<h5 class="text-lg font-semibold mb-4">Sort by</h5>
+							<div class="mb-4">
+								<select class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="sort" name="sort" onchange="this.form.submit()">
+									<option value="">Default</option>
+									<option value="name_asc" {% if sort == 'name_asc' %} selected {% endif %}>Name A-Z</option>
+									<option value="name_desc" {% if sort == 'name_desc' %} selected {% endif %}>Name Z-A</option>
+									<option value="date_asc" {% if sort == 'date_asc' %} selected {% endif %}>Date Oldest First</option>
+									<option value="date_desc" {% if sort == 'date_desc' %} selected {% endif %}>Date Newest First</option>
+								</select>
+							</div>
+						</form>
 					</div>
-					{% include "partials/_pagination.html.twig" with {
-						'route': 'store',
-						    'parameters': {
-								'color': selectedColor,
-								'category': selectedCategory,
-								'sort': sort
-							},
-						'page': currentPage,
-						'pages': totalPages
-					} %}
-				{% else %}
-					<p>No products... yet</p>
-				{% endif %}
+				</div>
+
+				<!-- Products Grid -->
+				<div class="w-full md:w-3/4 px-4">
+					<div class="flex justify-between">
+						<h2 class="text-3xl font-bold mb-4 text-tertiary-dark">Our Products</h2>
+						{% include "partials/_search.html.twig" %}
+					</div>
+					{% if products|length > 0 %}
+						<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+							{% for product in products %}
+								{% include "partials/_cardProduct.html.twig" %}
+							{% endfor %}
+						</div>
+						{% include "partials/_pagination.html.twig" with {
+							'route': 'store',
+								'parameters': {
+									'color': selectedColor,
+									'category': selectedCategory,
+									'sort': sort
+								},
+							'page': currentPage,
+							'pages': totalPages
+						} %}
+					{% else %}
+						<p>No products... yet</p>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 {% endblock %}
 

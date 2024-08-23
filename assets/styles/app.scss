@@ -56,7 +56,11 @@ p, a{
     text-transform: uppercase;
     font-weight: 900;
     padding: 8px 20px;
-    transition: all 0.5s;
+    transition: all 0.2s;
+    &:hover{
+        transform: translate(-4px, -4px);
+        box-shadow: 5px 5px $tertiaryDark; 
+    }
     &-purple{
         color: $background;
         background-color: $primaryDark;
@@ -90,6 +94,23 @@ textarea{
 .invalid-feedback{
     color:$danger;
     margin-top: 5px;
+}
+
+.form-check{
+    display: none;
+}
+
+/* Pour WebKit (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Pour Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .linear-background{
@@ -242,13 +263,30 @@ to {
 }
 
 .swiper-container {
-    height: 35vh;
     overflow-x: hidden;
-    @media all and (max-width: 1200px){
-        height:25vh;
+    .swiper-pagination-bullet{
+        background-color: transparent;
+        opacity: 1;
+        border: 2px solid $tertiaryDark;
+        &-active{
+            background-color: $tertiaryDark;
+            border: none;
+        }
     }
-    @media all and (max-width: 768px){
-        height:55vh;
+    &#review-swiper{
+        height: 35vh;
+        @media all and (max-width: 1200px){
+            height:25vh;
+        }
+        @media all and (max-width: 768px){
+            height:55vh;
+        }
+        .swiper-pagination-bullet{
+            border: 2px solid $background;
+                &-active{
+                    background-color: $background;
+            }
+        }
     }
 }
 
@@ -256,10 +294,11 @@ to {
     width:99%;
 }
 
-.swiper-pagination-bullet-active{
-    background-color: $background;
-}
 
+
+.swiper-button-prev, .swiper-button-next{
+    color: $tertiaryDark;
+}
 .rank{
     @include imgCover(cover);
     height:5vh;

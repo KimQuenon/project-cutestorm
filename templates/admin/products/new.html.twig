@@ -1,14 +1,13 @@
 {% extends "base.html.twig" %}
 
-{% block title %}New Product
-{% endblock %}
+{% block title %}New Product{% endblock %}
 
 {% form_theme myForm _self %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>New Product</h1>
-        <a href="{{ path('color_new') }}" class="btn btn-secondary mt-3">Add color</a>
+    <div class="container mx-auto mt-8">
+        <h1 class="text-2xl font-bold mb-6">New Product</h1>
+        <a href="{{ path('color_new') }}" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition mb-6 inline-block">Add color</a>
 
         {{ form_start(myForm) }}
         {{ form_row(myForm.reference) }}
@@ -16,14 +15,14 @@
         {{ form_row(myForm.description) }}
         {{ form_row(myForm.price) }}
 
-        <div class="form-group">
-            <label for="{{ myForm.color.vars.id }}">Color</label>
-            <div class="color-selector">
+        <div class="mb-6">
+            <label for="{{ myForm.color.vars.id }}" class="block text-gray-700 mb-2">Color</label>
+            <div class="flex flex-wrap gap-4">
                 {% for color in colors %}
-                    <div class="color-option">
-                        <input type="radio" id="color_{{ color.id }}" name="{{ myForm.color.vars.full_name }}" value="{{ color.id }}" {% if color.id == myForm.color.vars.value %} checked{% endif %}>
-                        <label for="color_{{ color.id }}" style="background-color: {{ color.hexCode }}; border-radius: 50%; width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></label>
-                        {{ color.name }}
+                    <div class="flex items-center">
+                        <input type="radio" id="color_{{ color.id }}" name="{{ myForm.color.vars.full_name }}" value="{{ color.id }}" {% if color.id == myForm.color.vars.value %} checked{% endif %} class="hidden">
+                        <label for="color_{{ color.id }}" style="background-color: {{ color.hexCode }};" class="w-6 h-6 rounded-full border-2 cursor-pointer" title="{{ color.name }}"></label>
+                        <span class="ml-2 text-gray-700">{{ color.name }}</span>
                     </div>
                 {% endfor %}
             </div>
@@ -31,44 +30,41 @@
 
         <div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
             {% for child in myForm.productVariants %}
-                <div class="form-row mb-3">
-                    {{ form_widget(child) }}
+                <div class="mb-4">
+                    {{ form_widget(child, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
+        <button type="button" id="add-variant" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition mb-6">Add Variant</button>
 
         <div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
             {% for productImage in myForm.productImages %}
-                <div class="image-form row mb-3">
-                    <div class="col">
-                        {{ form_widget(productImage) }}
+                <div class="flex items-center mb-4">
+                    <div class="flex-grow">
+                        {{ form_widget(productImage, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
                     </div>
-                    <div class="col-auto">
-                        <button type="button" class="remove-image btn btn-danger mt-2">X</button>
+                    <div class="ml-4">
+                        <button type="button" class="remove-image bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">X</button>
                     </div>
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-image" class="btn btn-secondary mt-3">Add Image</button>
+        <button type="button" id="add-image" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition mb-6">Add Image</button>
 
+        <button type="submit" class="bg-primary text-white py-2 px-4 rounded">Submit</button>
         {{ form_end(myForm) }}
-        <button type="submit" class="btn btn-primary mt-3">Submit</button>
     </div>
 {% endblock %}
 
-
 {% block form_row %}
-	<div class="form-group mt-2">
-		{{ form_label(form) }}
-		{{ form_widget(form) }}
-		{{ form_errors(form) }}
-	</div>
+    <div class="mb-4">
+        {{ form_label(form, null, {'label_attr': {'class': 'block text-gray-700 mb-2'}}) }}
+        {{ form_widget(form, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+        {{ form_errors(form, {'attr': {'class': 'text-red-600 mt-1'}}) }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
-	{{ encore_entry_script_tags('removeVariant') }}
-	{{ encore_entry_script_tags('imgActions') }}
+    {{ encore_entry_script_tags('removeVariant') }}
+    {{ encore_entry_script_tags('imgActions') }}
 {% endblock %}
-
-

@@ -16,33 +16,31 @@ class AddToCartType extends ApplicationType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('productVariant', EntityType::class, [
-                'class' => ProductVariant::class,
-                'choices' => $options['product_variants'],
-                'choice_label' => function (ProductVariant $variant) {
-                    $label = sprintf('%s (%d in stock)', $variant->getSize(), $variant->getStock());
-                    if ($variant->getStock() == 0) {
-                        $label = '<strike>' . $label . '</strike>';
-                    }
-                    return $label;
-                },
-                'label_html' => true,
-                'expanded' => true,
-                'multiple' => false,
-                'choice_attr' => function (ProductVariant $variant) {
-                    if ($variant->getStock() == 0) {
-                        return ['disabled' => 'disabled'];
-                    }
-                    return [];
-                },
-            ])
-            ->add('quantity', IntegerType::class, [
-                'data' => 1,
-                'attr' => [
-                    'min' => 1,
-                    'max' => 99,
-                ],
-            ]);
+        ->add('productVariant', EntityType::class, [
+            'class' => ProductVariant::class,
+            'choices' => $options['product_variants'],
+            'choice_label' => function (ProductVariant $variant) {
+                return $variant->getSize();
+            },
+            'label_html' => false,
+            'expanded' => true,
+            'multiple' => false,
+            'choice_attr' => function (ProductVariant $variant) {
+                return [
+                    'data-stock' => $variant->getStock(),
+                    'class' => 'product-variant-option'
+                ];
+            },
+        ])
+        ->add('quantity', IntegerType::class, [
+            'data' => 1,
+            'attr' => [
+                'min' => 1,
+                'max' => 99,
+            ],
+        ]);
+    
+    
     }
 
     public function configureOptions(OptionsResolver $resolver)
