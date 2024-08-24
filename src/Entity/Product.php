@@ -263,7 +263,12 @@ class Product
      */
     public function getReviews(): Collection
     {
-        return $this->reviews;
+        $sortedReviews = $this->reviews->toArray();
+        usort($sortedReviews, function($a, $b) {
+            return $b->getId() <=> $a->getId();
+        });
+
+        return new ArrayCollection($sortedReviews);
     }
 
     public function addReview(Review $review): static

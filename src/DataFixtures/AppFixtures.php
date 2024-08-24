@@ -248,7 +248,7 @@ class AppFixtures extends Fixture
         $manager->persist($variantDeleted);
 
         $productCount = 50;
-
+        $reviewsPerProduct = rand(1, 5);
         for ($i = 0; $i < $productCount; $i++) {
             $product = new Product();
             $product->setReference($faker->unique()->ean13())
@@ -263,16 +263,16 @@ class AppFixtures extends Fixture
                 $product->addProductCategory($category);
             }
 
-            $reviews = [];
-
-            $review = new Review();
-            $review->setAuthor($users[rand(0, count($users)-1)])
-                    ->setProduct($product)
-                    ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month')) 
-                    ->setContent($faker->paragraph())
-                    ->setRating(rand(1,5));
-            $manager->persist($review);
-            $reviews[] = $review;
+            for ($r = 0; $r < $reviewsPerProduct; $r++) {
+                $review = new Review();
+                $review->setAuthor($users[rand(0, count($users)-1)])
+                        ->setProduct($product)
+                        ->setTimestamp($faker->dateTimeBetween('-1 year', '-1 month')) 
+                        ->setContent($faker->paragraph())
+                        ->setRating(rand(1,5));
+                $manager->persist($review);
+                $reviews[] = $review;
+            }
         
             $manager->persist($product);
 

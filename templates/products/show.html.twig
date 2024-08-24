@@ -2,6 +2,8 @@
 
 {% block title %}{{ product.name }}{% endblock %}
 
+
+
 {% block body %}
     {# ------------------------------SLIDE 1 - ADD TO CART------------------------------ #}
     <div class="slide bg-background">
@@ -90,6 +92,7 @@
         </div>
     </div>
 
+    {# ------------------------------SLIDE 3 - OTHER PRODUCTS------------------------------ #}
     <div class="slide bg-background">
         <div class="container">
             <div class="w-full flex flex-wrap lg:justify-between items-center mb-10">
@@ -107,42 +110,63 @@
         </div>
     </div>
 
-<div class="container">
-    {% if app.user %}
-        {% if existingReview %}
-            <p>You have already reviewed this product.</p>
-        {% elseif productBought %}
-            {{ form_start(reviewForm) }}
-                {{ form_widget(reviewForm) }}
-                <button type="submit" class="btn btn-primary">Submit</button>
-            {{ form_end(reviewForm) }}
-        {% else %}
-            <p>You need to buy this product before you can review it.</p>
-        {% endif %}
-    {% else %}
-        <p>Please log in to review this product.</p>
-    {% endif %}
-</div>
+    {# ------------------------------SLIDE 2 - REVIEWS------------------------------ #}
+    <div class="slide bg-background" id="product-review">
+        <div class="container flex lg:flex-row flex-col gap-10 h-[90vh]">
+            <div class="lg:w-1/3 w-full linear-background linear-background-width  h-full">
+                <div class="subtitle mb-4">Reviews & comments</div>
+                <div class="flex flex-col items-center justify-center">
+                    <p class="text-tertiary-dark text-center mb-2"> <span class="text-9xl font-bold">{{averageRating}}</span>/5</p>
+                    {% include "partials/_rating.html.twig" with {'rating': averageRating} %}
+                    <p class="mt-2 mb-6">reviewed by {{product.reviews|length}} {{ 'user' ~ (product.reviews|length > 1 ? 's' : '') }}</p>
+                    <a href="{{path('store')}}" class="w-full btn btn-purple">< VIEW OTHER PRODUCTS</a>
+                </div>
+            </div>
+            <div class="lg:w-2/3 w-full h-[90vh] overflow-auto custom-scrollbar">
+                {% if app.user %}
+                    {% if existingReview %}
+                        <div class="flex items-center gap-2 bg-success font-bold text-background border-2 border-tertiary-dark p-4 rounded-xl mr-5 mb-5">
+                            <i class="fa-solid fa-circle-info text-background"></i>
+                            <p>You have already reviewed this product.</p>
+                        </div>
+                    {% elseif productBought %}
+                        <div class="mr-5 mb-5">
+                            {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-tertiary' }  %}
+                            <div class="w-full bg-white border-2 border-tertiary-dark px-6 py-4 rounded-b-xl">
+                                {{ form_start(reviewForm) }}
+                                    {{ form_widget(reviewForm) }}
+                                    <button type="submit" class="btn btn-yellow w-52 ml-auto">Submit</button>
+                                {{ form_end(reviewForm) }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center gap-2 bg-danger font-bold text-background border-2 border-tertiary-dark p-4 rounded-xl mr-5 mb-5">
+                            <i class="fa-solid fa-circle-info text-background"></i>
+                            <p>You need to buy this product before reviewing it.</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="flex items-center gap-2 bg-highlight font-bold text-background border-2 border-tertiary-dark p-4 rounded-xl mr-5 mb-5">
+                        <i class="fa-solid fa-circle-info text-background"></i>
+                        <p>Please log in to review this product.</p>
+                    </div>
+                {% endif %}
 
 
-<div class="container">
-    {% if reviews|length > 0 %}
-        <strong>{{averageRating}}</strong><br>
-        {% for review in reviews %}
-            <strong>{{review.author.pseudo}}</strong>
-           {% include "partials/_rating.html.twig" with {'rating': review.rating} %}
-            <p>{{review.content}}</p>
-        {% endfor %}
-    {% else %}
-        No reviews... yet.
-    {% endif %}
-</div>
-
-
-
-
-
+                {% if reviews|length > 0 %}
+                    {% for review in reviews %}
+                        <div class="mb-5 mr-5">
+                            {% include "partials/_cardReview.html.twig" with { review: review }%}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No reviews... yet !</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
 
 {% block javascripts %}
     <script>

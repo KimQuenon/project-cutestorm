@@ -5,9 +5,9 @@
 {% block body %}
 <div class="container mt-5">
     <h1>Create Order</h1>
-    {{user.address}}
-    {{user.postalcode}}{{user.city}}
-    {{user.country}}
+    {{app.user.address}}
+    {{app.user.postalcode}}{{app.user.city}}
+    {{app.user.country}}
     <a href="{{ path('profile_edit') }}" class="btn btn-warning">Edit</a>
 
     {{ form_start(form) }}
