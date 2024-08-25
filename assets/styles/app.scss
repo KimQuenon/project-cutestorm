@@ -103,6 +103,9 @@ p, a{
             background-color: $backgroundHover;
         }
     }
+    &-squared{
+        border-radius: 0px!important;
+    }
 }
 
 textarea{

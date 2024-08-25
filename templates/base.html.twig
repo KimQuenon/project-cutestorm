@@ -18,7 +18,10 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% include "partials/_header.html.twig" %}
+        {% block header %}
+            {% include "partials/_header.html.twig" with { megaMenu: 'bg-background', textColor: 'text-tertiary', textHover : 'hover:text-tertiary-light' } %}
+        {% endblock %}
+
         {% for label, messages in app.flashes %}
             <div class="container px-4 py-2 absolute top-10 left-1/2 transform -translate-x-1/2 z-50">
                 <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark

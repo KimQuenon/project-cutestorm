@@ -8,19 +8,8 @@
 	{# ------------------------------SLIDE 1 - HOME------------------------------ #}
 	<div class="slide flex lg:items-center items-start bg-background lg:pt-20 pt-0">
 		<div class="h-40 bg-tertiary-dark p-4 rounded-e-xl fixed lg:block hidden z-50">
-			<div class="w-full flex flex-col gap-4">
-				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-					<i class="fab fa-facebook"></i>
-				</div>
-				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-					<i class="fa-brands fa-x-twitter"></i>
-				</div>
-				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-					<i class="fa-brands fa-instagram"></i>
-				</div>
-				<div class="text-background hover:text-tertiary-light transition-all duration-300 text-lg">
-					<i class="fa-brands fa-tiktok"></i>
-				</div>
+			<div class="w-full flex flex-col gap-2 items-center justify-center">
+                {% include "partials/_socialMedia.html.twig" with { textColor: 'text-background' } %}
 			</div>
 		</div>
 		<div class="container relative" id="homepage-hero">

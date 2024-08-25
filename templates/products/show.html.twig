@@ -92,24 +92,6 @@
         </div>
     </div>
 
-    {# ------------------------------SLIDE 3 - OTHER PRODUCTS------------------------------ #}
-    <div class="slide bg-background">
-        <div class="container">
-            <div class="w-full flex flex-wrap lg:justify-between items-center mb-10">
-                <div class="lg:w-1/2 w-full lg:mb-0 mb-5">
-                    <h2 class="title text-primary-dark">You might also like...</h2>
-                    <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae solli citudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor vel nec nunc. Vivamus blandit tristique gravida.”</p>
-                </div>
-                <a href="{{path('store')}}" class="w-52 btn btn-purple">CHECK OUR STORE ></a>
-            </div>
-            <div class="lg:grid-cols-3 md:grid-cols-2 grid grid-cols-1 gap-5">
-                {% for recentProduct in recentProducts %}
-                    {% include "partials/_cardProduct.html.twig" with {'product': recentProduct}%}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
     {# ------------------------------SLIDE 2 - REVIEWS------------------------------ #}
     <div class="slide bg-background" id="product-review">
         <div class="container flex lg:flex-row flex-col gap-10 h-[90vh]">
@@ -165,6 +147,25 @@
             </div>
         </div>
     </div>
+    
+    {# ------------------------------SLIDE 3 - OTHER PRODUCTS------------------------------ #}
+    <div class="slide bg-background">
+        <div class="container">
+            <div class="w-full flex flex-wrap lg:justify-between items-center mb-10">
+                <div class="lg:w-1/2 w-full lg:mb-0 mb-5">
+                    <h2 class="title text-primary-dark">You might also like...</h2>
+                    <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean semper ultricies fermentum. Sed vitae solli citudin ipsum, eu pretium metus. Nam quis ligula quis libero vehicula tempor vel nec nunc. Vivamus blandit tristique gravida.”</p>
+                </div>
+                <a href="{{path('store')}}" class="w-52 btn btn-purple">CHECK OUR STORE ></a>
+            </div>
+            <div class="lg:grid-cols-3 md:grid-cols-2 grid grid-cols-1 gap-5">
+                {% for recentProduct in recentProducts %}
+                    {% include "partials/_cardProduct.html.twig" with {'product': recentProduct}%}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 

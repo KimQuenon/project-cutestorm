@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Community{% endblock %}
+
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
+
+{% block body %}
+<div class="slide bg-primary">
+    <div class="container md:h-[90vh] h-screen flex flex-wrap flex-row md:gap-0 gap-10 relative">
+        <div class="lg:w-1/2 w-full md:p-10 p-0 lg:pt-10 pt-16">
+            <div class="w-full h-full border-2 border-tertiary-dark md:p-10 p-4 relative">
+                <div class="w-full h-full border-2 border-tertiary-dark p-4 flex flex-col justify-center items-center">
+                    <h1 class="title text-tertiary-dark">OUR COMMUNITY</h1>
+                    <div class="relative flex flex-row items-center gap-2">
+                        <hr class="border-t border-2 border-tertiary-dark w-24">
+                        <img src="/images/logo-transparent.svg" alt="cutestorm-logo-transparent" class="h-5">
+                        <hr class="border-t border-2 border-tertiary-dark w-24">
+                    </div>
+                    <p class="text-tertiary-dark mt-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis iste magnam alias maiores ipsa ipsum dicta corrupti commodi eligendi ullam natus explicabo, minima excepturi? Culpa qui sunt libero fuga repudiandae!</p>
+                    <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">BROWSE POSTS ></a>
+                </div>
+                <img src="/images/skotch.svg" class="w-40 absolute -top-6 bg-cover bg-center left-1/2 -translate-x-1/2"></img>
+            </div>
+        </div>
+        <div class="lg:w-1/2 w-full border-2 border-tertiary-dark lg:h-full h-1/2">
+            <img src="/images/cutestorm-community-hero.webp" alt="cutestorm-community-hero" class="w-full h-full object-cover">
+        </div>
+    <div class="absolute -right-10 bottom-0 flex-col gap-2 lg:flex hidden">
+        {% include "partials/_socialMedia.html.twig" with { textColor: 'text-tertiary-dark' } %}
+    </div>
+    </div>
+</div>
+{% endblock %}
