@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const postSlug = button.getAttribute('data-post-slug');
             const likeCountElement = button.nextElementSibling;
+            
 
             fetch(`/posts/${postSlug}/like`, {
                 method: 'POST',
@@ -31,9 +32,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.liked) {
                         button.classList.add('liked');
                         button.classList.remove('not-liked');
+                        likeCountElement.classList.add('liked');
+                        likeCountElement.classList.remove('not-liked');
                     } else {
                         button.classList.add('not-liked');
                         button.classList.remove('liked');
+                        likeCountElement.classList.add('not-liked');
+                        likeCountElement.classList.remove('liked');
                     }
                 }
             })

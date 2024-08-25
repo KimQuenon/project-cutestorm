@@ -1,34 +1,69 @@
 {% set postUrl = path('post_show', {'slug': post.slug}) %}
-    <div class="card bg-light mb-3">
-        <div class="card-header text-center">
-            <h4 class="card-title">{{ post.title }}</h4>
-            <h5>By <a href="{{ path('profile_show', {'slug': post.author.slug})  }}">{{post.author.pseudo}}</a></h5>
-            {% include "partials/_follow.html.twig" with {'user': post.author} %}
-        </div>
-        <div class="card-body">
-            <p class="card-text">{{ post.description | raw }}</p>
-            <a href="{{ postUrl }}" class="btn btn-secondary">Learn more</a>
-            {% include 'partials/_like.html.twig' with {
-                'type': 'post',
-                'idOrSlug': post.slug,
-                'authorId': post.author.id,
-                'likeCount': post.likes|length,
-                'likedIds': likedPostSlugs
-            } %}
+{# <div class="bg-gray-100 rounded-lg shadow-lg mb-6">
+    <div class="bg-white text-center py-4 rounded-t-lg">
+        <h4 class="text-xl font-semibold">{{ post.title }}</h4>
+        <h5 class="text-md text-gray-600">By <a href="{{ path('profile_show', {'slug': post.author.slug})  }}" class="text-blue-500 hover:underline">{{post.author.pseudo}}</a></h5>
+        {% include "partials/_follow.html.twig" with {'user': post.author} %}
+    </div>
+    <div class="p-6">
+        <p class="text-gray-700">{{ post.description | raw }}</p>
+        <a href="{{ postUrl }}" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700">Learn more</a>
+        {% include 'partials/_like.html.twig' with {
+            'type': 'post',
+            'idOrSlug': post.slug,
+            'authorId': post.author.id,
+            'likeCount': post.likes|length,
+            'likedIds': likedPostSlugs
+        } %}
         {% if app.user == post.author %}
-            <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-primary mt-2">Edit</a>
-            <a href="#deleteModal{{ post.slug }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ post.slug }}">Delete</a>
-            {% include 'partials/_deleteModal.html.twig' with {
-                'modalId': 'deleteModal' ~ post.slug,
-                'modalAction': path('post_delete', {'slug': post.slug})
-                } 
-            %}
+            <div class="mt-4">
+                <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400">Edit</a>
+                <a href="#deleteModal{{ post.slug }}" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 ml-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ post.slug }}">Delete</a>
+                {% include 'partials/_deleteModal.html.twig' with {
+                    'modalId': 'deleteModal' ~ post.slug,
+                    'modalAction': path('post_delete', {'slug': post.slug})
+                    } 
+                %}
+            </div>
         {% elseif post.id in reportedPostIds %}
-            <span class="text-muted">Vous avez déjà signalé ce post</span>
+            <span class="text-gray-500">You have already reported this post</span>
         {% else %}
-            <a href="{{ path('report_item', { type: 'post', id: post.id }) }}" class="btn btn-warning">Report</a>
+            <a href="{{ path('report_item', { type: 'post', id: post.id }) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-400 mt-2">Report</a>
         {% endif %}
+    </div>
+</div> #}
+
+
+<div class="w-full bg-white border-2 border-tertiary-dark flex flex-col lg:p-8 p-6 h-full relative">
+    <div class="flex justify-between items-center border-2 border-tertiary-dark p-2">
+        <p class="text-tertiary-dark">By <span class="font-bold">{{post.author.pseudo}}</span></p>
+        <p>{{ post.timestamp|date('d-m-Y') }}</p>
+    </div>
+    <div class="h-48 bg-primary border-2 border-tertiary-dark border-t-0 flex-shrink-0"></div>
+    <div class="flex-1 border-2 border-tertiary-dark border-t-0 p-2 flex flex-col justify-between">
+        <div>
+            <p class="subtitle mb-2">{{post.title}}</p>
+            <p class="mb-4">{{post.description|striptags|slice(0, 40) ~ '...'}}</p>
+        </div>
+        <div class="flex justify-between items-center mt-auto">
+            <div class="flex items-center gap-4">
+                {% include 'partials/_like.html.twig' with {
+                    'type': 'post',
+                    'idOrSlug': post.slug,
+                    'authorId': post.author.id,
+                    'likeCount': post.likes|length,
+                    'likedIds': likedPostSlugs
+                } %}
+                {# <div class="cursor-pointer">
+                    <i class="fa-regular fa-comment"></i> {{post.comments|length}}
+                </div>
+                <div class="cursor-pointer">
+                    <i class="fa-regular fa-share-from-square"></i>
+                </div> #}
+            </div>
+            <a href="{{ postUrl }}" class="w-40 btn btn-yellow btn-squared">SHOW ></a>
         </div>
     </div>
-
+    <img src="/images/skotch.svg" class="lg:w-40 w-32 absolute -top-6 bg-cover bg-center left-1/2 -translate-x-1/2 z-20"></img>
+</div>
 

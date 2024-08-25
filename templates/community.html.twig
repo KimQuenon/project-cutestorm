@@ -7,29 +7,86 @@
 {% endblock %}
 
 {% block body %}
-<div class="slide bg-primary">
-    <div class="container md:h-[90vh] h-screen flex flex-wrap flex-row md:gap-0 gap-10 relative">
-        <div class="lg:w-1/2 w-full md:p-10 p-0 lg:pt-10 pt-16">
-            <div class="w-full h-full border-2 border-tertiary-dark md:p-10 p-4 relative">
-                <div class="w-full h-full border-2 border-tertiary-dark p-4 flex flex-col justify-center items-center">
-                    <h1 class="title text-tertiary-dark">OUR COMMUNITY</h1>
-                    <div class="relative flex flex-row items-center gap-2">
-                        <hr class="border-t border-2 border-tertiary-dark w-24">
-                        <img src="/images/logo-transparent.svg" alt="cutestorm-logo-transparent" class="h-5">
-                        <hr class="border-t border-2 border-tertiary-dark w-24">
+    {# ------------------------------SLIDE 1 - HERO------------------------------ #}
+    <div class="slide bg-primary">
+        <div class="container md:h-[90vh] h-screen flex flex-wrap flex-row md:gap-0 gap-10 relative">
+            <div class="lg:w-1/2 w-full md:p-10 p-0 lg:pt-10 pt-16">
+                <div class="w-full h-full border-2 border-tertiary-dark md:p-10 p-4 relative">
+                    <div class="w-full h-full border-2 border-tertiary-dark p-4 flex flex-col justify-center items-center">
+                        <h1 class="title text-tertiary-dark">OUR COMMUNITY</h1>
+                        <div class="relative flex flex-row items-center gap-2">
+                            <hr class="border-t border-2 border-tertiary-dark w-24">
+                            <img src="/images/logo-transparent.svg" alt="cutestorm-logo-transparent" class="h-5">
+                            <hr class="border-t border-2 border-tertiary-dark w-24">
+                        </div>
+                        <p class="text-tertiary-dark mt-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis iste magnam alias maiores ipsa ipsum dicta corrupti commodi eligendi ullam natus explicabo, minima excepturi? Culpa qui sunt libero fuga repudiandae!</p>
+                        <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">BROWSE POSTS ></a>
                     </div>
-                    <p class="text-tertiary-dark mt-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis iste magnam alias maiores ipsa ipsum dicta corrupti commodi eligendi ullam natus explicabo, minima excepturi? Culpa qui sunt libero fuga repudiandae!</p>
-                    <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">BROWSE POSTS ></a>
+                    <img src="/images/skotch.svg" class="w-40 absolute -top-6 bg-cover bg-center left-1/2 -translate-x-1/2"></img>
                 </div>
-                <img src="/images/skotch.svg" class="w-40 absolute -top-6 bg-cover bg-center left-1/2 -translate-x-1/2"></img>
+            </div>
+            <div class="lg:w-1/2 w-full border-2 border-tertiary-dark lg:h-full h-1/2">
+                <img src="/images/cutestorm-community-hero.webp" alt="cutestorm-community-hero" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute -right-10 bottom-0 flex-col gap-2 lg:flex hidden">
+                {% include "partials/_socialMedia.html.twig" with { textColor: 'text-tertiary-dark' } %}
             </div>
         </div>
-        <div class="lg:w-1/2 w-full border-2 border-tertiary-dark lg:h-full h-1/2">
-            <img src="/images/cutestorm-community-hero.webp" alt="cutestorm-community-hero" class="w-full h-full object-cover">
+    </div>
+
+    {# ------------------------------SLIDE 2 - POSTS------------------------------ #}
+    <div class="slide bg-primary">
+        <div class="container">
+            <div class="flex justify-between items-center flex-row flex-wrap">
+                <div class="md:w-1/2 w-full">
+                    <h2 class="title text-tertiary-dark">Posts</h2>
+                    <p class="text-tertiary-dark">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+                </div>
+                <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">SEE THEM ALL ></a>
+            </div>
+            <div class="swiper-container w-full lg:h-[80vh] md:h-[55vh] h-[70vh] relative mt-10">
+                <div class="swiper-wrapper lg:h-[65vh] md:h-[45vh] h-[60vh] mt-10">
+                    {% for post in posts %}
+                        <div class="swiper-slide w-full">
+                            {% include "partials/_cardPost.html.twig" %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
-    <div class="absolute -right-10 bottom-0 flex-col gap-2 lg:flex hidden">
-        {% include "partials/_socialMedia.html.twig" with { textColor: 'text-tertiary-dark' } %}
     </div>
-    </div>
-</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{encore_entry_script_tags('like')}}
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                AOS.init();
+
+                var swiper = new Swiper('.swiper-container', {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        // Quand la largeur de la fenêtre est >= 640px
+                        768: {
+                            slidesPerView: 2, // Afficher 1 slide par vue
+                        },
+                        1024: {
+                            slidesPerView: 3, // Afficher 1 slide par vue
+                        },
+
+                    }
+                });
+            });
+    </script>
 {% endblock %}

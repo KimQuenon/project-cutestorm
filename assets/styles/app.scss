@@ -355,11 +355,10 @@ to {
     width:99%;
 }
 
-
-
 .swiper-button-prev, .swiper-button-next{
     color: $tertiaryDark;
 }
+
 .rank{
     @include imgCover(cover);
     height:5vh;
@@ -434,25 +433,21 @@ to {
 #slide-community{
     background-image: url(../../public/images/slide-community.webp);
 }
+
+
 .like-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 12px; /* Adjust size if needed */
+    &.disabled{
+        color:$tertiaryDark;
+    }
 }
 
-.like-button.not-liked .fa-heart {
-    color: gray; /* Color of the icon when not liked */
+.not-liked {
+    color: $tertiary;
 }
 
-.like-button.liked .fa-heart {
-    color: red; /* Color of the icon when liked */
+.liked {
+    color: $dangerDark;
 }
-
-.like-count {
-    font-size: 1rem;
-}
-
 
 .notification-indicator {
     display: inline-block;
