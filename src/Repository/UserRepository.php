@@ -38,39 +38,39 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->createQueryBuilder('u')
             ->leftJoin('u.posts', 'p')
             ->leftJoin('p.likes', 'l')
-            ->select('u.id, u.pseudo, u.slug, COUNT(l.id) as total_likes')
+            ->select('u.id, u.pseudo, u.slug, u.bio, u.avatar, COUNT(l.id) as total_likes')
             ->where('u.isPrivate = false')
-            ->groupBy('u.id, u.pseudo') // Vous devez grouper par tous les champs sélectionnés non agrégés
+            ->groupBy('u.id')
             ->orderBy('total_likes', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->getArrayResult(); // Utilisez getArrayResult pour obtenir des résultats scalaires
+            ->getArrayResult();
     }
     
     public function findTopCreators(int $limit = 3): array
     {
         return $this->createQueryBuilder('u')
             ->leftJoin('u.posts', 'p')
-            ->select('u.id, u.pseudo, u.slug, COUNT(p.id) as post_count')
-            ->where('u.isPrivate = false') // Ensure users are not private
-            ->groupBy('u.id, u.pseudo, u.slug') // Group by all selected fields that are not aggregated
-            ->orderBy('post_count', 'DESC') // Order by the number of posts in descending order
-            ->setMaxResults($limit) // Limit the number of results
+            ->select('u.id, u.pseudo, u.slug, u.bio, u.avatar, COUNT(p.id) as post_count')
+            ->where('u.isPrivate = false')
+            ->groupBy('u.id')
+            ->orderBy('post_count', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getArrayResult(); // Use getArrayResult to get scalar results
+            ->getArrayResult();
     }
 
     public function findTopFollowedUsers(int $limit = 3): array
     {
         return $this->createQueryBuilder('u')
-            ->leftJoin('u.followedByUsers', 'f') // Joindre les suivis
-            ->select('u.id, u.pseudo, u.slug, COUNT(f.id) as follower_count') // Sélectionner les champs et compter les followers
-            ->where('u.isPrivate = false') // Filtrer les utilisateurs non privés
-            ->groupBy('u.id, u.pseudo, u.slug') // Grouper par les champs non agrégés
-            ->orderBy('follower_count', 'DESC') // Trier par le nombre de followers
-            ->setMaxResults($limit) // Limiter le nombre de résultats
+            ->leftJoin('u.followedByUsers', 'f')
+            ->select('u.id, u.pseudo, u.slug, u.bio, u.avatar, COUNT(f.id) as follower_count')
+            ->where('u.isPrivate = false')
+            ->groupBy('u.id')
+            ->orderBy('follower_count', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getArrayResult(); // Retourner les résultats sous forme de tableau
+            ->getArrayResult();
     }
 
 

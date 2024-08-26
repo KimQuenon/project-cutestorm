@@ -10,7 +10,7 @@ body{
     color:$tertiary;
 }
 
-/* Pour les navigateurs WebKit (Chrome, Safari, Edge) */
+/* scrollbar edge-chrome-safari */
 .custom-scrollbar::-webkit-scrollbar {
     width: 12px;
 }
@@ -25,7 +25,7 @@ body{
     border-radius: 12px; 
 }
 
-/* Pour Firefox, la propriété scrollbar-color ne supporte pas le border-radius */
+/* scrollbar firefox */
 .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: $tertiary $tertiaryLight;
@@ -44,6 +44,10 @@ body{
     @media all and (max-width: 1200px){
         padding-top: 50px;
         padding-bottom: 50px;
+    }
+    @media all and (max-width: 768px){
+        padding-top: 80px;
+        padding-bottom: 10px;
     }
 }
 .container{
@@ -106,6 +110,20 @@ p, a{
     &-squared{
         border-radius: 0px!important;
     }
+}
+
+.like-button {
+    &.disabled{
+        color:$tertiaryDark;
+    }
+}
+
+.not-liked {
+    color: $tertiary;
+}
+
+.liked {
+    color: $dangerDark;
 }
 
 textarea{
@@ -435,19 +453,11 @@ to {
 }
 
 
-.like-button {
-    &.disabled{
-        color:$tertiaryDark;
-    }
-}
-
-.not-liked {
-    color: $tertiary;
-}
-
-.liked {
-    color: $dangerDark;
-}
+  .podium-step {
+    transition: all 0.7s ease-in-out;
+  }
+  
+  
 
 .notification-indicator {
     display: inline-block;
@@ -511,6 +521,21 @@ to {
     font-size: 14px;
     margin-left: 10px;
 }
+
+
+.animate-podium {
+    animation: grow-height 1s ease-in-out;
+  }
+  
+  @keyframes grow-height {
+    0% {
+      height: 0;
+    }
+    100% {
+      height: var(--height);
+    }
+  }
+
 
 .bg-gold {
     background-color: #FFD700!important;

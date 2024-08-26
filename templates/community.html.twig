@@ -39,7 +39,7 @@
         <div class="container">
             <div class="flex justify-between items-center flex-row flex-wrap">
                 <div class="md:w-1/2 w-full">
-                    <h2 class="title text-tertiary-dark">Posts</h2>
+                    <h2 class="title text-tertiary-dark">Popular posts</h2>
                     <p class="text-tertiary-dark">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
                 </div>
                 <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">SEE THEM ALL ></a>
@@ -56,6 +56,12 @@
             </div>
         </div>
     </div>
+
+    {# ------------------------------SLIDE 3 - AWARDS------------------------------ #}
+
+    {% include 'partials/_podium.html.twig' with {'title': 'Awards time !', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': true, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
+
+
 {% endblock %}
 
 {% block javascripts %}

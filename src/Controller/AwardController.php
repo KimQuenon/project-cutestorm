@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AwardController extends AbstractController
 {
-    #[Route('/awards', name: 'awards_index')]
+    #[Route('/awards', name: 'awards')]
     public function index(PostRepository $postRepo, UserRepository $userRepo): Response
     {
         $topLikedPosts = $postRepo->findTopLikedPosts();
@@ -19,7 +19,7 @@ class AwardController extends AbstractController
         $topCreators = $userRepo->findTopCreators();
         $topFollowedUsers = $userRepo->findTopFollowedUsers();
 
-        return $this->render('awards/index.html.twig', [
+        return $this->render('awards.html.twig', [
             'topLikedPosts' => $topLikedPosts,
             'topCommentedPosts' => $topCommentedPosts,
             'topLikedUsers' => $topLikedUsers,

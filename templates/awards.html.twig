@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Awards{% endblock %}
+
+{% block body %}
+
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedPosts, 'itemType': 'post', 'itemCategory': 'likedPost'} %}
+
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Commented Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCommentedPosts, 'itemType': 'post', 'itemCategory': 'commentedPost'} %}
+    
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
+    
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Active Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCreators, 'itemType': 'user', 'itemCategory': 'activeUser'} %}
+    
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Popular Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topFollowedUsers, 'itemType': 'user', 'itemCategory': 'followedUser'} %}
+
+{% endblock %}

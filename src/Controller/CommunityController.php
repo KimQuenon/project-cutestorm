@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use App\Repository\ReportRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,10 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CommunityController extends AbstractController
 {
     #[Route('/community', name: 'community')]
-    public function index(PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo): Response
+    public function index(PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo, UserRepository $userRepo): Response
     {
-        $posts = $postRepo->findTopLikedPosts(6);
         $user = $this->getUser();
+        $posts = $postRepo->findTopLikedPosts(6);
+        $topLikedUsers = $userRepo->findTopLikedUsers();
 
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
@@ -32,7 +34,8 @@ class CommunityController extends AbstractController
         return $this->render('community.html.twig', [
             'posts' => $posts,
             'likedPostSlugs' => $likedPostSlugs,
-            'reportedPostIds' => $reportedPostIds
+            'reportedPostIds' => $reportedPostIds,
+            'topLikedUsers' => $topLikedUsers
         ]);
     }
 }

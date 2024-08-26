@@ -1,0 +1,72 @@
+
+<div class="{{ podiumClass }} md:h-0 h-full w-full border-4 border-tertiary-dark rounded-xl p-4 flex flex-col justify-end relative podium-step opacity-0" data-height="{{ height }}">
+    <div>
+        {% if itemCategory == "likedPost" %}
+            <i class="fa-solid fa-trophy subtitle mb-2"></i>
+        {% elseif itemCategory == "commentedPost" %}
+           <i class="fa-solid fa-volume-low subtitle mb-2"></i>
+        {% elseif itemCategory == "likedUser" %}
+            <i class="fa-solid fa-fire subtitle mb-2"></i>
+        {% elseif itemCategory == "activeUser" %}
+            <i class="fa-solid fa-meteor subtitle mb-2"></i>
+        {% else %}
+            <i class="fa-solid fa-crown subtitle mb-2"></i>
+        {% endif %}
+
+        <div class="flex justify-between items-center flex-wrap">
+            <div class="lg:w-3/4 w-full">
+                {% if itemType == "post" %}
+                    <a href="{{ path('post_show', {'slug': slug}) }}" class="subtitle">{{ title }}</a>
+                    <p>by <a href="{{ path('profile_show', {'slug': slug}) }}">{{ pseudo }}</a></p>
+                {% else %}
+                    <a href="{{ path('profile_show', {'slug': slug}) }}" class="subtitle">{{ pseudo }}</a>
+                {% endif %}
+            </div>
+            <div>
+                {% if itemCategory == "likedPost" or itemCategory == "likedUser" %}
+                    <p class="text-danger-dark font-bold text-[17px]">+ {{ additional_info }} <i class="fa-solid fa-heart"></i></p>
+                {% elseif itemCategory == "commentedPost" %}
+                    <p class="text-tertiary-dark font-bold text-[17px]">+ {{ additional_info }} <i class="fa-solid fa-comment"></i></p>
+                {% elseif itemCategory == "activeUser" %}
+                    <p class="text-tertiary-dark font-bold text-[17px]">+ {{ additional_info }} <i class="fa-solid fa-camera"></i></p>
+                {% else %}
+                    <p class="text-tertiary-dark font-bold text-[17px]">+ {{ additional_info }} <i class="fa-solid fa-user"></i></p>
+                {% endif %}
+            </div>
+        </div>
+        <p class="text-tertiary-dark">{{ content|striptags|slice(0, 100) ~ '...' }}</p>
+        {% if itemType == "post" %}
+            <a href="{{ path('post_show', {'slug': slug}) }}" class="w-40 btn btn-white ml-auto mt-5">SEE MORE ></a>
+        {% else %}
+            <a href="{{ path('profile_show', {'slug': slug}) }}" class="w-40 btn btn-white ml-auto mt-5">VISIT ></a>
+        {% endif %}
+    </div>
+
+    <img src="{{ picture }}" alt="{{ title }}" class="absolute w-20 h-20 rounded-full border-4 border-tertiary-dark -top-10 left-1/2 -translate-x-1/2">
+
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const podiumSteps = document.querySelectorAll('.podium-step');
+        console.log(podiumSteps)
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const step = entry.target;
+                    const heightClass = step.dataset.height;
+                    
+                    step.classList.remove('h-0');
+                    step.classList.add(heightClass);
+                    step.classList.add('opacity-100');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        podiumSteps.forEach(step => {
+            observer.observe(step);
+        });
+    });
+</script>

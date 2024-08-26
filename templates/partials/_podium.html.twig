@@ -1,40 +1,63 @@
-<div class="podium-row row justify-content-center text-center">
-    {% for item in items %}
-        {% set rank = loop.index %}
-        {% set podiumClass = rank == 1 ? 'bg-gold' : (rank == 2 ? 'bg-silver' : 'bg-bronze') %}
-        {% set order = rank == 1 ? 'order-2' : (rank == 2 ? 'order-1' : 'order-3') %}
-        {% set height = rank == 1 ? 'h-100' : (rank == 2 ? 'h-75' : 'h-50') %}
-        
-        <div class="col-md-4 d-flex justify-content-between align-items-end {{ order }}">
+<div class="slide bg-primary">
+	<div class="container">
+		<div class="flex justify-between items-center flex-row flex-wrap">
+			<div class="md:w-1/2 w-full">
+				<h2 class="title text-tertiary-dark">{{ title }}</h2>
+				<p class="text-tertiary-dark">{{ text }}</p>
+			</div>
+			{% if showButton %}
+				<a href="{{path('awards')}}" class="w-52 btn btn-yellow btn-squared mt-4">SEE THEM ALL ></a>
+			{% endif %}
+		</div>
+		<div class="w-full lg:h-[80vh] md:h-[60vh] h-[120vh] md:mt-10 mt-20 relative">
+			<div class="absolute left-1/2 -translate-x-1/2 z-20 container h-full flex md:flex-row flex-col items-end justify-between lg:gap-20 md:gap-5 gap-16">
+				{% for item in items %}
+					{% set rank = loop.index %}
+					{% set podiumClass = rank == 1 ? 'bg-secondary' : (rank == 2 ? 'bg-primary-dark' : 'bg-background') %}
+					{% set height = rank == 1 ? 'md:h-[90%]' : (rank == 2 ? 'md:h-2/3' : 'md:h-1/2') %}
+					{% set picture = '' %}
 
-            {% if itemType == 'post' %}
-                <div class="card {{ podiumClass }} {{ height }} w-100">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ rank }}. {{ item.title }}</h3>
-                        by <a href="{{path('profile_show', {'slug': item.author.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.author.pseudo }}</a>
-                        {% if itemCategory == "likedPost" %}
-                            <p class="card-text">{{ item.likes|length }} Likes</p>
-                        {% elseif itemCategory == "commentedPost" %}
-                            <p class="card-text">{{ item.comments|length }} Comments</p>
-                        {% endif %}
-                    </div>
-                </div>
-            {% elseif itemType == 'user' %}
-                <div class="card {{ podiumClass }} {{ height }} w-100">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ rank }}. {{ item.pseudo }}</h3>
-                        by <a href="{{path('profile_show', {'slug': item.slug})}}" class="card-subtitle mb-2 text-muted">{{ item.pseudo }}</a>
-                        {% if itemCategory == "likedUser" %}
-                            <p class="card-text">{{ item.total_likes }} Likes</p>
-                        {% elseif itemCategory == "activeUser" %}
-                            <p class="card-text">{{ item.post_count }} Posts</p>
-                        {% elseif itemCategory == "followedUser" %}
-                            <p class="card-text">{{ item.follower_count }} Followers</p>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
-    {% endfor %}
+					<div class="flex justify-center items-end w-full h-full
+                        {% if rank == 1 %}md:order-2 order-1
+						{% elseif rank == 2 %}md:order-1 order-2
+						{% else %}md:order-3 order-3{% endif %}">
+						{% if itemType == 'post' %}
+							{% if item.postImages|length > 0 %}
+								{% set picture = 'uploads/' ~ item.postImages|first.filename %}
+							{% endif %}
+							{% include 'partials/_podiumStep.html.twig' with {
+                                'rank': rank,
+                                'podiumClass': podiumClass,
+                                'height': height,
+                                'title': item.title,
+                                'pseudo': item.author.pseudo,
+                                'content' : item.description,
+                                'picture': picture,
+                                'slug': item.slug,
+                                'additional_info': itemCategory == "likedPost" ? item.likes|length : item.comments|length
+                            } %}
+						{% elseif itemType == 'user' %}
+							{% set picture = item.avatar ? 'uploads/' ~ item.avatar : '' %}
+							{% include 'partials/_podiumStep.html.twig' with {
+                                'rank': rank,
+                                'podiumClass': podiumClass,
+                                'height': height,
+                                'title': item.pseudo,
+                                'pseudo': item.pseudo,
+                                'content' : item.bio,
+                                'picture': picture,
+                                'slug': item.slug,
+                                'additional_info': itemCategory == "likedUser" ? item.total_likes : (itemCategory == "activeUser" ? item.post_count : item.follower_count )
+                            } %}
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+			<div class="absolute z-10 w-full h-full flex flex-col justify-center items-center md:gap-10 gap-16">
+				{% for i in 1..12 %}
+					<hr class="w-full border-2 border-tertiary-dark rounded-full">
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 </div>
