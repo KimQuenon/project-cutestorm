@@ -7,6 +7,42 @@
 {% endblock %}
 
 {% block body %}
+{# ------------------------------SLIDE 1 - DISCOVER NEW PIECES------------------------------ #}
+<div class="slide lg:h-[90vh] h-[75vh] bg-primary">
+    <div class="container flex flex-row flex-wrap h-full">
+        <div class="lg:w-3/5 w-full mt-auto" data-aos="fade-right" data-aos-duration="1000">
+            <h1 class="font-gliker lg:text-[200px] md:text-[160px] text-[80px] leading-none text-background">Discover new pieces</h1>
+        </div>
+        <div class="lg:w-2/5 w-full flex flex-col justify-center lg:p-10 p-0" data-aos="fade-left" data-aos-duration="1000">
+            <div class="w-full flex flex-row items-center">
+                <div class="flex items-center mb-4">
+                    <div class="relative flex items-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-tertiary-dark overflow-hidden">
+                            <img src="https://randomuser.me/api/portraits/women/8.jpg" alt="Avatar 1" class="w-full h-full object-cover">                        
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-tertiary-dark overflow-hidden -ml-3">
+                            <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Avatar 1" class="w-full h-full object-cover">                        
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-tertiary-dark overflow-hidden -ml-3">
+                            <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Avatar 1" class="w-full h-full object-cover">                        
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-tertiary-dark overflow-hidden -ml-3">
+                            <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Avatar 1" class="w-full h-full object-cover">                        
+                        </div>
+                    </div>
+                </div>
+                <hr class="w-3/4 border-2 border-tertiary-dark rounded-full ml-4">
+            </div>
+            <p class="subtitle">Because sharing is mostly caring...</p>
+            <p class="text-tertiary-dark mb-8">Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue fermentum uit id. Suspendisse sem dui, pulvinar eu suscipit in urna. </p>
+            <a href="{{path('account_login')}}" class="w-52 btn btn-yellow btn-squared ml-auto">JOIN US ></a>
+        </div>
+
+    </div>
+</div>
+
+{# ------------------------------SLIDE 2 - OUR CLOSET------------------------------ #}
+
 <div class="slide min-h-screen bg-primary">
     <div class="container min-h-hull">
         <div class="flex flex-row flex-wrap justify-between items-center lg:mb-0 mb-4">
@@ -14,14 +50,12 @@
             {% include "partials/_search.html.twig" %}
         </div>
         <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8">
-            {# Afficher le premier post avec un layout spécial #}
             <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
                 <div class="flex-1">
                     {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'lg:h-[275px] h-48'} %}
                 </div>
             </div>
 
-            {# Boucle pour les posts intermédiaires (1 à 6) #}
             {% for i in 1..6 %}
                 <div class="lg:h-full h-[48vh]">
                     <div class="flex-1">
@@ -30,14 +64,12 @@
                 </div>
             {% endfor %}
 
-            {# Afficher le dernier post avec un layout spécial #}
             <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
                 <div class="flex-1">
                     {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'lg:h-[275px] h-48'} %}
                 </div>
             </div>
 
-            {# Boucle pour les posts finaux (8 et 7 dans cet ordre) #}
             {% for i in [8, 7] %}
                 <div class="lg:h-full h-[48vh]">
                     <div class="flex-1">
@@ -47,7 +79,6 @@
             {% endfor %}
         </div>
         
-        {# Pagination #}
         {% include "partials/_pagination.html.twig" with {
             'route': 'posts_index',
             'parameters': {},
@@ -56,9 +87,16 @@
         } %}
     </div>
 </div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ encore_entry_script_tags('like') }}
     {{ encore_entry_script_tags('search') }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init();
+        });
+    </script>
 {% endblock %}
