@@ -8,7 +8,7 @@
 
 {% block body %}
 {# ------------------------------SLIDE 1 - DISCOVER NEW PIECES------------------------------ #}
-<div class="slide lg:h-[90vh] h-[75vh] bg-primary">
+<div class="slide lg:h-[100vh] h-[75vh] bg-primary">
     <div class="container flex flex-row flex-wrap h-full">
         <div class="lg:w-3/5 w-full mt-auto" data-aos="fade-right" data-aos-duration="1000">
             <h1 class="font-gliker lg:text-[200px] md:text-[160px] text-[80px] leading-none text-background">Discover new pieces</h1>
@@ -38,6 +38,50 @@
             <a href="{{path('account_login')}}" class="w-52 btn btn-yellow btn-squared ml-auto">JOIN US ></a>
         </div>
 
+    </div>
+</div>
+
+{# ------------------------------SLIDE 1 - DISCOVER NEW PIECES------------------------------ #}
+<div class="slide md:h-[90vh] h-[130vh] bg-primary relative overflow-hidden">
+    <div class="absolute top-20 md:-rotate-12 rotate-0 md:left-0 left-1/2 md:-translate-x-0 -translate-x-1/2 z-50 hover:-translate-y-3 transition-all duration-300 card" id="buy-it-img">
+        <div class="relative w-full h-full flex flex-col justify-center p-16">
+            <div>
+                <h3 class="title text-background">BUY IT</h3>
+                <p class="text-background">Curabitur accumsan <span class="font-bold">sed risus vel faucibus</span>. Vivamus dignissim elit elit, <span class="font-bold">et sollicitudin</span>.... Lorem ipsum init sadem...</p>
+            </div>
+            <div class="absolute top-5 -right-5 w-24 h-24">
+                <img src="/images/buy-it-icon.svg" alt="buy it icon" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute rotate-12 left-[22%] lg:block hidden top-10 hover:-translate-y-3 transition-all duration-300 card" id="post-hero-1"></div>
+
+
+    <div class="absolute top-[400px] lg:top-60 md:top-52 left-1/2 lg:left-1/2 md:right-0 md:left-auto -translate-x-1/2 lg:-translate-x-1/2 md:translate-x-0 md:rotate-12 rotate-0 z-50 hover:-translate-y-3 transition-all duration-300 card" id="sketch-it-img">
+        <div class="relative w-full h-full flex flex-col justify-center p-16">
+            <div>
+                <h3 class="title text-background">SKETCH IT</h3>
+                <p class="text-background">Curabitur accumsan <span class="font-bold">sed risus vel faucibus</span>. Vivamus dignissim elit elit, <span class="font-bold">et sollicitudin</span>.... Lorem ipsum init sadem...</p>
+            </div>
+            <div class="absolute md:top-16 top-5 md:-right-16 -right-5 md:w-40 w-28 h-28">
+                <img src="/images/sketch-it-icon.svg" alt="buy it icon" class="w-full h-full object-contain">
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute -rotate-12 right-[20%] lg:block hidden top-10 hover:-translate-y-3 transition-all duration-300 card" id="post-hero-2"></div>
+
+    <div class="absolute bottom-10 md:bottom-16 lg:top-10 lg:right-0 lg:left-auto md:left-10 md:right-auto left-1/2 -translate-x-1/2 md:-translate-x-0 lg:translate-x-0 md:-rotate-12 rotate-0 z-50 hover:-translate-y-3 transition-all duration-300 card" id="share-it-img">
+        <div class="relative w-full h-full flex flex-col justify-center p-16">
+            <div>
+                <h3 class="title text-background">SHARE IT</h3>
+                <p class="text-background">Curabitur accumsan <span class="font-bold">sed risus vel faucibus</span>. Vivamus dignissim elit elit, <span class="font-bold">et sollicitudin</span>.... Lorem ipsum init sadem...</p>
+            </div>
+            <div class="absolute top-6 md:right-12 right-2 w-28 h-28">
+                <img src="/images/share-it-icon.svg" alt="buy it icon" class="w-full h-full object-contain">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -93,6 +137,7 @@
 {% block javascripts %}
     {{ encore_entry_script_tags('like') }}
     {{ encore_entry_script_tags('search') }}
+    {{ encore_entry_script_tags('fadeAnim') }}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

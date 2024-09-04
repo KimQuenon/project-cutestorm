@@ -478,6 +478,8 @@ to {
     }
 }
 
+
+/*-----STORE-----*/
 #slide-store{
     background-image: url(../../public/images/slide-store.webp);
 }
@@ -485,6 +487,36 @@ to {
 #slide-community{
     background-image: url(../../public/images/slide-community.webp);
 }
+
+/*-----POSTS-----*/
+#buy-it-img, #sketch-it-img, #share-it-img, #post-hero-1, #post-hero-2{
+    @include imgCover(contain);
+    width:395px;
+    height:395px;
+    @media all and (max-width: 768px){
+        width:325px;
+        height:325px;
+    }
+}
+
+#buy-it-img{
+    background-image: url(../../public/images/buy-it-img.svg);
+}
+#sketch-it-img{
+    background-image: url(../../public/images/sketch-it-img.svg);
+}
+#share-it-img{
+    background-image: url(../../public/images/share-it-img.svg);
+}
+
+#post-hero-1{
+    background-image: url(../../public/images/post-hero-1.png); 
+}
+
+#post-hero-2{
+    background-image: url(../../public/images/post-hero-2.png); 
+}
+
 
 
 .podium-step {
