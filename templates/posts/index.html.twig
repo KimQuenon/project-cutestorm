@@ -1,19 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Publications{% endblock %}
+{% block title %}Posts{% endblock %}
+
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
 
 {% block body %}
 <div class="slide min-h-screen bg-primary">
-    <div class="container min-h-full">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {% for post in posts %}
-                <div class="flex">
+    <div class="container min-h-hull">
+        <div class="flex flex-row flex-wrap justify-between items-center lg:mb-0 mb-4">
+            <h2 class="title text-tertiary-dark mb-4">Our closet</h2>
+            {% include "partials/_search.html.twig" %}
+        </div>
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8">
+            {# Afficher le premier post avec un layout spécial #}
+            <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
+                <div class="flex-1">
+                    {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'lg:h-[275px] h-48'} %}
+                </div>
+            </div>
+
+            {# Boucle pour les posts intermédiaires (1 à 6) #}
+            {% for i in 1..6 %}
+                <div class="lg:h-full h-[48vh]">
                     <div class="flex-1">
-                        {% include "partials/_cardPost.html.twig" with {'post': post} %}
+                        {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {# Afficher le dernier post avec un layout spécial #}
+            <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
+                <div class="flex-1">
+                    {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'lg:h-[275px] h-48'} %}
+                </div>
+            </div>
+
+            {# Boucle pour les posts finaux (8 et 7 dans cet ordre) #}
+            {% for i in [8, 7] %}
+                <div class="lg:h-full h-[48vh]">
+                    <div class="flex-1">
+                        {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
                     </div>
                 </div>
             {% endfor %}
         </div>
+        
+        {# Pagination #}
         {% include "partials/_pagination.html.twig" with {
             'route': 'posts_index',
             'parameters': {},

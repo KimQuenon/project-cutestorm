@@ -34,6 +34,7 @@ module.exports = {
           light: '#FF84DC',
           DEFAULT: '#FF00B8',
           dark:'#FF004D',
+          hover: '#EB043B',
         },
         highlight: {
           DEFAULT: '#00BFFF',

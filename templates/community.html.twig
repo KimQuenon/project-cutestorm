@@ -48,7 +48,7 @@
                 <div class="swiper-wrapper lg:h-[65vh] md:h-[45vh] h-[60vh] mt-10">
                     {% for post in posts %}
                         <div class="swiper-slide w-full">
-                            {% include "partials/_cardPost.html.twig" %}
+                            {% include "partials/_cardPost.html.twig" with {imgHeight: 'h-44'} %}
                         </div>
                     {% endfor %}
                 </div>

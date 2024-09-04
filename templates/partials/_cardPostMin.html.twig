@@ -1,0 +1,37 @@
+<div class="w-full bg-white border-2 border-tertiary-dark flex flex-col h-full">
+        <div class="flex items-center justify-between border-b-2 border-tertiary-dark py-2 px-4">
+            <p class="text-tertiary-dark">By 
+            {% if app.user == post.author %}
+                <a href="{{ path('profile_feed') }}" class="font-bold">{{ post.author.pseudo }}</a></p>
+            {% else %}
+                <a href="{{ path('profile_show', {'slug': post.author.slug}) }}" class="font-bold">{{ post.author.pseudo }}</a></p>
+            {% endif %}
+            <p>{{ post.timestamp|date('d-m-Y') }}</p>
+        </div>
+
+        <div class="lg:h-3/4 h-full border-b-2 border-tertiary-dark">
+            {% if post.postImages|length > 0 %}
+                {% set firstImage = post.postImages|first %}
+                {% if firstImage is not null and firstImage.filename is defined %}
+                <a href="{{ path('post_show', {'slug': post.slug}) }}">
+                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{ post.title }}" class="w-full h-full object-cover">
+                </a>
+                {% else %}
+                    <p>No image available</p>
+                {% endif %}
+            {% else %}
+                <a href="{{ path('post_show', {'slug': post.slug}) }}">
+                    <p>No image available</p>
+                </a>
+            {% endif %}
+        </div>
+        <div class="py-2 px-4  flex items-start">
+            {% include 'partials/_like.html.twig' with {
+                'type': 'post',
+                'idOrSlug': post.slug,
+                'authorId': post.author.id,
+                'likeCount': post.likes|length,
+                'likedIds': likedPostSlugs
+            } %}
+        </div>
+</div>
