@@ -58,6 +58,19 @@ class Conversation
         return $messages;
     }
 
+    public function countUnreadMessagesForUser(User $user): int
+    {
+        $unreadCount = 0;
+        foreach ($this->getMessages() as $message) {
+            if ($message->getSender() !== $user && !$message->isRead()) {
+                $unreadCount++;
+            }
+        }
+        return $unreadCount;
+
+    }
+    
+
     public function getId(): ?int
     {
         return $this->id;

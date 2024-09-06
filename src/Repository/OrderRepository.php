@@ -25,7 +25,7 @@ class OrderRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('o')
             ->where('o.user = :user')
-            ->andWhere('o.isPaid = false') // Assurez-vous que la colonne `isPaid` existe et est booléenne
+            ->andWhere('o.isPaid = false')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();

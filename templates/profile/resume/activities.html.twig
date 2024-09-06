@@ -1,11 +1,15 @@
-{# templates/profile/resume/activities.html.twig #}
+{% extends 'layouts/account_layout.html.twig' %}
 
-{% extends 'base.html.twig' %}
+{% block title %}Dashboard{% endblock %}
 
-{% block title %}Activity Summary{% endblock %}
+{% set currentPage = 'resume_activities' %}
 
-{% block body %}
-    <div class="container">
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
+
+{# {% block body %} #}
+    {# <div class="container">
         <h1>Activity Summary</h1>
 
         <section>
@@ -52,5 +56,5 @@
                 <p>No recent followings.</p>
             {% endif %}
         </section>
-    </div>
-{% endblock %}
+    </div> #}
+{# {% endblock %} #}

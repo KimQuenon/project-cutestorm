@@ -97,8 +97,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('admin/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
     public function index(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findAll();
@@ -117,8 +116,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('admin/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
     public function reportsPosts(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'post']);
@@ -137,8 +135,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('admin/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
     public function reportsComments(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'comment']);
@@ -157,8 +154,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('admin/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
     public function reportsUsers(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'user']);
@@ -177,8 +173,7 @@ class ReportController extends AbstractController
         ]);
     }
     
-    #[Route('admin/moderation/reports/{id}', name: 'report_show')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/{id}', name: 'report_show')]
     public function show(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepository): Response
     {
 
@@ -188,8 +183,7 @@ class ReportController extends AbstractController
     }
 
 
-    #[Route('admin/moderation/reports/{id}/validate', name: 'report_validate')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
     public function validate(
         #[MapEntity(mapping: ['id' => 'id'])] Report $report,
         UserRepository $userRepo,
@@ -287,8 +281,7 @@ class ReportController extends AbstractController
     }
     
 
-    #[Route('admin/moderation/reports/{id}/keep', name: 'report_reject')]
-    #[IsGranted('ROLE_MODERATOR')]
+    #[Route('/moderation/reports/{id}/keep', name: 'report_reject')]
     public function keep(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
     {
         // Déterminer l'objet signalé

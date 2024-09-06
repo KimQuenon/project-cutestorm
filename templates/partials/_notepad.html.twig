@@ -1,0 +1,25 @@
+<div class="w-full h-[50vh]">
+    <div class="w-full h-1/4">
+        <img src="/images/notepad.svg" alt="notepad" class="w-full h-full object-contain">
+    </div>
+    <div class="w-full h-3/4 bg-secondary-light relative -mt-5 border-2 border-tertiary-dark rounded-b-xl">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center gap-5">
+            {% for i in 1..10 %}
+                <hr class="w-full border-dashed border-secondary-dark rounded-full">
+            {% endfor %}
+        </div>
+        <div class="p-4 relative">
+            {% if app.user == user %}
+                <a href="{{path('profile_edit')}}" class="w-40 btn btn-white ml-auto">EDIT ></a>
+            {% endif %}
+            <div class="h-3/4 flex flex-col justify-end">
+                <p class="font-bold text-tertiary-dark">Bio</p>
+                <p>{{user.bio|raw}}</p>
+                <div class="flex gap-2 items-center my-2">
+                    <i class="fa-solid fa-cake-candles text-tertiary-dark"></i>
+                    <p> <span class="font-bold text-tertiary-dark">User since :</span> {{user.timestamp|date('d-m-Y') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

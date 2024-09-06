@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Message;
 use App\Entity\Conversation;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -65,7 +66,6 @@ class ConversationRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-
     public function replaceUserInConversations(User $user, User $anonymousUser): void
     {
         // Remplacer l'utilisateur en tant qu'expéditeur
@@ -88,6 +88,33 @@ class ConversationRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findConversationsWithUnreadCounts(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.messages', 'm')
+            ->addSelect('COUNT(CASE WHEN m.isRead = false AND m.sender != :user THEN 1 END) AS HIDDEN unreadCount')
+            ->where('c.isAccepted = true') // Only accepted conversations
+            ->andWhere('c.sender = :user OR c.recipient = :user')
+            ->setParameter('user', $user)
+            ->groupBy('c.id')
+            ->orderBy('MAX(m.timestamp)', 'DESC') // Optional: order by the latest message timestamp
+            ->getQuery()
+            ->getResult();
+    }
+    
+    public function countTotalUnreadMessages(User $user): int
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.messages', 'm')
+            ->select('COUNT(CASE WHEN m.isRead = false AND m.sender != :user THEN 1 END) AS totalUnread')
+            ->where('c.isAccepted = true') // Only accepted conversations
+            ->andWhere('c.sender = :user OR c.recipient = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
 
 
     //    /**

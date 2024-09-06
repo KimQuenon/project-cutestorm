@@ -212,6 +212,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
     }
 
+    public function countUnreadMessages(): int
+    {
+        $unreadCount = 0;
+        foreach ($this->getConversations() as $conversation) {
+            $unreadCount += $conversation->countUnreadMessagesForUser($this);
+        }
+
+        return $unreadCount;
+    }
+
     public function getFullName(): string
     {
         return $this->firstname . " " . $this->lastname;

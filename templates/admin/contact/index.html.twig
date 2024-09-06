@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Messagerie{% endblock %}
 
@@ -52,4 +52,10 @@
             {% endif %}
         </div>
     </div>
-{% endblock %}
+{% endblock %} #}
+
+{% extends 'layouts/account_layout.html.twig' %}
+
+{% block title %}Contacts{% endblock %}
+
+{% set currentPage = 'contact_index' %}

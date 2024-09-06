@@ -1,7 +1,10 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['bootstrap_5_layout.html.twig']
-
+    globals:
+        order_repository: '@App\Repository\OrderRepository'
+        notification_repository: '@App\Repository\NotificationRepository'
+        follow_request_repository: '@App\Repository\FollowRequestRepository'
 when@test:
     twig:
         strict_variables: true

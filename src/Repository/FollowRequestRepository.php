@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\FollowRequest;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<FollowRequest>
@@ -14,6 +15,16 @@ class FollowRequestRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, FollowRequest::class);
+    }
+
+    public function countReceivedRequests(User $user): int
+    {
+        return $this->createQueryBuilder('fr')
+            ->select('COUNT(fr)')
+            ->where('fr.sentTo = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     //    /**

@@ -14,6 +14,7 @@ module.exports = {
           hover: '#A005D6',
         },
         secondary: {
+          light: '#FBEC9E',
           DEFAULT: '#FFD600',
           dark: '#FFA500',
           hover: '#E8C305'
@@ -25,7 +26,7 @@ module.exports = {
         },
         background: {
           DEFAULT: '#F3EBFF',
-          hover: '#E8DCF9',
+          hover: '#EBDDFF',
         },
         success: {
           DEFAULT: '#32CD32',
