@@ -55,8 +55,18 @@
 
 {% block title %}Orders{% endblock %}
 
-{% set currentPage = 'orders_index' %}
+{% set currentTab = 'orders_index' %}
 
-{% block header %}
-    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% block content %}
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="title title-second text-tertiary-dark">Orders</h2>
+        <a href="{{ path('cart_show') }}" class="text-tertiary-dark underline">View cart</a>
+    </div>
+    {% include "partials/_orderItem.html.twig" with {orders: orders} %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'orders_index',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
 {% endblock %}

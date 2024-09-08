@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderItem;
+use App\Service\PaginationService;
 use App\Repository\OrderRepository;
 use App\Service\PdfGeneratorService;
 use App\Repository\DeliveryRepository;
@@ -18,15 +19,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class OrderController extends AbstractController
 {
-    #[Route('/profile/orders', name: 'orders_index')]
+    #[Route('/profile/orders/{page<\d+>?1}', name: 'orders_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(int $page, PaginationService $paginationService, OrderRepository $orderRepo): Response
     {
         $user = $this->getUser();
-        $orders = $user->getOrders();
+        $orders = $orderRepo->findBy(['user' => $user], ['timestamp' => 'DESC']);
+
+        $currentPage = $page;
+        $itemsPerPage = 12;
+
+        $pagination = $paginationService->paginate($orders, $currentPage, $itemsPerPage);
+        $ordersPaginated = $pagination['items'];
+        $totalPages = $pagination['totalPages'];
 
         return $this->render('orders/index.html.twig', [
-            'orders' => $orders,
+            'orders' => $ordersPaginated,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
         ]);
     }
 

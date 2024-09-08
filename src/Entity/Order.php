@@ -59,7 +59,7 @@ class Order
     #[ORM\PrePersist]
     public function generateReference(): void
     {
-        $this->reference = strtoupper(bin2hex(random_bytes(4))) . '-' . time();
+        $this->reference = strtoupper(bin2hex(random_bytes(2))) . '-' . time();
     }
 
     /**

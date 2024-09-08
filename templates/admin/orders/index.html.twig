@@ -1,10 +1,27 @@
-{% extends 'layouts/orders_layout.html.twig' %}
+{# {% extends 'layouts/orders_layout.html.twig' %}
 
 {% block title %}Admin - Orders{% endblock %}
 
 {% block orders_total %}{{ total|number_format(2, ',', '.') }} ${% endblock %}
 
 {% block orders_pagination %}
+    {% include "partials/_pagination.html.twig" with {
+        'route': 'admin_orders_index',
+        'parameters': {},
+        'page': currentPage,
+        'pages': totalPages
+    } %}
+{% endblock %} #}
+
+{% extends 'layouts/account_layout.html.twig' %}
+
+{% block title %}Admin Orders{% endblock %}
+
+{% set currentTab = 'admin_orders_index' %}
+
+{% block content %}
+    <h2 class="title title-second text-tertiary-dark">Orders</h2>
+    {% include "partials/_orderItem.html.twig" with {orders: orders} %}
     {% include "partials/_pagination.html.twig" with {
         'route': 'admin_orders_index',
         'parameters': {},

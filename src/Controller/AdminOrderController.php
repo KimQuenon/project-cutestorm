@@ -15,11 +15,11 @@ class AdminOrderController extends AbstractController
     #[Route('/admin/orders/{page<\d+>?1}', name: 'admin_orders_index')]
     public function index(int $page, OrderRepository $orderRepo, PaginationService $paginationService): Response
     {
-        $orders = $orderRepo->findBy([], ['id' => 'DESC']);
+        $orders = $orderRepo->findBy([], ['timestamp' => 'DESC']);
         $total = $orderRepo->getTotalPrice();
 
         $currentPage = $page;
-        $itemsPerPage = 9;
+        $itemsPerPage = 12;
     
         $pagination = $paginationService->paginate($orders, $currentPage, $itemsPerPage);
         $ordersPaginated = $pagination['items'];

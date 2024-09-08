@@ -165,6 +165,12 @@ p, a{
             background-color: $dangerHover;
         }
     }
+    &-highlight{
+        background-color: $highlight;
+        &:hover{
+            background-color: $highlightDark;
+        }
+    }
     &-yellow{
         background-color: $secondary;
         &:hover{
