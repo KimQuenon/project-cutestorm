@@ -8,6 +8,19 @@
     {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
 {% endblock %}
 
+{% block content %}
+    {% include "partials/_accountHeader.html.twig" with {
+        title: 'Dashboard',
+        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        showButton: true,
+        firstPath: path('profile_posts'),
+        firstLink: 'My posts',
+        secondPath: path('orders_index'),
+        secondLink: 'My orders',
+        type: 'user'
+    } %}
+{% endblock %}
+
 {# {% block body %} #}
     {# <div class="container">
         <h1>Activity Summary</h1>

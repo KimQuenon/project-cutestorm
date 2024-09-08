@@ -58,4 +58,72 @@
 
 {% block title %}Contacts{% endblock %}
 
-{% set currentPage = 'contact_index' %}
+{% set currentTab = 'contact_index' %}
+
+{% block content %}
+    {% include "partials/_accountHeader.html.twig" with {
+        title: 'Contact',
+        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        showButton: false,
+        secondPath: path('homepage'),
+        secondLink: 'Back to home',
+        type: 'admin'
+    } %}
+    <div class="flex justify-between items-center mt-8 mb-4">
+        <h2 class="title title-second text-tertiary-dark">Contact</h2>
+        <a href="{{path('mark_contact_read')}}" type="button" class="text-tertiary-dark underline">Mark all as read</a>
+    </div>
+    <div>
+        {% if contacts|length > 0 %}
+            <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+                <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+                    <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                        <tr class="font-bold text-background text-xs uppercase text-center">
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Name</th>
+                            <th class="p-4">Mail</th>
+                            <th class="p-4">Message</th>
+                            <th class="p-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-background border-x-2 border-tertiary-dark">
+                        {% for contact in contacts %}
+                            <tr class="divide-x divide-tertiary h-full">
+                                <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
+                                    <div class="w-3 h-3 border-2 border-tertiary-dark rounded-full {{ contact.IsRead == false ? 'bg-danger-dark' : 'bg-danger-success' }}"></div>
+                                </td>
+                                <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm">{{ contact.name }}</td>
+                                <td class="p-4 whitespace-nowrap text-tertiary text-sm">{{ contact.email }}</td>
+                                <td class="p-4 whitespace-nowrap text-tertiary text-sm">{{ contact.message | raw | striptags | slice(0, 10) }}...</td>
+                                <td class="p-4 whitespace-nowrap text-center flex gap-2">
+                                    <a href="{{ path('contact_show', {'id': contact.id}) }}" class="badge badge-highlight">
+                                        <i class="fa-solid fa-eye text-background"></i>
+                                    </a>
+                                    {% include 'partials/_deleteModal.html.twig' with {
+                                        'slug': contact.id,
+                                        'modalAction': path('contact_delete', {'id': contact.id})
+                                        } 
+                                    %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'contact_index',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
+        {% else %}
+            <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+                <i class="fas fa-info-circle"></i>
+                <p>You don't have any notification... yet !</p>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

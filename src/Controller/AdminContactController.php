@@ -12,13 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminContactController extends AbstractController
 {
-    #[Route('/admin/contact/{page<\d+>?1}', name: 'contact_index')]
+    #[Route('/admin/contacts/{page<\d+>?1}', name: 'contact_index')]
     public function contact(int $page, ContactRepository $contactRepo, PaginationService $paginationService): Response
     {
         $contacts = $contactRepo->findBy([], ['id' => 'DESC']);
 
         $currentPage = $page;
-        $itemsPerPage = 9;
+        $itemsPerPage = 15;
     
         $pagination = $paginationService->paginate($contacts, $currentPage, $itemsPerPage);
         $contactsPaginated = $pagination['items'];

@@ -1,0 +1,39 @@
+<div class="w-full lg:h-[45vh] md:h-[50vh] h-[75vh]">
+    <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-8">
+        <div class="lg:w-1/2 w-full">
+            <div class="w-full bg-background shadow border-2 border-tertiary-dark rounded-xl py-6 px-4">
+                <h2 class="title title-second text-tertiary-dark">{{title}}</h2>
+                <p>{{content}}</p>
+            </div>
+            <div class="w-full flex md:flex-row flex-col justify-between mt-8 gap-4">
+                {% if showButton %}
+                    <a href="{{ firstPath}}" class="btn btn-yellow md:w-40 w-full">{{ firstLink }}</a>
+                {% endif %}
+                <a href="{{ secondPath}}" class="btn btn-purple md:w-40 w-full">{{ secondLink }}</a>
+            </div>
+        </div>
+        <div class="lg:w-1/2 w-full p-8 relative">
+            {% if type == 'user' %}
+                <div class="absolute w-20 h-20 top-2 md:left-5 left-0 -rotate-12">
+                    <img src="/images/emoji1.svg" alt="emoji1" class="w-full h-full object-contain">
+                </div>
+                <div class="absolute w-28 h-28 lg:bottom-3 -bottom-40 lg:left-6 md:left-1/4 left-5 lg:-translate-x-0 md:-translate-x-1/4 -rotate-12">
+                    <img src="/images/emoji2.svg" alt="emoji2" class="w-full h-full object-contain">
+                </div>
+                <div class="absolute w-36 h-36 md:top-8 top-4 md:right-5 right-0 rotate-12">
+                    <img src="/images/emoji3.svg" alt="emoji3" class="w-full h-full object-contain">
+                </div>
+            {% elseif type == 'admin' %}
+                <div class="absolute w-20 h-20 top-1 left-1/2 -translate-x-1/2 rotate-12">
+                    <img src="/images/flower1.svg" alt="flower1" class="w-full h-full object-contain">
+                </div>
+                <div class="absolute w-28 h-28 lg:top-1/2 md:-bottom-32 -bottom-28 lg:-translate-y-1/2 lg:left-0 md:left-5 left-0 -rotate-12">
+                    <img src="/images/flower2.svg" alt="flower2" class="w-full h-full object-contain">
+                </div>
+                <div class="absolute w-40 h-40 lg:bottom-0 -bottom-44 md:right-2 -right-2 rotate-12">
+                    <img src="/images/flower3.svg" alt="flower3" class="w-full h-full object-contain">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
