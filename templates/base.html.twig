@@ -37,15 +37,7 @@
                 ">
                     {% for message in messages %}
                         <div class="flex gap-2 items-center">
-                            {% if label == 'danger' %}
-                                <i class="fas fa-exclamation-triangle"></i>
-                            {% elseif label == 'warning' %}
-                                <i class="fas fa-exclamation-circle"></i>
-                            {% elseif label == 'success' %}
-                                <i class="fas fa-check-circle"></i>
-                            {% elseif label == 'info' %}
-                                <i class="fas fa-info-circle"></i>
-                            {% endif %}
+                            <i class="fas fa-info-circle"></i>
                             <p>{{ message|raw }}</p>
                         </div>
                     {% endfor %}

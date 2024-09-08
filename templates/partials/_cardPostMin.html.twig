@@ -14,7 +14,7 @@
                 {% set firstImage = post.postImages|first %}
                 {% if firstImage is not null and firstImage.filename is defined %}
                 <a href="{{ path('post_show', {'slug': post.slug}) }}">
-                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{ post.title }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{ post.title }}" class="w-full h-full object-cover {{ post.id in reportedPostIds ? 'blur-xl' : '' }}">
                 </a>
                 {% else %}
                     <p>No image available</p>

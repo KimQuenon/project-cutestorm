@@ -28,7 +28,7 @@ class NotificationController extends AbstractController
         $unreadCount = $notificationRepo->countUnreadNotifications($user);
 
         $currentPage = $page;
-        $itemsPerPage = 20;
+        $itemsPerPage = 10;
 
         $pagination = $paginationService->paginate($notifications, $currentPage, $itemsPerPage);
         $notificationsPaginated = $pagination['items'];

@@ -2,6 +2,32 @@
 
 {% block subtitle %}
     All Reports
+{% endblock %}#}
+
+{% extends 'layouts/reports_layout.html.twig' %}
+
+{% set title = 'Reports' %}
+
+{% block report_content %}
+    {% if report.type == "post" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'report',
+            category: 'post',
+            content: report.details is not empty ? report.details : report.reportedPost.description
+        } %}
+    {% elseif report.type == "user" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'report',
+            category: 'user',
+            content: report.details is not empty ? report.details : report.reportedUser.bio
+        } %}
+    {% elseif report.type == "comment" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'report',
+            category: 'comment',
+            content: report.details is not empty ? report.details : report.reportedComment.content
+        } %}
+    {% endif %}
 {% endblock %}
 
 {% block pagination %}
@@ -11,9 +37,5 @@
         'page': currentPage,
         'pages': totalPages
     } %}
-{% endblock %} #}
-{% extends 'layouts/account_layout.html.twig' %}
+{% endblock %}
 
-{% block title %}Reports{% endblock %}
-
-{% set currentPage = 'reports_index' %}

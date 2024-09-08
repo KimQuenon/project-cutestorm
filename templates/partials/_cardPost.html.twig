@@ -23,7 +23,7 @@
                     'modalAction': path('post_delete', {'slug': post.slug})
                 } %}
             {% elseif post.id in reportedPostIds %}
-                <span class="text-gray-500">Post reported</span>
+                <span class="text-danger-dark font-bold">Post reported</span>
             {% else %}
                 <p>{{ post.timestamp|date('d-m-Y') }}</p>
                 <a href="{{ path('report_item', { type: 'post', id: post.id }) }}" class="badge badge-danger"><i class="fa-regular fa-flag"></i></a>
@@ -34,7 +34,7 @@
         {% if post.postImages|length > 0 %}
             {% set firstImage = post.postImages|first %}
             {% if firstImage is not null and firstImage.filename is defined %}
-                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{post.title}}" class="w-full h-full object-cover">
+                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{post.title}}" class="w-full h-full object-cover {{ post.id in reportedPostIds ? 'blur-xl' : '' }}">
             {% else %}
                 <p>No image available</p>
             {% endif %}

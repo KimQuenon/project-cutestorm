@@ -29,7 +29,8 @@ module.exports = {
           hover: '#EBDDFF',
         },
         success: {
-          DEFAULT: '#32CD32',
+          DEFAULT: '#3EEA3E',
+          hover: '#32CD32',
         },
         danger: {
           light: '#FF84DC',

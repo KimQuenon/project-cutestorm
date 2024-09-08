@@ -1,7 +1,13 @@
 {% extends 'layouts/reports_layout.html.twig' %}
 
-{% block subtitle %}
-    Users Reports
+{% set title = 'Reported users' %}
+
+{% block report_content %}
+    {% include "partials/_listItem.html.twig" with {
+        type: 'report',
+        category: 'user',
+        content: report.details is not empty ? report.details : report.reportedUser.bio
+    } %}
 {% endblock %}
 
 {% block pagination %}

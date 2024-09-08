@@ -7,6 +7,7 @@
 
         <!-- Bouton Page Précédente -->
         <li class="page-item {% if page == 1 %}disabled{% endif %}">
+
             <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">&laquo;</a>
         </li>
 

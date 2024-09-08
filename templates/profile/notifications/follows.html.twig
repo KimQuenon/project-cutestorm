@@ -1,13 +1,21 @@
 {% extends 'layouts/notifications_layout.html.twig' %}
 
-{% set title = 'Follow Notifications' %}
+{% set title = 'Follows' %}
 {% set markAsReadPath = path('mark_follows_read') %}
 
 {% block notification_content %}
-    {% if notification.type == "follow" %}
-        <strong>{{ notification.user.pseudo }}</strong> followed you.
-    {% elseif notification.type == "request" %}
-        <strong>{{ notification.user.pseudo }}</strong> accepted your request.
+    {% if notification.type == "request" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'request',
+            content: notification.user.bio
+        } %}
+    {% elseif notification.type == "follow" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'follow',
+            content: notification.user.bio
+        } %}
     {% endif %}
 {% endblock %}
 
@@ -19,3 +27,5 @@
         'pages': totalPages
     } %}
 {% endblock %}
+
+

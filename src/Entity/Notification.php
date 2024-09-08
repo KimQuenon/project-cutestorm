@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\NotificationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Notification
 {
     #[ORM\Id]
@@ -34,6 +36,24 @@ class Notification
     #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Comment $comment = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
+
+    /**
+     * set datetime to current datetime
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        if(empty($this->timestamp))
+        {
+            $this->timestamp = new \DateTime();
+        }
+    }
+
 
     public function getId(): ?int
     {
@@ -103,6 +123,18 @@ class Notification
     public function setComment(?Comment $comment): static
     {
         $this->comment = $comment;
+        return $this;
+    }
+
+    public function getTimestamp(): ?\DateTimeInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(\DateTimeInterface $timestamp): static
+    {
+        $this->timestamp = $timestamp;
+
         return $this;
     }
 }

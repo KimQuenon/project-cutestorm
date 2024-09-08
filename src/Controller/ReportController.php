@@ -68,7 +68,7 @@ class ReportController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $report->setType($type);
             $report->setReportedBy($this->getUser());
-            $report->setReportedAt(new \DateTime());
+            // $report->setReportedAt(new \DateTime());
 
             // Set the appropriate reported entity
             if ($type === 'post') {
@@ -100,7 +100,7 @@ class ReportController extends AbstractController
     #[Route('/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
     public function index(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
-        $reports = $reportRepository->findAll();
+        $reports = $reportRepository->findBy([], ['timestamp' => 'DESC']);
 
         $currentPage = $page;
         $itemsPerPage = 20;
@@ -119,7 +119,7 @@ class ReportController extends AbstractController
     #[Route('/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
     public function reportsPosts(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
-        $reports = $reportRepository->findBy(['type' => 'post']);
+        $reports = $reportRepository->findBy(['type' => 'post'], ['timestamp' => 'DESC']);
 
         $currentPage = $page;
         $itemsPerPage = 20;
@@ -138,7 +138,7 @@ class ReportController extends AbstractController
     #[Route('/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
     public function reportsComments(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
-        $reports = $reportRepository->findBy(['type' => 'comment']);
+        $reports = $reportRepository->findBy(['type' => 'comment'], ['timestamp' => 'DESC']);
 
         $currentPage = $page;
         $itemsPerPage = 20;
@@ -157,7 +157,7 @@ class ReportController extends AbstractController
     #[Route('/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
     public function reportsUsers(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
-        $reports = $reportRepository->findBy(['type' => 'user']);
+        $reports = $reportRepository->findBy(['type' => 'user'], ['timestamp' => 'DESC']);
 
         $currentPage = $page;
         $itemsPerPage = 20;

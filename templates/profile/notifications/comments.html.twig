@@ -1,15 +1,22 @@
 {% extends 'layouts/notifications_layout.html.twig' %}
 
-{% set title = 'Comment Notifications' %}
+{% set title = 'Comments' %}
 {% set markAsReadPath = path('mark_comments_read') %}
 
 {% block notification_content %}
     {% if notification.type == "comment" %}
-        <strong>{{notification.comment.author.pseudo}}</strong> a commenté:
-    {% else %}
-        <strong>{{notification.comment.author.pseudo}}</strong> a répondu à votre commentaire:
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'comment',
+            content: notification.comment.content
+        } %}
+    {% elseif notification.type == "reply" %}
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'reply',
+            content: notification.comment.content
+        } %}
     {% endif %}
-    <small>{{notification.comment.content}}</small>
 {% endblock %}
 
 {% block pagination %}
@@ -20,3 +27,5 @@
         'pages': totalPages
     } %}
 {% endblock %}
+
+

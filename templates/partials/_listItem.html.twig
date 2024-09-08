@@ -1,0 +1,145 @@
+{% if category == 'comment' or category == 'reply' %}
+	{% set backgroundColor = 'bg-highlight-dark' %}
+	{% set icon = 'fa-comment' %}
+	{% set iconColor = 'text-highlight' %}
+	{% set textColor = 'text-highlight' %}
+{% elseif category == 'like' or category == 'likeComment' %}
+	{% set backgroundColor = 'bg-danger-dark' %}
+	{% set icon = 'fa-heart' %}
+	{% set iconColor = 'text-danger-light' %}
+	{% set textColor = 'text-danger-dark' %}
+{% elseif category == 'follow' or category == 'request' or category == 'user' %}
+	{% set backgroundColor = 'bg-secondary' %}
+	{% set icon = 'fa-user' %}
+	{% set iconColor = 'text-secondary-dark' %}
+	{% set textColor = 'text-secondary-dark' %}
+{% elseif category == 'post' %}
+	{% set backgroundColor = 'bg-primary-dark' %}
+	{% set icon = 'fa-image' %}
+	{% set iconColor = 'text-primary' %}
+	{% set textColor = 'text-primary-dark' %}
+{% endif %}
+
+{% if type == 'notification' %}
+	{% set user = notification.user %}
+	{% set item = notification.post %}
+	{% set timestamp =  notification.timestamp %}
+	{% set coverUser = user.avatar %}
+	{% set coverAlt = user.pseudo %}
+	{% set coverPath = path('profile_show', { 'slug': user.slug }) %}
+
+	{% if category == "like" %}
+		{% set title =  'has liked ' %}
+	{% elseif category == "likeComment" %}
+		{% set title =  'has liked' %}
+	{% elseif category == "comment" %}
+		{% set title =  'has submitted ' %}
+	{% elseif category == "reply" %}
+		{% set title =  'has replied to ' %}
+	{% elseif category == "follow" %}
+		{% set title =  ' has started to follow you.' %}
+	{% elseif category == "request" %}
+		{% set title =  ' has accepted your follow request.' %}
+	{% endif %}
+{% elseif type == 'report'%}
+	{% set user = report.reportedBy %}
+	{% set timestamp =  report.timestamp %}
+	{% set title =  'has reported ' %}
+	{% set item =  report.reportedPost %}
+	{% set validate =  path('report_reject', { id: report.id }) %}
+	{% set delete =  path('report_validate', { id: report.id }) %}
+    {% if category == "user" %}
+        {% set coverUser = report.reportedUser.avatar %}
+        {% set coverAlt = report.reportedUser.pseudo %}
+        {% set coverPath = path('profile_show', { 'slug': report.reportedUser.slug }) %}
+    {% endif %}
+{% elseif type == 'request'%}
+	{% set user = request.sentBy %}
+	{% set timestamp =  request.timestamp %}
+	{% set title =  'asked to follow you.' %}
+    {% set coverUser = user.avatar %}
+    {% set coverAlt = user.pseudo %}
+    {% set coverPath = path('profile_show', { 'slug': user.slug }) %}
+    {% set validate =  path('request_accept', { 'id': request.id }) %}
+    {% set delete =  path('request_reject', { 'id': request.id }) %}
+{% endif %}
+
+
+<div class="w-full bg-background shadow rounded-xl flex justify-between lg:h-[120px] h-[250px]">
+	<div class="w-20 {{ backgroundColor }} flex justify-center items-center h-full rounded-l-xl border-2 border-tertiary-dark">
+		<i class="fa-solid {{ icon }} {{ iconColor }} text-3xl"></i>
+	</div>
+	<div class="w-full border-y-2 border-tertiary-dark lg:px-8 px-4 py-3 flex flex-wrap justify-between">
+        <div class="w-[90%] flex lg:flex-row flex-col lg:items-center gap-2">
+            <img src='/uploads/{{ user.avatar }}' alt="avatar of {{ user.pseudo }}" class="w-16 h-16 object-cover rounded-full border-2 border-tertiary-dark">
+            <div>
+                <div class="text-xs flex flex-row items-center gap-2">
+                    {% if type == 'report' %}
+                        <span class="font-bold uppercase">{{ report.reason }}
+                            &bull;</span>
+                    {% endif %}
+                    {% if type == "notification" and notification.isRead == false %}
+                        <div class="w-2 h-2 bg-highlight-dark rounded-full"></div>
+                    {% endif %}
+                    {{ timestamp|date('d-m-Y, H:i') }}
+                </div>
+                <p class="{{ textColor }}">
+                    <a href="{{path('profile_show', { 'slug': user.slug })}}" class="font-bold text-tertiary-dark">{{ user.pseudo}}</a>
+                    {{ title }}
+                    {% if category in ['like', 'comment', 'likeComment', 'reply', 'post'] %}
+                        <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="underline">
+                            {% if category in ['comment', 'likeComment', 'reply'] %}
+                                this comment.
+                            {% elseif category == 'like' or category == 'post' %}
+                                this post.
+                            {% endif %}
+                        </a>
+                    {% elseif type == "report" and category == "user"%}
+                        <a href="{{ coverPath }}" class="underline">
+                            this user.
+                        </a>
+                    {% endif %}
+                </p>
+                <p class="text-sm">
+                    {{ content|striptags|slice(0, 50) ~ '...' }}
+                </p>
+            </div>
+        </div>
+        {% if type == "report" or type == "request" %}
+            <div class="lg:w-10 w-20 lg:h-full flex lg:flex-col md:flex-row justify-around gap-4 ml-auto">
+                    <a href="{{ validate }}" class="badge badge-success">
+                        <i class="fa-solid fa-check"></i>
+                    </a>
+                    {% if type == "request" %}
+                        {% include 'partials/_deleteModal.html.twig' with {
+                            'slug': request.id,
+                            'modalAction': delete
+                            } 
+                        %}
+                    {% else %}
+                        {% include 'partials/_deleteModal.html.twig' with {
+                            'slug': report.id,
+                            'modalAction': delete
+                            } 
+                        %}
+                    {% endif %}
+            </div>
+        {% endif %}
+	</div>
+        {% if category in ['user', 'request', 'follow'] %}
+            <a href="{{ coverPath }}">
+                <img src="/uploads/{{ coverUser }}" 
+                    alt="img of {{ coverAlt }}"
+                    class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
+            </a>
+        {% else %}
+            {% set firstImage = item.postImages|first %}
+            {% if firstImage is not null and firstImage.filename is defined %}
+                <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="h-full">
+                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}"
+                        alt="img of {{ item.title }}"
+                        class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
+                </a>
+            {% endif %}
+        {% endif %}
+</div>

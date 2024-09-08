@@ -5,35 +5,41 @@
 
 {% block notification_content %}
     {% if notification.type == "like" %}
-        <strong>{{ notification.user.pseudo }}</strong> a aimé 
-        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
-            {{ notification.post.title }}
-        </a>
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'like',
+            content: notification.post.description
+        } %}
     {% elseif notification.type == "likeComment" %}
-        <strong>{{ notification.user.pseudo }}</strong> a aimé votre commentaire <br> 
-        <small>{{notification.comment.content}}</small><br>
-        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
-            {{ notification.post.title }}
-        </a>
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'likeComment',
+            content: notification.comment.content
+        } %}
     {% elseif notification.type == "comment" %}
-        <strong>{{ notification.user.pseudo }}</strong> a commenté <br> 
-        <small>{{notification.comment.content}}</small><br>
-        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
-            {{ notification.post.title }}
-        </a>
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'comment',
+            content: notification.comment.content
+        } %}
     {% elseif notification.type == "reply" %}
-        <strong>{{ notification.user.pseudo }}</strong> a répondu à votre commentaire: <br> 
-        <small>{{notification.comment.content}}</small><br>
-        <a href="{{ path('post_show', {'slug': notification.post.slug}) }}">
-            {{ notification.post.title }}
-        </a>
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'reply',
+            content: notification.comment.content
+        } %}
     {% elseif notification.type == "request" %}
-        <strong>{{ notification.user.pseudo }}</strong> a accepté votre demande de suivi. <br>
-        <a href="{{ path('profile_show', {'slug': notification.user.slug}) }}">
-            Voir profil
-        </a>
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'request',
+            content: notification.user.bio
+        } %}
     {% elseif notification.type == "follow" %}
-        <strong>{{ notification.user.pseudo }}</strong> vous suit
+        {% include "partials/_listItem.html.twig" with {
+            type: 'notification',
+            category: 'follow',
+            content: notification.user.bio
+        } %}
     {% endif %}
 {% endblock %}
 
@@ -45,3 +51,5 @@
         'pages': totalPages
     } %}
 {% endblock %}
+
+

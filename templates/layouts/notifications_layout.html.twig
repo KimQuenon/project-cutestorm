@@ -1,32 +1,33 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/account_layout.html.twig' %}
 
-{% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">{{ title }}</h1>
+{% block title %}Notifications{% endblock %}
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <p class="mb-0">Vous avez {{ unreadCount }} notification(s) non lue(s).</p>
-            <a href="{{ markAsReadPath }}" class="btn btn-primary">Marquer tout comme lu</a>
+{% set currentTab = 'notifications_index' %}
+
+{% block content %}
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="title title-second text-tertiary-dark">{{title}}</h2>
+        <div class="flex flex-row gap-2">
+            <a href="{{ path('notifications_index') }}" class="btn btn-purple btn-small">All</a>
+            <a href="{{ path('notifications_likes') }}" class="btn btn-danger btn-small">Likes</a>
+            <a href="{{ path('notifications_comments') }}" class="btn btn-blue btn-small">Comments</a>
+            <a href="{{ path('notifications_follows') }}" class="btn btn-yellow btn-small">Follows</a>
         </div>
-
-        {% if notifications|length > 0 %}
-            <div class="list-group">
-                {% for notification in notifications %}
-                    <div class="list-group-item d-flex justify-content-between align-items-start {% if not notification.isRead %}list-group-item-action{% endif %}">
-                        <div class="ms-2 me-auto">
-                            {% block notification_content %}{% endblock %}
-                        </div>
-                        {% if not notification.isRead %}
-                            <span class="badge bg-danger rounded-pill">Non lu</span>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% block pagination %}{% endblock %}
-        {% else %}
-            <div class="alert alert-info mt-3" role="alert">
-                Aucune notification
-            </div>
-        {% endif %}
     </div>
+    <div class="flex flex-row justify-end items-end text-tertiary-dark underline mb-5">
+        <a href="{{ markAsReadPath }}">Mark as Read ({{ unreadCount }}) </a>
+    </div>
+    {% if notifications|length > 0 %}
+        <div class="w-full flex flex-col gap-5">
+            {% for notification in notifications %}
+                {% block notification_content %}{% endblock %}
+            {% endfor %}
+        </div>
+        {% block pagination %}{% endblock %}
+    {% else %}
+        <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+            <i class="fas fa-info-circle"></i>
+            <p>You don't have any notification... yet !</p>
+        </div>
+    {% endif %}
 {% endblock %}

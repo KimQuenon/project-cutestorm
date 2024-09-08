@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\FollowRequestRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FollowRequestRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class FollowRequest
 {
     #[ORM\Id]
@@ -23,6 +25,23 @@ class FollowRequest
 
     #[ORM\Column]
     private ?bool $status = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
+
+    /**
+     * set datetime to current datetime
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        if(empty($this->timestamp))
+        {
+            $this->timestamp = new \DateTime();
+        }
+    }
 
     public function getId(): ?int
     {
@@ -61,6 +80,18 @@ class FollowRequest
     public function setStatus(bool $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getTimestamp(): ?\DateTimeInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(\DateTimeInterface $timestamp): static
+    {
+        $this->timestamp = $timestamp;
 
         return $this;
     }

@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Report
 {
     #[ORM\Id]
@@ -20,9 +21,6 @@ class Report
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $reportedBy = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $reportedAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $reason = null;
@@ -39,6 +37,9 @@ class Report
     #[ORM\ManyToOne]
     private ?Comment $reportedComment = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $timestamp = null;
+
     /**
      * set datetime to current datetime
      *
@@ -47,9 +48,9 @@ class Report
     #[ORM\PrePersist]
     public function prePersist(): void
     {
-        if(empty($this->reportedAt))
+        if(empty($this->timestamp))
         {
-            $this->reportedAt = new \DateTime();
+            $this->timestamp = new \DateTime();
         }
     }
 
@@ -78,18 +79,6 @@ class Report
     public function setReportedBy(?User $reportedBy): static
     {
         $this->reportedBy = $reportedBy;
-
-        return $this;
-    }
-
-    public function getReportedAt(): ?\DateTimeInterface
-    {
-        return $this->reportedAt;
-    }
-
-    public function setReportedAt(\DateTimeInterface $reportedAt): static
-    {
-        $this->reportedAt = $reportedAt;
 
         return $this;
     }
@@ -150,6 +139,18 @@ class Report
     public function setReportedComment(?Comment $reportedComment): static
     {
         $this->reportedComment = $reportedComment;
+
+        return $this;
+    }
+
+    public function getTimestamp(): ?\DateTimeInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(\DateTimeInterface $timestamp): static
+    {
+        $this->timestamp = $timestamp;
 
         return $this;
     }

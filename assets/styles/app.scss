@@ -63,6 +63,9 @@ p, a{
 .title{
     font-family: 'Gliker Black Condensed', sans-serif;
     font-size: 60px;
+    &-second{
+        font-size: 45px!important;
+    }
     @media all and (max-width: 768px){
         font-size: 40px;
     }
@@ -116,8 +119,20 @@ p, a{
             background-color: $dangerHover;
         }
     }
+    &-blue{
+        color: $background;
+        background-color: $highlight;
+        &:hover{
+            background-color: $highlightDark;
+        }
+    }
     &-squared{
         border-radius: 0px!important;
+    }
+    &-small{
+        font-size: 12px!important;
+        padding: 6px 15px!important;
+        color: $background!important;
     }
 }
 
@@ -132,6 +147,18 @@ p, a{
     padding: 1rem;
     border-radius: 100%;
     transition: all 0.5s;
+    &-primary{
+        background-color: $primaryDark;
+        &:hover{
+            background-color: $primaryHover;
+        }
+    }
+    &-success{
+        background-color: $success;
+        &:hover{
+            background-color: $successHover;
+        }
+    }
     &-danger{
         background-color: $dangerDark;
         &:hover{

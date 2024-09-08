@@ -58,6 +58,15 @@ class ReportRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
+    public function countAllReports(): int
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb->select('count(r.id)');
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     
     //    /**
     //     * @return Report[] Returns an array of Report objects

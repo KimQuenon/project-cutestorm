@@ -1,7 +1,13 @@
 {% extends 'layouts/reports_layout.html.twig' %}
 
-{% block subtitle %}
-    Comments Reports
+{% set title = 'Reported comments' %}
+
+{% block report_content %}
+    {% include "partials/_listItem.html.twig" with {
+        type: 'report',
+        category: 'comment',
+        content: report.details is not empty ? report.details : report.reportedComment.content
+    } %}
 {% endblock %}
 
 {% block pagination %}

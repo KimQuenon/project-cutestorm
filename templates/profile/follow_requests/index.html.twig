@@ -1,30 +1,34 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/account_layout.html.twig' %}
 
-{% block title %}Subscription Requests{% endblock %}
+{% set currentTab = 'requests_index' %}
 
-{% block body %}
-    <h1>Follow Requests</h1>
-
-    <ul>
-        {% for request in requests %}
-            <li>
-                {{ request.sentBy.pseudo }} wants to follow you.
-                <a href="{{ path('request_accept', { 'id': request.id }) }}">Accept</a>
-                <a href="#deleteModal{{ request.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ request.id }}">Reject</a>
-                {% include 'partials/_deleteModal.html.twig' with {
-                    'modalId': 'deleteModal' ~ request.id,
-                    'modalAction': path('request_reject', { 'id': request.id })
-                    } 
-                %}
-            </li>
+{% block content %}
+    <h2 class="title title-second text-tertiary-dark mb-4">Follow requests</h2>
+    <div class="flex flex-col gap-5">
+        {% if requests|length > 0 %}
+            {% for request in requests %}
+                {% include "partials/_listItem.html.twig" with {
+                    type: 'request',
+                    category: 'request',
+                    content: request.sentBy.bio
+                } %}
+            {% endfor %}
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'requests_index',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
         {% else %}
-            <li>No follow requests.</li>
-        {% endfor %}
-        {% include "partials/_pagination.html.twig" with {
-            'route': 'requests_index',
-            'parameters': {},
-            'page': currentPage,
-            'pages': totalPages
-        } %}
-    </ul>
+            <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+                <i class="fas fa-info-circle"></i>
+                {% if app.user.isPrivate == true %}
+                    <p>You don't have any follow requests... yet !</p>
+                {% else %}
+                    <p>You can't receive follow requests: you've got a public account !</p>
+                    <a href="{{path('profile_edit')}}" class="badge badge-primary">Change this</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
