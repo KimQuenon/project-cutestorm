@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ProductVariant;
 use App\Service\PaginationService;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductVariantRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,8 +15,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class StockController extends AbstractController
 {
     #[Route('admin/stock/{page<\d+>?1}', name: 'stock_index')]
-    public function index(int $page, ProductVariantRepository $variantRepo, PaginationService $paginationService, Request $request, EntityManagerInterface $manager): Response
+    public function index(int $page, ProductVariantRepository $variantRepo, ProductRepository $productRepo, PaginationService $paginationService, Request $request, EntityManagerInterface $manager): Response
     {
+        $bestSeller = $productRepo->findBestSeller();
+        $worstSeller = $productRepo->findWorstSeller();
         $variants = $variantRepo->findBy([], ['stock' => 'ASC']);
 
         if ($request->isMethod('POST')) {
@@ -49,6 +52,8 @@ class StockController extends AbstractController
 
         return $this->render('admin/stock/index.html.twig', [
             'variants' => $variantsPaginated,
+            'bestSeller' => $bestSeller,
+            'worstSeller' => $worstSeller,
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
         ]);

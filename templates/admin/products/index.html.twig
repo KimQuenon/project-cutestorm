@@ -7,54 +7,8 @@
 {% block content %}
     <div class="w-full lg:h-[45vh] md:h-[60vh] h-[150vh]">
         <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-5">
-            <div class="lg:w-1/2 w-full bg-background border-2 border-tertiary-dark shadow p-5 rounded-xl">
-                <div class="w-full flex md:flex-row flex-col justify-between gap-4">
-                    <div class="md:w-1/2 w-full border-2 border-tertiary-dark aspect-[1/1]">
-                        {% if bestSeller.productImages|length > 0 %}
-                            {% set firstImage = bestSeller.productImages|first %}
-                            {% if firstImage is not null and firstImage.filename is defined %}
-                                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{bestSeller.name}}" class="w-full h-full object-cover">
-                            {% else %}
-                                <p>No image available</p>
-                            {% endif %}
-                        {% else %}
-                            <p>No images available</p>
-                        {% endif %}
-                    </div>
-                    <div class="md:w-1/2 w-full">
-                        <h3 class="title title-third text-tertiary-dark">Best Seller</h3>
-                        <p class="text-tertiary-dark font-bold">REF {{bestSeller.reference}}</p>
-                        <p><span class="font-bold">Name : </span> {{bestSeller.name}}</p>
-                        <p><span class="font-bold">Price : </span> $ {{ bestSeller.price | number_format(2, ',', '.') }}</p>
-                        <p><span class="font-bold">Color : </span>  {{ bestSeller.color.name }}</p>
-                    </div>
-                </div>
-                <p class="mt-4">{{bestSeller.description|raw}}</p>
-            </div>
-            <div class="lg:w-1/2 w-full bg-background border-2 border-tertiary-dark shadow p-5 rounded-xl">
-                <div class="w-full flex md:flex-row flex-col justify-between gap-4">
-                    <div class="md:w-1/2 w-full border-2 border-tertiary-dark aspect-[1/1]">
-                        {% if worstSeller.productImages|length > 0 %}
-                            {% set firstImage = worstSeller.productImages|first %}
-                            {% if firstImage is not null and firstImage.filename is defined %}
-                                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{worstSeller.name}}" class="w-full h-full object-cover">
-                            {% else %}
-                                <p>No image available</p>
-                            {% endif %}
-                        {% else %}
-                            <p>No images available</p>
-                        {% endif %}
-                    </div>
-                    <div class="md:w-1/2 w-full">
-                        <h3 class="title title-third text-tertiary-dark">Worst Seller</h3>
-                        <p class="text-tertiary-dark font-bold">REF {{worstSeller.reference}}</p>
-                        <p><span class="font-bold">Name : </span> {{worstSeller.name}}</p>
-                        <p><span class="font-bold">Price : </span> $ {{ worstSeller.price | number_format(2, ',', '.') }}</p>
-                        <p><span class="font-bold">Color : </span>  {{ worstSeller.color.name }}</p>
-                    </div>
-                </div>
-                <p class="mt-4">{{worstSeller.description|raw}}</p>
-            </div>
+            {% include "partials/_sellerItem.html.twig" with { product: bestSeller, title: 'Best Seller'} %}
+            {% include "partials/_sellerItem.html.twig" with { product: worstSeller, title: 'Worst Seller'} %}
         </div>
     </div>
     <div class="flex flex-wrap justify-between items-center mt-8 mb-4">

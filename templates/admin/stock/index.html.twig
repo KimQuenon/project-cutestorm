@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{# {% extends "base.html.twig" %}
 
 {% block title %}Stock Management{% endblock %}
 
@@ -52,6 +52,133 @@
             'pages': totalPages
         } %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.change-quantity').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.closest('td').querySelector('.stock-input');
+                let currentValue = parseInt(input.value, 10);
+                const change = parseInt(button.dataset.change, 10);
+                const newValue = Math.max(currentValue + change, 0);
+                input.value = newValue;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
+
+        document.querySelectorAll('.stock-input').forEach(input => {
+            input.addEventListener('change', () => {
+                const initialStock = parseInt(input.dataset.initial, 10);
+                const changeValue = parseInt(input.value, 10);
+                const newStock = initialStock + changeValue;
+                input.closest('tr').querySelector('.new-stock').textContent = newStock;
+            });
+        });
+    });
+    </script>
+{% endblock %} #}
+
+
+{% extends 'layouts/account_layout.html.twig' %}
+
+{% block title %}Stock{% endblock %}
+
+{% set currentTab = 'stock_index' %}
+
+{% block content %}
+    <div class="w-full lg:h-[45vh] md:h-[60vh] h-[150vh]">
+        <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-5">
+            {% include "partials/_sellerItem.html.twig" with { product: bestSeller, title: 'Best Seller'} %}
+            {% include "partials/_sellerItem.html.twig" with { product: worstSeller, title: 'Worst Seller'} %}
+        </div>
+    </div>
+    <div class="flex flex-wrap justify-between items-center mt-8 mb-4">
+        <h2 class="title title-second text-tertiary-dark">Stock</h2>
+        <a href="{{ path('products_index')}}" class="btn btn-purple">Products</a>
+    </div>
+    <form method="post">
+        <div>
+            {% if variants|length > 0 %}
+                    <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+                        <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+                            <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                                <tr class="font-bold text-background text-xs uppercase text-center">
+                                    <th class="p-4"></th>
+                                    <th class="p-4">Cover</th>
+                                    <th class="p-4">Stock</th>
+                                    <th class="p-4">New Quantity</th>
+                                    <th class="p-4">Total</th>
+                                    <th class="p-4">Save</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-background border-x-2 border-tertiary-dark">
+                                {% for variant in variants %}
+                                    <tr class="divide-x divide-tertiary h-full">
+                                        <td class="p-4 whitespace-nowrap h-full">
+                                            {% if variant.stock <= 10 %}
+                                                <div class="w-3 h-3 border-2 border-tertiary-dark rounded-full bg-danger-dark"></div>
+                                            {% elseif variant.stock > 10 and variant.stock < 25 %}
+                                                <div class="w-3 h-3 border-2 border-tertiary-dark rounded-full bg-secondary"></div>
+                                            {% else %}
+                                                <div class="w-3 h-3 border-2 border-tertiary-dark rounded-full bg-success"></div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
+                                            <div class="w-20 h-20 border-2 border-tertiary-dark">
+                                                <a href="{{ path('product_show', {'slug': variant.product.slug}) }}">
+                                                    {% if variant.product.productImages|length > 0 %}
+                                                        {% set firstImage = variant.product.productImages|first %}
+                                                        {% if firstImage is not null and firstImage.filename is defined %}
+                                                            <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{variant.product.name}}" class="w-full h-full object-cover">
+                                                        {% else %}
+                                                            <p>No image available</p>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <p>No images available</p>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ variant.stock }}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary text-sm"><p><span class="font-bold">
+                                            <div class="inline-flex">
+                                                <button type="button" class="w-10 border-2 border-tertiary-dark rounded-l-full change-quantity font-bold text-tertiary-dark h-10" data-id="{{ variant.id }}" data-change="-1">-</button>
+                                                <input type="number" name="stocks[{{ variant.id }}]" value="0" min="0" class="form-control d-inline-block w-20 text-center stock-input" data-initial="{{ variant.stock }}">
+                                                <button type="button" class="w-10 border-2 border-tertiary-dark rounded-r-full change-quantity font-bold text-tertiary-dark" data-id="{{ variant.id }}" data-change="+1">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center new-stock ">{{ variant.stock }}</td>
+                                        <td class="p-4 whitespace-nowrap text-center h-full">
+                                            <div class="inline-flex justify-center items-center">
+                                                <button type="submit" name="update[{{ variant.id }}]" class="btn btn-success">Confirm</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                {% include "partials/_pagination.html.twig" with {
+                    'route': 'stock_index',
+                    'parameters': {},
+                    'page': currentPage,
+                    'pages': totalPages
+                } %}
+            {% else %}
+                <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+                    <i class="fas fa-info-circle"></i>
+                    <p>The store is empty !</p>
+                    <a href="{{ path('product_new') }}" class="btn btn-primary">
+                        Fill it up
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </form>
 {% endblock %}
 
 {% block javascripts %}
