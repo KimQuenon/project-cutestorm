@@ -93,6 +93,10 @@
                                 <div class="w-5 h-5 rounded-full bg-secondary flex justify-center items-center">
                                     <p class="text-tertiary-dark text-xs font-bold">{{report_repository.countAllReports}}</p>
                                 </div>
+                            {% elseif item.label == "Contacts" and contact_repository.countUnreadMessages > 0 %}
+                                <div class="w-5 h-5 rounded-full bg-secondary flex justify-center items-center">
+                                    <p class="text-tertiary-dark text-xs font-bold">{{contact_repository.countUnreadMessages}}</p>
+                                </div>
                             {% endif %}
                         </a>
                     {% endfor %}

@@ -6,6 +6,7 @@ twig:
         notification_repository: '@App\Repository\NotificationRepository'
         follow_request_repository: '@App\Repository\FollowRequestRepository'
         report_repository: '@App\Repository\ReportRepository'
+        contact_repository: '@App\Repository\ContactRepository'
 when@test:
     twig:
         strict_variables: true

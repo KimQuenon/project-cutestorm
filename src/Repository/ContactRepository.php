@@ -24,6 +24,16 @@ class ContactRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function countUnreadMessages(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.isRead = :isRead')
+            ->setParameter('isRead', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
     //    /**
     //     * @return Contact[] Returns an array of Contact objects
     //     */
