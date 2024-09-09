@@ -15,15 +15,20 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function getAllNotifications($user)
+    public function getAllNotifications($user, $limit = null)
     {
-        return $this->createQueryBuilder('n')
+        $qb = $this->createQueryBuilder('n')
             ->where('n.relatedUser = :user')
             ->setParameter('user', $user)
-            ->orderBy('n.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('n.id', 'DESC');
+    
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+    
+        return $qb->getQuery()->getResult();
     }
+    
 
     public function getLikesNotifications(array $posts, array $comments)
     {

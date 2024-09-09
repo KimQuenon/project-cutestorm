@@ -7,6 +7,7 @@ use App\Repository\LikeRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Service\PaginationService;
+use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -16,22 +17,24 @@ class ProfileResumeController extends AbstractController
 {   
     #[Route('/profile/resume/activities', name: 'resume_activities')]
     #[IsGranted('ROLE_USER')]
-    public function index(LikeRepository $likeRepo, UserRepository $userRepo, PostRepository $postRepo): Response
+    public function index(LikeRepository $likeRepo, UserRepository $userRepo, PostRepository $postRepo, NotificationRepository $notificationRepo): Response
     {
         $user = $this->getUser();
         $posts = $postRepo->findLikedPostsByUser($user, 3);
         $likedPostSlugs = array_map(fn($post) => $post->getSlug(), $posts);
         $reportedPostIds = null;
 
-        $followers = $userRepo->findFollowers($user);
-        $followings = $userRepo->findFollowings($user, 3);
+        $followers = $userRepo->findFollowers($user, 9);
+        $followings = $userRepo->findFollowings($user, 9);
+        $notifications = $notificationRepo->getAllNotifications($user, 2);
 
         return $this->render('profile/resume/activities.html.twig', [
             'posts' => $posts,
             'likedPostSlugs' => $likedPostSlugs,
             'reportedPostIds' => $reportedPostIds,
             'followers' => $followers,
-            'followings' => $followings
+            'followings' => $followings,
+            'notifications' => $notifications
         ]);
     }
 
@@ -45,9 +48,8 @@ class ProfileResumeController extends AbstractController
         $reportedPostIds = null;
 
         $currentPage = $page;
-        $itemsPerPage = 5;
+        $itemsPerPage = 9;
 
-        // Use the pagination service to get paginated results
         $pagination = $paginationService->paginate($posts, $currentPage, $itemsPerPage);
         $paginatedPosts = $pagination['items'];
         $totalPages = $pagination['totalPages'];
@@ -69,9 +71,8 @@ class ProfileResumeController extends AbstractController
         $followings = $userRepo->findFollowings($user);
 
         $currentPage = $page;
-        $itemsPerPage = 5;
+        $itemsPerPage = 15;
 
-        // Use the pagination service to get paginated results
         $pagination = $paginationService->paginate($followings, $currentPage, $itemsPerPage);
         $paginatedFollowings = $pagination['items'];
         $totalPages = $pagination['totalPages'];
@@ -91,7 +92,7 @@ class ProfileResumeController extends AbstractController
         $followers = $userRepo->findFollowers($user);
 
         $currentPage = $page;
-        $itemsPerPage = 5;
+        $itemsPerPage = 15;
 
         // Use the pagination service to get paginated results
         $pagination = $paginationService->paginate($followers, $currentPage, $itemsPerPage);

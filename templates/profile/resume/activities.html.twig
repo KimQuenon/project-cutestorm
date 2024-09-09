@@ -4,10 +4,6 @@
 
 {% set currentTab = 'resume_activities' %}
 
-{% block header %}
-    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
-{% endblock %}
-
 {% block content %}
     {% include "partials/_accountHeader.html.twig" with {
         title: 'Dashboard',
@@ -19,55 +15,114 @@
         secondLink: 'My orders',
         type: 'user'
     } %}
-{% endblock %}
-
-{# {% block body %} #}
-    {# <div class="container">
-        <h1>Activity Summary</h1>
-
-        <section>
-            <h2>Liked Posts</h2>
-            {% if posts is not empty %}
+    <div class="mt-8 space-y-12">
+        <div>
+            <div class="w-full flex justify-between items-center mb-4">
+                <p class="subtitle">Likes</p>
+                <a href="{{path('resume_likes')}}" class="text-tertiary-dark underline">See all ></a>
+            </div>
+            <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                {% if posts|length > 0 %}
                     {% for post in posts %}
-                        {% include "partials/_cardPost.html.twig" %}
+                        {% include "partials/_cardPostMin.html.twig" %}
                     {% endfor %}
-            {% else %}
-                <p>No liked posts.</p>
-            {% endif %}
-        </section>
-
-        <section>
-            <h2>Followers</h2>
-            {% if followers is not empty %}
-                <ul class="list-group">
+                {% else %}
+                    <p class="text-tertiary-dark">No posts liked... yet !</p>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <div class="w-full flex justify-between items-center mb-4">
+                <p class="subtitle">Followers</p>
+                <a href="{{path('resume_followers')}}" class="text-tertiary-dark underline">See all ></a>
+            </div>
+            <div class="w-full flex items-center gap-2">
+                {% if followers|length > 0 %}
                     {% for follower in followers %}
-                        <li class="list-group-item">
-                            <a href="{{ path('profile_show', {'slug': follower.slug}) }}">
-                                {{ follower.pseudo }}
-                            </a>
-                        </li>
+                        <a href="{{ path('profile_show', {'slug': follower.slug}) }}">
+                            {% if follower.avatar %}
+                                <img src="{{ asset('uploads/' ~ follower.avatar) }}" alt="avatar of {{follower.pseudo}}" class="w-12 h-12 object-cover rounded-full border-2 border-tertiary-dark">
+                            {% else %}
+                                <div class="w-12 h-12 rounded-full bg-secondary border-2 border-tertiary-dark"></div>
+                            {% endif %}
+                        </a>
                     {% endfor %}
-                </ul>
-            {% else %}
-                <p>No followers.</p>
-            {% endif %}
-        </section>
-
-        <section>
-            <h2>Recent Followings (3 most recent)</h2>
-            {% if followings is not empty %}
-                <ul class="list-group">
+                {% else %}
+                    <p class="text-tertiary-dark">No user followed... yet !</p>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <div class="w-full flex justify-between items-center mb-4">
+                <p class="subtitle">Notifications</p>
+                <a href="{{path('notifications_index')}}" class="text-tertiary-dark underline">See all ></a>
+            </div>
+            <div class="space-y-5">
+                {% if notifications|length > 0 %}
+                    {% for notification in notifications %}
+                        {% if notification.type == "like" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'like',
+                                content: notification.post.description
+                            } %}
+                        {% elseif notification.type == "likeComment" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'likeComment',
+                                content: notification.comment.content
+                            } %}
+                        {% elseif notification.type == "comment" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'comment',
+                                content: notification.comment.content
+                            } %}
+                        {% elseif notification.type == "reply" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'reply',
+                                content: notification.comment.content
+                            } %}
+                        {% elseif notification.type == "request" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'request',
+                                content: notification.user.bio
+                            } %}
+                        {% elseif notification.type == "follow" %}
+                            {% include "partials/_listItem.html.twig" with {
+                                type: 'notification',
+                                category: 'follow',
+                                content: notification.user.bio
+                            } %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-tertiary-dark">No notifications... yet !</p>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <div class="w-full flex justify-between items-center mb-4">
+                <p class="subtitle">Followings</p>
+                <a href="{{path('resume_followings')}}" class="text-tertiary-dark underline">See all ></a>
+            </div>
+            <div class="w-full flex items-center gap-2">
+                {% if followings|length > 0 %}
                     {% for following in followings %}
-                        <li class="list-group-item">
-                            <a href="{{ path('profile_show', {'slug': following.slug}) }}">
-                                {{ following.pseudo }}
-                            </a>
-                        </li>
+                        <a href="{{ path('profile_show', {'slug': following.slug}) }}">
+                            {% if following.avatar %}
+                                <img src="{{ asset('uploads/' ~ following.avatar) }}" alt="avatar of {{following.pseudo}}" class="w-12 h-12 object-cover rounded-full border-2 border-tertiary-dark">
+                            {% else %}
+                                <div class="w-12 h-12 rounded-full bg-secondary border-2 border-tertiary-dark"></div>
+                            {% endif %}
+                        </a>
                     {% endfor %}
-                </ul>
-            {% else %}
-                <p>No recent followings.</p>
-            {% endif %}
-        </section>
-    </div> #}
-{# {% endblock %} #}
+                {% else %}
+                    <p class="text-tertiary-dark">No user followings... yet !</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
