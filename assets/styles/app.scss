@@ -67,6 +67,9 @@ p, a{
     &-second{
         font-size: 45px!important;
     }
+    &-third{
+        font-size: 30px!important;
+    }
     @media all and (max-width: 768px){
         font-size: 40px;
     }

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Products Management{% endblock %}
 
@@ -97,6 +97,146 @@
         } %}
     </div>
 </div>
+{% endblock %}
+
+ #}
+
+{% extends 'layouts/account_layout.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% set currentTab = 'products_index' %}
+
+{% block content %}
+    <div class="w-full lg:h-[45vh] md:h-[60vh] h-[150vh]">
+        <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-5">
+            <div class="lg:w-1/2 w-full bg-background border-2 border-tertiary-dark shadow p-5 rounded-xl">
+                <div class="w-full flex md:flex-row flex-col justify-between gap-4">
+                    <div class="md:w-1/2 w-full border-2 border-tertiary-dark aspect-[1/1]">
+                        {% if bestSeller.productImages|length > 0 %}
+                            {% set firstImage = bestSeller.productImages|first %}
+                            {% if firstImage is not null and firstImage.filename is defined %}
+                                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{bestSeller.name}}" class="w-full h-full object-cover">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        {% else %}
+                            <p>No images available</p>
+                        {% endif %}
+                    </div>
+                    <div class="md:w-1/2 w-full">
+                        <h3 class="title title-third text-tertiary-dark">Best Seller</h3>
+                        <p class="text-tertiary-dark font-bold">REF {{bestSeller.reference}}</p>
+                        <p><span class="font-bold">Name : </span> {{bestSeller.name}}</p>
+                        <p><span class="font-bold">Price : </span> $ {{ bestSeller.price | number_format(2, ',', '.') }}</p>
+                        <p><span class="font-bold">Color : </span>  {{ bestSeller.color.name }}</p>
+                    </div>
+                </div>
+                <p class="mt-4">{{bestSeller.description|raw}}</p>
+            </div>
+            <div class="lg:w-1/2 w-full bg-background border-2 border-tertiary-dark shadow p-5 rounded-xl">
+                <div class="w-full flex md:flex-row flex-col justify-between gap-4">
+                    <div class="md:w-1/2 w-full border-2 border-tertiary-dark aspect-[1/1]">
+                        {% if worstSeller.productImages|length > 0 %}
+                            {% set firstImage = worstSeller.productImages|first %}
+                            {% if firstImage is not null and firstImage.filename is defined %}
+                                <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{worstSeller.name}}" class="w-full h-full object-cover">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        {% else %}
+                            <p>No images available</p>
+                        {% endif %}
+                    </div>
+                    <div class="md:w-1/2 w-full">
+                        <h3 class="title title-third text-tertiary-dark">Worst Seller</h3>
+                        <p class="text-tertiary-dark font-bold">REF {{worstSeller.reference}}</p>
+                        <p><span class="font-bold">Name : </span> {{worstSeller.name}}</p>
+                        <p><span class="font-bold">Price : </span> $ {{ worstSeller.price | number_format(2, ',', '.') }}</p>
+                        <p><span class="font-bold">Color : </span>  {{ worstSeller.color.name }}</p>
+                    </div>
+                </div>
+                <p class="mt-4">{{worstSeller.description|raw}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-wrap justify-between items-center mt-8 mb-4">
+        <h2 class="title title-second text-tertiary-dark">Products</h2>
+        {% include "partials/_search.html.twig" %}
+    </div>
+    <div>
+        {% if products|length > 0 %}
+            <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+                <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+                    <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                        <tr class="font-bold text-background text-xs uppercase text-center">
+                            <th class="p-4">Cover</th>
+                            <th class="p-4">Reference</th>
+                            <th class="p-4">Name</th>
+                            <th class="p-4">Description</th>
+                            <th class="p-4">Price</th>
+                            <th class="p-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-background border-x-2 border-tertiary-dark">
+                        {% for product in products %}
+                            <tr class="divide-x divide-tertiary h-full">
+                                <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
+                                    <div class="w-20 h-20 border-2 border-tertiary-dark">
+                                        <a href="{{ path('product_show', {'slug': product.slug}) }}">
+                                            {% if product.productImages|length > 0 %}
+                                                {% set firstImage = product.productImages|first %}
+                                                {% if firstImage is not null and firstImage.filename is defined %}
+                                                    
+                                                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{worstSeller.name}}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <p>No image available</p>
+                                                {% endif %}
+                                            {% else %}
+                                                <p>No images available</p>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm">{{ product.reference }}</td>
+                                <td class="p-4 whitespace-nowrap text-tertiary text-sm">{{ product.name }}</td>
+                                <td class="p-4 whitespace-nowrap text-tertiary text-sm">{{ product.description | raw | striptags | slice(0, 10) }}...</td>
+                                <td class="p-4 whitespace-nowrap text-tertiary text-sm"><p><span class="font-bold"> $ {{ product.price | number_format(2, ',', '.') }}</td>
+                                <td class="p-4 whitespace-nowrap text-center h-full">
+                                    <div class="inline-flex gap-2 items-center">
+                                        <a href="{{ path('product_edit', {'slug': product.slug}) }}" class="badge badge-yellow">
+                                            <i class="fa-solid fa-pencil text-background"></i>
+                                        </a>
+                                        {% include 'partials/_deleteModal.html.twig' with {
+                                            'slug': product.slug,
+                                            'modalAction': path('product_delete', {'slug': product.slug})
+                                            } 
+                                        %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% include "partials/_pagination.html.twig" with {
+                'route': 'products_index',
+                'parameters': {},
+                'page': currentPage,
+                'pages': totalPages
+            } %}
+        {% else %}
+            <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+                <i class="fas fa-info-circle"></i>
+                <p>The store is empty !</p>
+                <a href="{{ path('product_new') }}" class="btn btn-primary">
+                    Fill it up
+                </a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
