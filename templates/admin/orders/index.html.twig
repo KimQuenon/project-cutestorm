@@ -1,12 +1,21 @@
-{% extends 'layouts/account_layout.html.twig' %}
+{% extends 'layouts/orders_layout.html.twig' %}
 
 {% block title %}Admin Orders{% endblock %}
 
 {% set currentTab = 'admin_orders_index' %}
 
-{% block content %}
-    <h2 class="title title-second text-tertiary-dark">Orders</h2>
-    {% include "partials/_orderItem.html.twig" with {orders: orders} %}
+{% block accountHeader %}
+    {% include "partials/_accountHeader.html.twig" with {
+        title:  "$ " ~ (total | number_format(2, ',', '.')),
+        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        showButton: false,
+        secondPath: path('homepage'),
+        secondLink: 'Back to home',
+        type: 'admin'
+    } %}
+{% endblock %}
+
+{% block pagination %}
     {% include "partials/_pagination.html.twig" with {
         'route': 'admin_orders_index',
         'parameters': {},

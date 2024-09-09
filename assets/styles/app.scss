@@ -116,6 +116,13 @@ p, a{
             background-color: $backgroundHover;
         }
     }
+    &-success{
+        color: $background;
+        background-color: $success;
+        &:hover{
+            background-color: $successHover;
+        }
+    }
     &-danger{
         color: $background;
         background-color: $dangerDark;

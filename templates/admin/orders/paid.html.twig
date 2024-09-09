@@ -1,12 +1,21 @@
 {% extends 'layouts/orders_layout.html.twig' %}
 
-{% block title %}Admin - Paid Orders{% endblock %}
+{% block title %}Paid Orders{% endblock %}
 
-{% block orders_title %}Paid Orders{% endblock %}
+{% set currentTab = 'admin_orders_index' %}
 
-{% block orders_total %}{{ totalPaid|number_format(2, ',', '.') }} $/{{ total|number_format(2, ',', '.') }} ${% endblock %}
+{% block accountHeader %}
+    {% include "partials/_accountHeader.html.twig" with {
+        title:  "$ " ~ (totalPaid | number_format(2, ',', '.')),
+        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        showButton: false,
+        secondPath: path('admin_orders_index'),
+        secondLink: 'Orders',
+        type: 'admin'
+    } %}
+{% endblock %}
 
-{% block orders_pagination %}
+{% block pagination %}
     {% include "partials/_pagination.html.twig" with {
         'route': 'admin_orders_paid',
         'parameters': {},
