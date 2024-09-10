@@ -664,15 +664,15 @@ transition: all 0.7s ease-in-out;
 
 
 .bg-gold {
-    background-color: #FFD700!important;
+    background-color: $secondary;
 }
 
 .bg-silver {
-    background-color: #C0C0C0!important;
+    background-color: $primaryDark;
 }
 
 .bg-bronze {
-    background-color: #CD7F32!important;
+    background-color: $background;
 }
 
 .podium-row{

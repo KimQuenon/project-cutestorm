@@ -1,28 +1,72 @@
 {% extends 'base.html.twig' %}
 
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
+
 {% block body %}
-    <div class="container mt-4">
-        <div class="w-full flex flex-row justify-center">
-            <div>
-                <div>
-                    {% block profileHeader %}
-                    {% endblock %}
-                </div>
-
-                {% if posts|length > 0 %}
-                    {# {% block postList %}{% endblock %} #}
-                    {% block pagination %}{% endblock %}
-                {% else %}
-                        <div class="col-12">
-                            <div class="alert alert-info">
-                                No posts available.
-                            </div>
-                        </div>
-                {% endif %}
-
+<div class="slide bg-primary min-h-screen">
+    <div class="container lg:pt-4 pt-10">
+        {% if currentTab == 'profile_show' %}
+            {% include 'partials/_profileHeader.html.twig' with { user: profileUser } %}
+        {% else %}
+            {% include 'partials/_profileHeader.html.twig' with { user: user } %}
+        {% endif %}
+    </div>
+    {% if isPrivate and not isFollowing %}
+        <div class="container pt-5 flex justify-center">
+            <div class="w-3/5 mt-10 bg-highlight rounded-xl border-2 border-tertiary-dark text-background font-bold p-5 flex flex-row gap-2 items-center">
+                <i class="fas fa-lock"></i>
+                <p>This account is private. Send them a follow request !</p>
             </div>
         </div>
-    </div>
+    {% else %}
+        <div class="container min-h-full pt-10 flex md:flex-row flex-col justify-between gap-10">
+            <div class="lg:w-1/5 md:w-1/3 h-full md:sticky top-4 z-10">
+                {% if currentTab == 'profile_show' %}
+                    {% include 'partials/_notepad.html.twig' with { user: profileUser } %}
+                {% else %}
+                    {% include 'partials/_notepad.html.twig' with { user: user } %}
+                {% endif %}
+                <div class="lg:hidden md:block hidden">
+                    {% include "partials/_followItem.html.twig" with { title: 'Followers', items: followers } %}
+                    {% include "partials/_followItem.html.twig" with { title: 'Followings', items: followings } %}
+                </div>
+            </div>
+            <div class="lg:w-3/5 md:w-2/3 w-full min-h-full">
+                {% if currentTab == "profile_feed" or currentTab == "profile_posts" %}
+                    <div class="w-full flex mb-10 p-5 border-b-2 border-tertiary-dark">
+                        <div class="w-1/2 text-center border-r-2 border-tertiary-dark ">
+                            <a href="{{path('profile_feed')}}" class="font-bold text-sm text-tertiary-dark uppercase {% if currentTab == 'profile_feed' %}bg-secondary px-5 py-1 border-2 border-tertiary-dark rounded-full{% endif %}">feed</a>
+                        </div>
+                        <div class="w-1/2 text-center">
+                            <a href="{{path('profile_posts')}}" class="font-bold text-sm text-tertiary-dark uppercase {% if currentTab == 'profile_posts' %}bg-secondary px-5 py-1 border-2 border-tertiary-dark rounded-full{% endif %}">my posts</a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if posts|length > 0 %}
+                    {% for post in posts %}
+                        <div class="my-10">
+                            {% include "partials/_cardPost.html.twig" with {post: post, imgHeight: 'h-[275px]'} %}
+                        </div>
+                    {% endfor %}
+                {% block pagination %}{% endblock %}
+                {% else %}
+                    <div class="w-full mt-5 bg-background rounded-xl border-2 border-tertiary-dark text-tertiary-dark font-bold p-5 flex flex-row gap-2 items-center">
+                        <i class="fas fa-circle-info"></i>
+                        <p>This place is so empty...</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="w-1/5 h-full lg:block sticky top-4 z-10 hidden">
+                <div class="flex flex-col gap-5">
+                       {% include "partials/_followItem.html.twig" with { title: 'Followers', items: followers } %}
+                       {% include "partials/_followItem.html.twig" with { title: 'Followings', items: followings } %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block javascripts %}

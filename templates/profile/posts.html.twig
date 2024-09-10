@@ -1,18 +1,8 @@
 {% extends 'layouts/profile_layout.html.twig' %}
 
-{% block title %}Your Posts - {{ user.pseudo }}{% endblock %}
+{% set currentTab = "profile_posts" %}
 
-{% block profileHeader %}
-    {% include 'partials/_profileHeader.html.twig' with { user: user } %}
-{% endblock %}
-
-{% block postList %}
-        {% for post in posts %}
-            <div class="container">
-                {% include "partials/_cardPost.html.twig" with {'post': post, imgHeight : 'h-[275px]'} %}
-            </div>
-        {% endfor %}
-{% endblock %}
+{% block title %}Your posts - {{ user.pseudo }}{% endblock %}
 
 {% block pagination %}
     {% include "partials/_pagination.html.twig" with {

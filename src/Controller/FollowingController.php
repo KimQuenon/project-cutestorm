@@ -8,6 +8,7 @@ use App\Entity\FollowRequest;
 use App\Service\NotificationService;
 use App\Repository\FollowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NotificationRepository;
 use App\Repository\FollowRequestRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,7 +27,7 @@ class FollowingController extends AbstractController
     
     #[Route('/toggle-follow/{slug}', name: 'toggle_follow')]
     #[IsGranted('ROLE_USER')]
-    public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo, FollowRequestRepository $followRequestRepo): RedirectResponse {
+    public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo, FollowRequestRepository $followRequestRepo, NotificationRepository $notificationRepo): RedirectResponse {
         $user = $this->getUser();
 
         if ($user && $user !== $userToToggle) {
@@ -42,7 +43,10 @@ class FollowingController extends AbstractController
                     'user' => $user
                 ]);
 
-                $manager->remove($notification);
+
+                if($notification){
+                    $manager->remove($notification);
+                }
                 
                 $manager->flush();
                 

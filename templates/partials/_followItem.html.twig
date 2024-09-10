@@ -1,0 +1,16 @@
+<p class="subtitle mt-5">{{items|length}} {{ title }}</p>
+<div class="grid grid-cols-5 gap-2 lg:h-[30vh] h-[15vh] overflow-y-auto custom-scrollbar"> <!-- Utilise grid et grid-cols-4 pour une grille de 4 colonnes -->
+    {% if items|length > 0 %}
+        {% for item in items %}
+            <a href="{{ path('profile_show', {'slug': item.slug}) }}" class="flex justify-center">
+                {% if item.avatar %}
+                    <img src="{{ asset('uploads/' ~ item.avatar) }}" alt="avatar of {{ item.pseudo }}" class="w-10 h-10 object-cover rounded-full border-2 border-tertiary-dark">
+                {% else %}
+                    <div class="w-10 h-10 rounded-full bg-secondary border-2 border-tertiary-dark"></div>
+                {% endif %}
+            </a>
+        {% endfor %}
+    {% else %}
+        <p class="text-tertiary-dark col-span-4 text-center">No user found... yet!</p> <!-- col-span-4 pour occuper toute la ligne si aucun utilisateur -->
+    {% endif %}
+</div>

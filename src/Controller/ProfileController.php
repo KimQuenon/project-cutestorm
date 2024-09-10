@@ -32,10 +32,15 @@ class ProfileController extends AbstractController
 
         $posts = $postRepo->findPostsByFollowedUsers($user);
 
+        $followers = $userRepo->findFollowers($user);
+        $followings = $userRepo->findFollowings($user);
+
         return $this->renderProfilePage(
             $user,
             $posts,
             $page,
+            $followers,
+            $followings,
             $likeRepo,
             $reportRepo,
             $paginationService,
@@ -61,11 +66,16 @@ class ProfileController extends AbstractController
         // Fetch posts by the logged-in user
         $posts = $postRepo->sortPostsByUser($user);
 
+        $followers = $userRepo->findFollowers($user);
+        $followings = $userRepo->findFollowings($user);
+
         // Render the profile page with user's own posts
         return $this->renderProfilePage(
             $user,
             $posts,
             $page,
+            $followers,
+            $followings,
             $likeRepo,
             $reportRepo,
             $paginationService,
@@ -90,20 +100,22 @@ class ProfileController extends AbstractController
         /** @var User|null $user */
         $user = $this->getUser();
 
-        // Determine if the profile is private and if the user is not the profile owner
         $isPrivate = $profileUser->isPrivate() && $user !== $profileUser;
         $isFollowing = !$isPrivate || ($user && $followingRepo->isFollowing($user, $profileUser));
 
-        // Fetch posts based on visibility conditions
         $posts = !$isPrivate || $isFollowing ? $postRepo->sortPostsByUser($profileUser) : [];
 
         $hasReportedProfile = $user ? $reportRepo->hasUserReportedUser($user, $profileUser) : false;
 
-        // Render the profile page
+        $followers = $userRepo->findFollowers($profileUser);
+        $followings = $userRepo->findFollowings($profileUser);
+
         return $this->renderProfilePage(
-            $user, // User can be null here, handle in renderProfilePage
+            $user,
             $posts,
             $page,
+            $followers,
+            $followings,
             $likeRepo,
             $reportRepo,
             $paginationService,
@@ -121,6 +133,8 @@ class ProfileController extends AbstractController
         ?User $user, // Accept null for cases where user is not authenticated
         array $posts,
         int $page,
+        array $followers,
+        array $followings,
         LikeRepository $likeRepo,
         ReportRepository $reportRepo,
         PaginationService $paginationService,
@@ -133,7 +147,7 @@ class ProfileController extends AbstractController
         bool $hasReportedProfile = false,
         ?string $podiumPosition = null
     ): Response {
-        $itemsPerPage = 2;
+        $itemsPerPage = 9;
 
         // Pagination logic
         $pagination = $paginationService->paginate($posts, $page, $itemsPerPage);
@@ -169,6 +183,8 @@ class ProfileController extends AbstractController
             'mostLikedUser' => $mostLikedUser,
             'mostActiveUser' => $mostActiveUser,
             'mostFollowedUser'=> $mostFollowedUser,
+            'followers' => $followers,
+            'followings' => $followings,
         ]);
     }
 

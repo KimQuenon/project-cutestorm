@@ -143,7 +143,8 @@ class ConversationController extends AbstractController
     public function create(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $otherUser, Request $request, EntityManagerInterface $entityManager,
         UserRepository $userRepo,
-        ConversationRepository $convRepo
+        ConversationRepository $convRepo,
+        MessageRepository $messageRepo
     ): Response {
         $user = $this->getUser();
         $conversations = $convRepo->findByUser($user);
@@ -166,11 +167,12 @@ class ConversationController extends AbstractController
         $conversation = new Conversation();
         $conversation->setSender($user)
                     ->setRecipient($otherUser)
-                    ->setAccepted(false)
-                    ->setRead(false);
+                    ->setAccepted(false);
     
         //init first message
         $initialMessage = new Message();
+        $initialMessage->setRead(false);
+
         $form = $this->createForm(MessageType::class, $initialMessage);
         $form->handleRequest($request);
     
@@ -185,11 +187,21 @@ class ConversationController extends AbstractController
             $this->addFlash('success', 'Awaiting response from ' . $otherUser->getPseudo() . '.');
             return $this->redirectToRoute('conversation_show', ['slug' => $otherUser->getSlug()]);
         }
+
+        $unreadCounts = [];
+        $totalUnread = 0;
+    
+        foreach ($conversations as $conversation) {
+            $unreadCount = $messageRepo->countUnreadMessages($conversation, $user);
+            $unreadCounts[$conversation->getId()] = $unreadCount;
+            $totalUnread += $unreadCount;
+        }
     
         return $this->render('profile/conversations/create.html.twig', [
             'form' => $form->createView(),
             'otherUser'=> $otherUser,
-            'conversations'=> $conversations
+            'conversations'=> $conversations,
+            'totalUnread' => $totalUnread
         ]);
     }
     

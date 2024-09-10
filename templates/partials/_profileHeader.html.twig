@@ -1,39 +1,72 @@
-<div class="card">
-    <div class="card-banner">
-        <div class="card-header" style="background-image: url('/uploads/{{ app.user.banner }}');">
-            {% if app.user.avatar %}
-                <img src="/uploads/{{ app.user.avatar }}" alt="avatar de {{ app.user.pseudo }}" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+<div class="w-full flex flex-col gap-5">
+    <div class="shadow rounded-xl">
+        <div class="rounded-t-xl border-2 border-tertiary-dark px-4 py-2 h-[35vh] bg-cover bg-center" style="background-image: url('/uploads/{{user.banner}}');">
+            {% if app.user == user %}
+                <a href="{{ path('profile_banner_change') }}" class="badge badge-highlight ml-auto">
+                    <i class="fa-solid fa-rotate text-background"></i>
+                </a>
+            {% else %}
+                {% if not hasReportedProfile %}
+                    <a href="{{ path('report_item', { type: 'user', id: user.id }) }}" class="badge badge-danger ml-auto">
+                        <i class="fa-solid fa-flag text-background"></i>
+                    </a>
+                {% endif %}
             {% endif %}
-            <h2 class="card-title mb-0">{{ user.pseudo }}</h2>
-            {% include 'partials/_badge.html.twig' with {
-                position: mostLikedPost,
-                iconClass: 'fas fa-crown'
-            } only %}
+            <div class="h-full flex md:flex-row flex-col justify-end items-end pb-10 gap-2">
+                {% include 'partials/_badge.html.twig' with {
+                    position: mostLikedPost,
+                    iconClass: 'fa-solid fa-trophy'
+                } only %}
 
-            {% include 'partials/_badge.html.twig' with {
-                position: mostCommentedPost,
-                iconClass: 'fas fa-star'
-            } only %}
+                {% include 'partials/_badge.html.twig' with {
+                    position: mostCommentedPost,
+                    iconClass: 'fa-solid fa-volume-low'
+                } only %}
 
-            {% include 'partials/_badge.html.twig' with {
-                position: mostLikedUser,
-                iconClass: 'fas fa-heart'
-            } only %}
+                {% include 'partials/_badge.html.twig' with {
+                    position: mostLikedUser,
+                    iconClass: 'fa-solid fa-fire'
+                } only %}
 
-            {% include 'partials/_badge.html.twig' with {
-                position: mostActiveUser,
-                iconClass: 'fas fa-edit'
-            } only %}
+                {% include 'partials/_badge.html.twig' with {
+                    position: mostActiveUser,
+                    iconClass: 'fa-solid fa-meteor'
+                } only %}
 
-            {% include 'partials/_badge.html.twig' with {
-                position: mostFollowedUser,
-                iconClass: 'fas fa-sun'
-            } only %}
+                {% include 'partials/_badge.html.twig' with {
+                    position: mostFollowedUser,
+                    iconClass: 'fa-solid fa-crown'
+                } only %}
+            </div>
         </div>
-        <div class="card-body">
-            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-            <p class="card-text"><strong>Joined:</strong> {{ user.timestamp|date('d M Y') }}</p>
-                <a href="{{ path('profile_banner_change') }}" class="btn btn-primary">Changer la bannière</a>
+        <div class="bg-background rounded-b-xl border-t-0 border-2 border-tertiary-dark py-4 md:h-24 h-44 relative">
+            <img src="/uploads/{{user.avatar}}" alt="avatar of {{user.pseudo}}" class="absolute -top-10 w-20 h-20 left-6 object-cover rounded-full border-2 border-tertiary-dark">
+            <div class="subtitle text-tertiary-dark ml-28">{{user.pseudo}}</div>
+            <div class="flex md:flex-row flex-col justify-end items-center gap-2 mx-4 md:mt-0 mt-5">
+                {% if app.user == user %}
+                    <a href="{{path('profile_edit')}}" class="btn btn-yellow md:w-40 w-full">Edit</a>
+                    <a href="{{path('resume_activities')}}" class="btn btn-purple md:w-40 w-full">Dashboard</a>
+                {% else %}
+                    {% if app.user %}
+                        {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == user.id) %}
+                        <form action="{{ path('toggle_follow', {'slug': user.slug}) }}" method="post" class="mb-0 md:w-40 w-full">
+                            <button type="submit" class="btn btn-yellow  md:w-40 w-full">
+                                {% if isFollowing|length > 0 %}
+                                    Unfollow
+                                {% else %}
+                                    Follow
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{{ path('account_login') }}" class="btn btn-yellow md:w-40 w-full">Follow</a>
+                    {% endif %}
+                    <a href="{{ path('conversation_new', {'slug': user.slug}) }}"  class="btn btn-purple md:w-40 w-full">Talk to me</a>
+                {% endif %}
+            </div>
         </div>
     </div>
+    {# {% if not ('ROLE_ADMIN' in app.user.roles or 'ROLE_MODERATOR' in app.user.roles) %}
+        {% include "partials/_notepad.html.twig" with {user:app.user} %}
+    {% endif %} #}
 </div>
