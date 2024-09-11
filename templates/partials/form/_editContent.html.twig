@@ -1,0 +1,41 @@
+{% set imageCount = images|length %}
+
+{% if imageCount == 1 %}
+    <div class="w-full h-full relative border-2 border-dashed border-tertiary-dark">
+        {% include 'partials/form/_frame.html.twig' with { img: '/uploads/' ~ imagePaths[0] } %}
+        <div class="absolute bottom-2 right-2">
+            {% include 'partials/_deleteModal.html.twig' with {
+                'slug': imageIds[0],
+                'modalAction': deletePaths[0]
+            } %}
+        </div>
+    </div>
+{% elseif imageCount == 2 %}
+    <div class="w-full lg:h-[80vh] md:h-[40vh] h-[80vh] flex lg:flex-col md:flex-row flex-col gap-5">
+        {% for i in 0..1 %}
+            <div class="lg:w-full md:w-1/2 w-full lg:h-1/2 md:h-full h-1/2 relative border-2 border-dashed border-tertiary-dark">
+                {% include 'partials/form/_frame.html.twig' with { img: '/uploads/' ~ imagePaths[i] } %}
+                <div class="absolute bottom-2 right-2">
+                    {% include 'partials/_deleteModal.html.twig' with {
+                        'slug': imageIds[i],
+                        'modalAction': deletePaths[i]
+                    } %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% elseif imageCount > 2 %}
+    <div class="w-full h-full grid md:grid-cols-2 grid-cols-1 gap-6">
+        {% for i in 0..(imageCount - 1) %}
+            <div class="w-full h-[30vh] relative border-2 border-dashed border-tertiary-dark">
+                {% include 'partials/form/_frame.html.twig' with { img: '/uploads/' ~ imagePaths[i] } %}
+                <div class="absolute bottom-2 right-2">
+                    {% include 'partials/_deleteModal.html.twig' with {
+                        'slug': imageIds[i],
+                        'modalAction': deletePaths[i]
+                    } %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
