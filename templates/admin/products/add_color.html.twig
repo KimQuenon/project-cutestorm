@@ -1,21 +1,33 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/form_layout.html.twig" %}
 
 {% block defaultBackgroundClass 'square-background' %}
 
+{% block title %}Color mode{% endblock %}
 
-{% block body %}
-    <div class="container mt-4">
-        <h1>Create New Color</h1>
+{% block form_title %}Add a color{% endblock %}
 
-        <div >
-            <input type="text" id="colorPicker" />
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_default %}
+        <div class="w-full">
+            <div class="flex md:flex-row flex-col justify-between md:items-center mb-5">
+                <div class="w-1/3 font-bold text-tertiary-dark">
+                    Pick a color:
+                </div>
+                <div class="md:w-2/3 w-full">
+                    <input type="text" id="colorPicker" />
+                </div>
+            </div>
         </div>
         {{ form_start(myForm) }}
             {{ form_widget(myForm) }}
-        <button type="submit" class="btn btn-primary mt-3">Save Color</button>
+        <button type="submit" class="btn btn-yellow mt-10 w-52">Save</button>
         {{ form_end(myForm) }}
-        <a href="{{ path('product_new') }}" class="btn btn-secondary mt-3">Back to Products</a>
     </div>
+{% endblock %}
+
+{% block additionalButton %}
+    <a href="{{ path('products_index')}}" class="btn btn-purple w-52">back to products</a>
 {% endblock %}
 
 {% block javascripts %}

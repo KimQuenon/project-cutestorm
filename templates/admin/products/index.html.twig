@@ -6,6 +6,7 @@
 
 {% block content %}
     <div class="w-full lg:h-[45vh] md:h-[60vh] h-[150vh]">
+        <a href="{{path('product_new')}}" class="btn btn-purple w-40 ml-auto">New product</a>
         <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-5">
             {% include "partials/_sellerItem.html.twig" with { product: bestSeller, title: 'Best Seller'} %}
             {% include "partials/_sellerItem.html.twig" with { product: worstSeller, title: 'Worst Seller'} %}

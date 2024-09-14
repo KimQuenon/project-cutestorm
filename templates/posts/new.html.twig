@@ -1,16 +1,24 @@
-{% extends "base.html.twig" %}
-
-{% block title %}New post{% endblock %}
+{% extends "layouts/form_layout.html.twig" %}
 
 {% form_theme myForm _self %}
 
-{% block body %}
-    <div class="container mx-auto p-4 mt-4">
-        <h1 class="text-3xl font-bold mb-4">New post</h1>
+{% block title %}Creation mode{% endblock %}
 
+{% block form_title %}New post{% endblock %}
+
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_content %}
+    {% include "partials/form/_createContent.html.twig" with {type: 'product'} %}
+{% endblock %}
+
+{% block form_default %}
         {{ form_start(myForm) }}
             {{ form_row(myForm.title) }}
             {{ form_row(myForm.description) }}
+            <div class="form-check-comment">
+                {{ form_row(myForm.commentDisabled) }}
+            </div>
 
             <div id="images-wrapper"
                  data-prototype="{{ form_widget(myForm.postImages.vars.prototype)|e('html_attr') }}"
@@ -20,31 +28,18 @@
                         <div class="w-full md:w-1/2 xl:w-1/3 p-4">
                             {{ form_widget(postImage) }}
                         </div>
-                        <div class="w-full md:w-1/2 xl:w-1/3 p-4">
-                            <button type="button" class="remove-image bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">X</button>
-                        </div>
                     </div>
                 {% endfor %}
             </div>
-            <button type="button" id="add-image" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Add Image</button>
-            {{ form_row(myForm.commentDisabled) }}
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share</button>
+            <div class="font-bold text-tertiary-dark mb-3">Add image:</div>
+            <button type="button" id="add-image" class="badge badge-highlight">+</button>
+            <button type="submit" class="btn btn-yellow w-52 mt-3">Share</button>
         {{ form_end(myForm) }}
     </div>
 {% endblock %}
 
-{% block form_row %}
-    <div class="form-group mb-4">
-        <div class="flex flex-wrap">
-            <div class="w-full md:w-1/2 xl:w-1/3 p-4">
-                {{ form_label(form) }}
-            </div>
-            <div class="w-full md:w-1/2 xl:w-1/3 p-4">
-                {{ form_widget(form) }}
-                {{ form_errors(form) }}
-            </div>
-        </div>
-    </div>
+{% block additionalButton %}
+    <a href="{{ path('profile_posts') }}" class="btn btn-purple w-52">back to posts</a>
 {% endblock %}
 
 {% block javascripts %}

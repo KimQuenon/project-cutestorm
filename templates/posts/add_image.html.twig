@@ -1,7 +1,33 @@
-{% extends 'layouts/add_pictures_layout.html.twig' %}
 
-{% block form_title %}{{ post.title }}{% endblock %}
-{% block form_heading %}{{ post.title }}{% endblock %}
-{% block back_button %}
-    <a href="{{ path('post_pictures', {'slug': post.slug}) }}" class="btn btn-secondary mt-4">Back to Images</a>
+{% extends "layouts/form_layout.html.twig" %}
+
+{% block title %}Picture mode{% endblock %}
+
+{% block form_title %}Add picture{% endblock %}
+
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_content %}
+    {% set images = post.postImages %}
+    {% set imagePaths = [] %}
+    {% set imageIds = [] %}
+    {% set deletePaths = [] %}
+
+    {% for image in images %}
+        {% set imagePaths = imagePaths|merge([image.filename]) %}
+        {% set imageIds = imageIds|merge([image.id]) %}
+        {% set deletePaths = deletePaths|merge([path('post_picture_delete', {'id': image.id})]) %}
+    {% endfor %}
+
+    {% include "partials/form/_editContent.html.twig" with {
+        images: images,
+        imagePaths: imagePaths,
+        imageIds: imageIds,
+        deletePaths: deletePaths
+    } %}
+
+{% endblock %}
+
+{% block additionalButton %}
+    <a href="{{ path('post_edit', {'slug': post.slug}) }}" class="btn btn-white w-52">Back to edition</a>
 {% endblock %}

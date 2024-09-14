@@ -1,44 +1,91 @@
-{% extends "base.html.twig" %}
 
-{% block title %}Edit Product{% endblock %}
+{% extends "layouts/form_layout.html.twig" %}
 
 {% form_theme myForm _self %}
 
-{% block body %}
-	<div class="container mt-4">
-		<h1>Edit Product</h1>
-        <a href="{{ path('product_pictures', {'slug': product.slug}) }}" class="btn btn-warning btn-sm">
-            <i class="fas fa-picture"></i> View Pictures
-        </a>
-		{{ form_start(myForm) }}
-		{{ form_row(myForm.reference) }}
-		{{ form_row(myForm.name) }}
-		{{ form_row(myForm.description) }}
-		{{ form_row(myForm.price) }}
-		{{ form_row(myForm.color) }}
+{% block title %}Edition mode{% endblock %}
 
-		<div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
-			{% for child in myForm.productVariants %}
-				<div class="form-row mb-3">
-					{{ form_widget(child) }}
-				</div>
-			{% endfor %}
-		</div>
-		<button type="button" id="add-variant" class="btn btn-primary mt-3">Add Variant</button>
+{% block form_title %}Edit{% endblock %}
 
-		{{ form_end(myForm) }}
-		<button type="submit" class="btn btn-primary mt-3">Submit</button>
-	</div>
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_content %}
+    {% set images = product.productImages %}
+    {% set imagePaths = [] %}
+    {% set imageIds = [] %}
+    {% set deletePaths = [] %}
+
+    {% for image in images %}
+        {% set imagePaths = imagePaths|merge([image.filename]) %}
+        {% set imageIds = imageIds|merge([image.id]) %}
+        {% set deletePaths = deletePaths|merge([path('product_picture_delete', {'id': image.id})]) %}
+    {% endfor %}
+
+    {% include "partials/form/_editContent.html.twig" with {
+        images: images,
+        imagePaths: imagePaths,
+        imageIds: imageIds,
+        deletePaths: deletePaths
+    } %}
+
 {% endblock %}
 
-{% block form_row %}
-	<div class="form-group mt-2">
-		{{ form_label(form) }}
-		{{ form_widget(form) }}
-		{{ form_errors(form) }}
-	</div>
+{% block form_default %}
+	{{ form_start(myForm) }}
+    <div id="step1" class="step active">
+        {{ form_row(myForm.reference) }}
+        {{ form_row(myForm.name) }}
+        {{ form_row(myForm.description) }}
+        <button type="button" onclick="nextStep(2)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Next</button>
+    </div>
+
+    <div id="step2" class="step">
+        <div class="form-price">
+            {{ form_row(myForm.price) }}
+        </div>
+        {{ form_row(myForm.color) }}
+        {{ form_row(myForm.productCategories) }}
+        <button type="button" onclick="previousStep(1)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Previous</button>
+        <button type="button" onclick="nextStep(3)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Next</button>
+    </div>
+
+    <div id="step3" class="step">
+        <div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
+            {% for child in myForm.productVariants %}
+                <div class="form-row mb-3">
+                    {{ form_widget(child) }}
+                </div>
+            {% endfor %}
+        </div>
+	    <button type="button" id="add-variant" class="badge badge-highlight mt-3">+</button>
+        
+        <div class="flex gap-2 items-center mt-5">
+            <button type="button" onclick="previousStep(2)" class="bg-tertiary-dark py-2 px-5 rounded-full font-bold text-background">Previous</button>
+            <button type="submit" class="btn btn-yellow w-52">Save</button>
+        </div>
+    </div>
+	{{ form_end(myForm) }}
+{% endblock %}
+
+{% block additionalButton %}
+    <a href="{{ path('product_add_image', {'slug': product.slug}) }}" class="btn btn-purple w-52">add a picture</a>
 {% endblock %}
 
 {% block javascripts %}
 	{{ encore_entry_script_tags('removeVariant') }}
+    <script>
+    function nextStep(step) {
+        document.querySelectorAll('.step').forEach(function (stepDiv) {
+            stepDiv.classList.remove('active');
+        });
+        document.getElementById('step' + step).classList.add('active');
+    }
+
+    function previousStep(step) {
+        document.querySelectorAll('.step').forEach(function (stepDiv) {
+            stepDiv.classList.remove('active');
+        });
+        document.getElementById('step' + step).classList.add('active');
+    }
+    </script>
 {% endblock %}

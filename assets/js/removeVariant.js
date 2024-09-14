@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newElement = document.createElement('div');
         newElement.classList.add('form-row', 'mb-3');
         const html = prototype.replace(/__name__/g, index);
-        newElement.innerHTML = html + '<button type="button" class="btn btn-danger remove-variant">-</button>';
+        newElement.innerHTML = html + '<button type="button" class="badge badge-danger remove-variant">-</button>';
         index++;
         container.appendChild(newElement);
     });

@@ -1,0 +1,49 @@
+<div class="w-full lg:h-[90vh] h-[60vh] relative">
+    <div class="w-1/2 h-52 absolute top-0 -left-5 -rotate-12 border-2 border-dashed border-tertiary-dark">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post1.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product1.webp' } %}
+        {% endif %}
+    </div>
+
+    <div class="w-1/2 h-52 absolute top-0 -right-5 rotate-12 border-2 border-dashed border-tertiary-dark">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post2.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product2.webp' } %}
+        {% endif %}
+    </div>
+
+    <div class="w-1/2 h-52 absolute top-[45%] -translate-y-[45%] left-1/2 -translate-x-1/2 rotate-12 border-2 border-dashed border-tertiary-dark z-20">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post3.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product3.webp' } %}
+        {% endif %}
+    </div>
+
+    <div class="w-1/2 h-52 absolute top-3/4 -translate-y-3/4 -left-5 border-2 border-dashed border-tertiary-dark">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post4.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product4.webp' } %}
+        {% endif %}
+    </div>
+
+    <div class="w-1/2 h-52 absolute top-3/4  -translate-y-3/4 -right-5 -rotate-12 border-2 border-dashed border-tertiary-dark z-40">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post5.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product5.webp' } %}
+        {% endif %}
+    </div>
+
+    <div class="w-1/2 h-52 absolute -bottom-10 left-1/2 -translate-x-1/2 -rotate-12 border-2 border-dashed border-tertiary-dark z-40">
+        {% if type == "post" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-post6.webp' } %}
+        {% elseif type == "product" %}
+            {% include 'partials/form/_frame.html.twig' with { img: '/images/new-product6.webp' } %}
+        {% endif %}
+    </div>
+</div>

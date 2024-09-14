@@ -1,70 +1,98 @@
-{% extends "base.html.twig" %}
-
-{% block title %}New Product{% endblock %}
+{% extends "layouts/form_layout.html.twig" %}
 
 {% form_theme myForm _self %}
 
-{% block body %}
-    <div class="container mx-auto mt-8">
-        <h1 class="text-2xl font-bold mb-6">New Product</h1>
-        <a href="{{ path('color_new') }}" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition mb-6 inline-block">Add color</a>
+{% block title %}Creation mode{% endblock %}
 
+{% block form_title %}New product{% endblock %}
+
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_content %}
+    {% include "partials/form/_createContent.html.twig" with {type: 'product'} %}
+{% endblock %}
+
+{% block form_default %}
         {{ form_start(myForm) }}
-        {{ form_row(myForm.reference) }}
-        {{ form_row(myForm.name) }}
-        {{ form_row(myForm.description) }}
-        {{ form_row(myForm.price) }}
+        <div id="step1" class="step active">
+            {{ form_row(myForm.reference) }}
+            {{ form_row(myForm.name) }}
+            {{ form_row(myForm.description) }}
+            <button type="button" onclick="nextStep(2)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Next</button>
+        </div>
 
-        <div class="mb-6">
-            <label for="{{ myForm.color.vars.id }}" class="block text-gray-700 mb-2">Color</label>
-            <div class="flex flex-wrap gap-4">
-                {% for color in colors %}
-                    <div class="flex items-center">
-                        <input type="radio" id="color_{{ color.id }}" name="{{ myForm.color.vars.full_name }}" value="{{ color.id }}" {% if color.id == myForm.color.vars.value %} checked{% endif %} class="hidden">
-                        <label for="color_{{ color.id }}" style="background-color: {{ color.hexCode }};" class="w-6 h-6 rounded-full border-2 cursor-pointer" title="{{ color.name }}"></label>
-                        <span class="ml-2 text-gray-700">{{ color.name }}</span>
+        <div id="step2" class="step">
+            <div class="form-price">
+                {{ form_row(myForm.price) }}
+            </div>
+            {{ form_row(myForm.color) }}
+            <div >
+                <div class="font-bold text-tertiary-dark">Categories:</div>
+                {{ form_row(myForm.productCategories) }}
+            </div>
+            <button type="button" onclick="previousStep(1)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Previous</button>
+            <button type="button" onclick="nextStep(3)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Next</button>
+        </div>
+
+        <div id="step3" class="step">
+            <div class="font-bold text-tertiary-dark">Add at least one variant:</div>
+            <div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
+                {% for child in myForm.productVariants %}
+                    <div class="form-row mb-3">
+                        {{ form_widget(child) }}
                     </div>
                 {% endfor %}
             </div>
+            <button type="button" id="add-variant" class="badge badge-highlight mt-3">+</button>
+
+            <div class="flex gap-2 items-center mt-5">
+                <button type="button" onclick="previousStep(2)" class="bg-tertiary-dark py-2 px-5 rounded-full font-bold text-background">Previous</button>
+                <button type="button" onclick="nextStep(4)" class="bg-tertiary-dark py-2 px-8 rounded-full font-bold text-background">Next</button>
+            </div>
         </div>
 
-        <div id="product-variants" data-prototype="{{ form_widget(myForm.productVariants.vars.prototype) | e('html_attr') }}">
-            {% for child in myForm.productVariants %}
-                <div class="mb-4">
-                    {{ form_widget(child, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
-                </div>
-            {% endfor %}
-        </div>
-        <button type="button" id="add-variant" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition mb-6">Add Variant</button>
-
-        <div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
-            {% for productImage in myForm.productImages %}
-                <div class="flex items-center mb-4">
-                    <div class="flex-grow">
-                        {{ form_widget(productImage, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+        <div id="step4" class="step">
+            <div class="font-bold text-tertiary-dark">Add at least one picture:</div>
+            <div id="images-wrapper" data-prototype="{{ form_widget(myForm.productImages.vars.prototype)|e('html_attr') }}" data-index="{{ myForm.productImages|length }}">
+                {% for productImage in myForm.productImages %}
+                    <div class="form-row mb-3 flex">
+                        <div class="flex-grow">
+                            {{ form_widget(productImage, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <button type="button" class="remove-image bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">X</button>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <button type="button" id="add-image" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition mb-6">Add Image</button>
+                {% endfor %}
+            </div>
 
-        <button type="submit" class="bg-primary text-white py-2 px-4 rounded">Submit</button>
+            <button type="button" id="add-image" class="badge badge-highlight mt-3">+</button>
+            <div class="flex gap-2 items-center mt-5">
+                <button type="button" onclick="previousStep(3)" class="bg-tertiary-dark py-2 px-5 rounded-full font-bold text-background">Previous</button>
+                <button type="submit" class="btn btn-yellow w-52">Save</button>
+            </div>
+        </div>
         {{ form_end(myForm) }}
     </div>
 {% endblock %}
 
-{% block form_row %}
-    <div class="mb-4">
-        {{ form_label(form, null, {'label_attr': {'class': 'block text-gray-700 mb-2'}}) }}
-        {{ form_widget(form, {'attr': {'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
-        {{ form_errors(form, {'attr': {'class': 'text-red-600 mt-1'}}) }}
-    </div>
+{% block additionalButton %}
+    <a href="{{ path('color_new') }}" class="btn btn-purple w-52">add a color</a>
 {% endblock %}
 
 {% block javascripts %}
     {{ encore_entry_script_tags('removeVariant') }}
     {{ encore_entry_script_tags('imgActions') }}
+        <script>
+    function nextStep(step) {
+        document.querySelectorAll('.step').forEach(function (stepDiv) {
+            stepDiv.classList.remove('active');
+        });
+        document.getElementById('step' + step).classList.add('active');
+    }
+
+    function previousStep(step) {
+        document.querySelectorAll('.step').forEach(function (stepDiv) {
+            stepDiv.classList.remove('active');
+        });
+        document.getElementById('step' + step).classList.add('active');
+    }
+    </script>
 {% endblock %}

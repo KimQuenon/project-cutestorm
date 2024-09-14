@@ -341,25 +341,13 @@ class PostController extends AbstractController
             return $this->redirectToRoute('posts_index');
     }
 
-    #[Route("/post/{slug}/pictures", name: "post_pictures")]
-    #[IsGranted('ROLE_USER')]
-    public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post): Response
-    {
-        $images = $post->getPostImages();
-
-        return $this->render("posts/display_pictures.html.twig", [
-            'post' => $post,
-            'images' => $images
-        ]);
-    }
-
     #[Route("/post/{slug}/add-image", name: "post_add_image")]
     #[IsGranted('ROLE_USER')]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response
     {
         if (count($post->getPostImages()) >= 5) {
             $this->addFlash('danger', 'Limit of 5 pictures reached. Please delete one before adding a new image.');
-            return $this->redirectToRoute('post_pictures', ['slug' => $post->getSlug()]);
+            return $this->redirectToRoute('post_edit', ['slug' => $post->getSlug()]);
         }
 
         $postImage = new PostImage();
@@ -390,7 +378,7 @@ class PostController extends AbstractController
                 $manager->flush();
 
                 $this->addFlash('success', 'New image added successfully!');
-                return $this->redirectToRoute('post_pictures', ['slug' => $post->getSlug()]);
+                return $this->redirectToRoute('post_edit', ['slug' => $post->getSlug()]);
             }
         }
 
@@ -415,7 +403,7 @@ class PostController extends AbstractController
 
         if (count($post->getPostImages()) <= 1) {
             $this->addFlash('danger', 'A post must have at least one image. Add another image first before deleting this one.');
-            return $this->redirectToRoute('post_pictures', [
+            return $this->redirectToRoute('post_add_image', [
                 'slug' => $post->getSlug(),
             ]);
         }
@@ -430,7 +418,7 @@ class PostController extends AbstractController
         
         $this->addFlash('success', 'Picture deleted!');
         
-        return $this->redirectToRoute('post_pictures', [
+        return $this->redirectToRoute('post_edit', [
             'slug' => $post->getSlug(),
         ]);
     }

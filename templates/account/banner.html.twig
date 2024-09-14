@@ -1,14 +1,27 @@
-{% extends "base.html.twig" %}
 
-{% block title %}Edit your banner{% endblock %}
+{% extends "layouts/form_layout.html.twig" %}
 
-{% block body %}
-        <h1 class="space">Edit your banner</h1>
-        {# {% if app.user.picture %}
-            <img src="/uploads/{{app.user.picture}}" alt="avatar de {{app.user.email}}">
-        {% endif %} #}
-        {{form_start(myForm)}}
-            {{form_widget(myForm)}}
-            <button type="submit" class="btn4 align">Edit</button>
-        {{form_end(myForm)}}
+{% block title %}Edition mode{% endblock %}
+
+{% block form_title %}Edit banner{% endblock %}
+
+{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+
+{% block form_content %}
+    {% set image = app.user.banner %}
+    {% set imagePath = app.user.banner %}
+    {% set imageId = app.user.banner %}
+    {% set deletePath = path('profile_banner_delete') %}
+
+    {% include "partials/form/_editContent.html.twig" with {
+        images: [image],
+        imagePaths: [imagePath],
+        imageIds: [imageId],
+        deletePaths: [deletePath]
+    } %}
 {% endblock %}
+
+{% block additionalButton %}
+    <a href="{{ path('profile_avatar') }}" class="btn btn-white w-52">Change avatar</a>
+{% endblock %}
+

@@ -4,7 +4,7 @@
 
 {% block header %}
     {% if 'ROLE_ADMIN' in app.user.roles or 'ROLE_MODERATOR' in app.user.roles %}
-        {% include "partials/_header.html.twig" with { megaMenu: 'bg-secondary-light', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+        {% include "partials/_header.html.twig" with { megaMenu: 'bg-background', textColor: 'text-tertiary', textHover : 'hover:text-tertiary-light' } %}
     {% else %}
         {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
     {% endif %}
@@ -19,12 +19,12 @@
         {% else %}
             bg-primary
         {% endif %}">
-        <div class="pt-3 lg:pl-12 lg:pr-20 md:px-5 px-0 flex items-center justify-center lg:flex-row flex-col-reverse gap-5 min-h-[90vh]">
-            <div class="lg:!w-1/2 w-full h-full p-8 {{ block('defaultBackgroundClass') }}">
+        <div class="pt-3 lg:pl-12 lg:pr-20 md:px-5 px-0 flex items-center justify-center lg:flex-row flex-col-reverse gap-5 min-h-[80vh]">
+            <div class="lg:!w-1/2 w-full min-h-full p-8 {{ block('defaultBackgroundClass') }}">
                 {% block form_content %}{% endblock %}
             </div>
             <div class="lg:w-1/2 w-full flex flex-col justify-center items-center lg:p-20 md:p-10 p-8">
-                <div class="w-full flex justify-between items-center">
+                <div class="w-full flex md:flex-row flex-col justify-between md:items-center mb-4">
                     <h2 class="title title-second text-tertiary-dark">
                         {% block form_title %}{% endblock %}
                     </h2>
@@ -34,10 +34,12 @@
                     {% block form_text %}{% endblock %}
                 </p>
                 <div class="w-full mt-10">
-                    {{form_start(myForm)}}
-                        {{form_widget(myForm)}}
-                        <button type="submit" class="btn btn-yellow w-52">Save</button>
-                    {{form_end(myForm)}}
+                    {% block form_default %}
+                        {{form_start(myForm)}}
+                            {{form_widget(myForm)}}
+                            <button type="submit" class="btn btn-yellow w-52">Save</button>
+                        {{form_end(myForm)}}
+                    {% endblock %}
                 </div>
             </div>
         </div>
@@ -51,7 +53,7 @@
                 {{form_label(form)}}
             </div>
             <div class="md:w-2/3 w-full">
-                {{ form_widget(form, {'attr': {'class': 'w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none'}}) }}
+                {{ form_widget(form, {'attr': {'class': 'w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none bg-white'}}) }}
                 {{form_errors(form)}}
             </div>
         </div>

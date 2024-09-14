@@ -27,6 +27,7 @@ class ProductType extends ApplicationType
             ->add('description', TextareaType::class, $this->getConfiguration("Description:", 'I.E. : Long white jacket...'))
             ->add('price', MoneyType::class, $this->getConfiguration("Price:", '...'))
             ->add('color', EntityType::class, [
+                'label' => "Color:",
                 'class' => ProductColor::class,
                 'choice_label' => 'name',
                 'required' => true,
@@ -35,8 +36,8 @@ class ProductType extends ApplicationType
                 'entry_type' => ProductVariantType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
-                'by_reference' => false,
                 'prototype' => true,
+                'by_reference' => false,
             ])
             ->add('productCategories', EntityType::class, [
                 'class' => ProductCategory::class,
@@ -53,8 +54,8 @@ class ProductType extends ApplicationType
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
-                'by_reference' => false,
                 'prototype' => true,
+                'by_reference' => false,
             ]);
         }
     }

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newForm = prototype.replace(/__name__/g, index);
             const div = document.createElement('div');
             div.classList.add('image-form', 'row', 'mb-3');
-            div.innerHTML = '<div class="col">' + newForm + '</div><div class="col-auto"><button type="button" class="remove-image btn btn-danger mt-2">X</button></div>';
+            div.innerHTML = '<div class="col">' + newForm + '</div><div class="col-auto"><button type="button" class="remove-image badge badge-danger">-</button></div>';
             imagesWrapper.appendChild(div);
             index++;
             updateAddImageButtonState();
