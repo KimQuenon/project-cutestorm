@@ -423,6 +423,15 @@ input[name='product_image[file]'], input[name='post_image[file]'], input[name*='
     padding:0px!important;
 }
 
+
+#comment_content, #reply_content{
+    width: 100%;
+    height:50px!important;
+    border: 1px solid $tertiaryLight;
+    border-radius: 0.75rem;
+    padding: 10px;
+    outline: none;
+}
 /*----NAV----*/
 .mega-menu-img{
     @include imgCover(cover);

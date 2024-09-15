@@ -1,0 +1,38 @@
+<div class="w-full flex md:flex-row flex-col justify-between md:items-center md:gap-0 gap-4">
+	<div class="flex items-center gap-4">
+		<img src="{{ asset('uploads/' ~ comment.author.avatar) }}" alt="image of {{comment.author.pseudo}}" class="object-cover w-12 h-12 rounded-full border-2 border-tertiary-dark">
+		<div>
+			<a href="{{ path('profile_show', {'slug': comment.author.slug}) }}" class="font-bold text-tertiary-dark">{{ comment.author.pseudo }}</a>
+			{% include "partials/_follow.html.twig" with {user: post.author}%}
+		</div>
+	</div>
+	<div class="flex items-center gap-2">
+		<p>{{ comment.timestamp|date('d-m-Y') }}</p>
+		{% if app.user == comment.author %}
+			{% include 'partials/_deleteModal.html.twig' with {
+                'slug': comment.id,
+                'modalAction': path('comment_delete', {'id': comment.id})
+                } 
+            %}
+		{% elseif comment.id not in reportedCommentsIds %}
+			<a href="{{ path('report_item', { type: 'comment', id: comment.id }) }}" class="badge badge-danger">
+				<i class="fa-regular fa-flag"></i>
+			</a>
+		{% endif %}
+	</div>
+</div>
+<div class="flex items-center gap-4">
+	<p class="mt-2 w-[90%]">
+		{% if comment.id in reportedCommentsIds %}
+			<span class="text-danger-dark">Comment reported</span>
+		{% else %}
+			{{comment.content|raw}}</p>
+	{% endif %}
+	{% include 'partials/_like.html.twig' with {
+        'type': 'comment',
+        'idOrSlug': comment.id,
+        'authorId': comment.author.id,
+        'likeCount': comment.likeComments|length,
+        'likedIds': likedCommentIds
+    } %}
+</div>

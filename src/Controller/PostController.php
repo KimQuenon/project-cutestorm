@@ -252,11 +252,32 @@ class PostController extends AbstractController
         }
     
         $reportedCommentIds = [];
-        foreach ($comments as $comment) {
-            if ($reportRepo->hasUserReportedComment($user, $comment)) {
-                $reportedCommentIds[] = $comment->getId();
+        if($user){
+            foreach ($comments as $comment) {
+                if ($reportRepo->hasUserReportedComment($user, $comment)) {
+                    $reportedCommentIds[] = $comment->getId();
+                }
             }
         }
+
+        $reportedPostIds = [];
+        if ($user) {
+            if ($reportRepo->hasUserReportedPost($user, $post)) {
+                $reportedPostIds[] = $post->getId();
+            }
+        }
+
+        $otherPosts = $author->getPosts()->toArray();
+
+        usort($otherPosts, function ($a, $b) {
+            return $b->getId() <=> $a->getId();
+        });
+        
+        $otherPosts = array_filter($otherPosts, function ($otherPost) use ($post) {
+            return $otherPost !== $post;
+        });
+        
+        $latestOtherPosts = array_slice($otherPosts, 0, 3);
 
         return $this->render("posts/show.html.twig", [
             'post' => $post,
@@ -266,7 +287,9 @@ class PostController extends AbstractController
             'myForm' => $form ? $form->createView() : null,
             'replyForms' => $replyForms,
             'areCommentsDisabled' => $areCommentsDisabled,
-            'reportedCommentsIds' => $reportedCommentIds
+            'reportedCommentsIds' => $reportedCommentIds,
+            'reportedPostIds' => $reportedPostIds,
+            'latestOtherPosts' => $latestOtherPosts
         ]);
     }
     
