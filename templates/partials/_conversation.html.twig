@@ -1,32 +1,80 @@
-<div class="list-group">
-    {% for item in items %}
-        <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">
-                    {% if app.user == item.sender %}
-                        {{ item.recipient.pseudo }}
-                    {% else %}
-                        {{ item.sender.pseudo }}
-                    {% endif %}
-                </h5>
-                <div>
-                    {% if item.lastMessage %}
-                        {% if app.user == item.lastMessage.sender %}
-                            <p>You said:</p>
-                        {% else %}
-                            <p>{{ item.lastMessage.sender.pseudo }} said:</p>
-                        {% endif %}
-                        <p>{{ item.lastMessage.content }}</p>
-                        <small>{{ item.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
-                        {% set unreadCount = unreadCounts[item.id] ?? 0 %}
-                        {% if unreadCount > 0 %}
-                            <span class="badge rounded-pill bg-danger">{{ unreadCount }}</span>
-                        {% endif %}
-                    {% else %}
-                        <p>Say hi</p>
-                    {% endif %}
-                </div>
+<div class="rounded-xl">
+    <div class="w-full bg-primary-dark px-5 py-3 md:rounded-t-xl md:rounded-b-none rounded-xl border-2 border-tertiary-dark flex justify-between items-center radius">
+        <p class="font-bold text-lg text-background">{{ title }}</p>
+        <div class="flex gap-2 items-center">
+            <div class="w-7 h-7 bg-background rounded-full flex items-center justify-center p-1">
+                {% if unread is not null and unread|length > 0 %}
+                    <span class="text-primary-dark font-bold">{{ unread }}</span>
+                {% endif %}
             </div>
-        </a>
-    {% endfor %}
+            <i class="fa-solid fa-chevron-down text-background md:hidden block transition duration-300"></i>
+        </div>
+    </div>
+    <div class="w-full lg:h-[70vh] h-[40vh] bg-background rounded-b-xl border-2 border-t-0 border-tertiary-dark overflow-y-auto custom-scrollbar md:block hidden display">
+        {% for item in items %}
+            <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action">
+                <div class="w-full flex gap-2 lg:p-4 md:px-8 px-2 py-4 border-b border-tertiary-light hover:bg-background-hover transition-all duration-300">
+                    <div class="w-1/6">
+                        <img src="{{ asset('uploads/' ~ item.sender.avatar) }}" alt="img of {{item.sender.pseudo}}" class="w-12 h-12 border-2 border-tertiary-dark rounded-full"></img>
+                    </div>
+                    <div class="w-5/6">
+                        <div class="w-full flex justify-between items-center">
+                            <p class="subtitle">{{item.sender.pseudo}}</p>
+                            {% if item.lastMessage %}
+                                <small>{{ item.lastMessage.timestamp|date('d/m/Y H:i') }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            {% if item.lastMessage %}
+                                <div>
+                                    <span class="font-bold">
+                                        {% if app.user == item.lastMessage.sender %}
+                                            You
+                                        {% else %}
+                                            {{ item.lastMessage.sender.pseudo }}
+                                        {% endif %}
+                                        said:
+                                    </span>
+                                    {{ item.lastMessage.content|striptags|slice(0, 40) ~ '...' }}
+                                </div>
+
+                                {% set unreadCount = unreadCounts[item.id] ?? 0 %}
+                                {% if unreadCount > 0 %}
+                                    <div class="w-5 h-5 bg-tertiary-dark font-bold text-background rounded-full p-3 flex justify-center items-center">{{ unreadCount }}</div>
+                                {% endif %}
+                            {% else %}
+                                <p>Say hi</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {# <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action w-full flex p-4">
+                <div class="bg-secondary">
+                    <a href="{{ path('profile_show', {'slug': item.sender.slug}) }}">
+                        <img src="{{ asset('uploads/' ~ item.sender.avatar) }}" alt="img of {{item.sender.pseudo}}" class="w-12 h-12 border-2 border-tertiary-dark rounded-full"></img>
+                    </a>
+                    <div class="w-full flex justify-between">
+
+                    </div>
+                </div>
+            </a> #}
+        {% endfor %}
+    </div>
 </div>
+
+{% block javascripts %}
+<script>
+    const arrow = document.querySelector('.fa-chevron-down');
+    const display = document.querySelector('.display');
+    const radius = document.querySelector('.radius');
+
+    arrow.addEventListener('click', () => {
+        console.log("click")
+        display.classList.toggle('hidden');
+        radius.classList.toggle('rounded-b-none');
+        arrow.classList.toggle('-rotate-180')
+    });
+
+</script>
+{% endblock %}

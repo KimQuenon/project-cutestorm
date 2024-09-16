@@ -1,7 +1,8 @@
 {% extends 'layouts/conversation_layout.html.twig' %}
 
-{% block title %}Conversation{% endblock %}
-{% block subtitle %}Conversation with {{otherUser.pseudo}}{% endblock %}
+{% block title %}Chat with {{otherUser.pseudo}}{% endblock %}
+
+{% set currentTab = 'conversations_show' %}
 
 {% block message_content %}
     {% include 'partials/_message.html.twig' with { messages: messages } %}
@@ -9,6 +10,8 @@
 
 {% block partials_conv %}
     {% include 'partials/_conversation.html.twig' with {
+        title: 'Conversations',
+        unread: totalUnread,
         items: conversations,
     } %}
 {% endblock %}
@@ -16,13 +19,13 @@
 
 {% block form_content %}
         {{ form_start(myForm) }}
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="input-group" style="width: 90%;">
-                {{ form_widget(myForm.content, {'attr': {'class': 'form-control form-control-sm', 'style': 'padding: 10px;'}}) }}
+        <div class="w-full flex items-center justify-between gap-4">
+            <div class="w-full">
+                {{ form_widget(myForm.content, {'attr': {'class': 'form-control border-2 border-tertiary-dark', 'style': 'padding: 10px;'}}) }}
             </div>
             <div>
-                <button type="submit" class="btn btn-primary p-3">
-                    <i class="fas fa-arrow-up"></i>
+                <button type="submit" class="group w-[50px] h-[50px] border-2 border-tertiary-dark bg-highlight rounded-md">
+                    <i class="fa-solid fa-location-arrow text-background rotate-45 group-hover:rotate-0 transition duration-300 mr-1"></i>
                 </button>
             </div>
         </div>

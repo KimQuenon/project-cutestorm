@@ -1,22 +1,29 @@
 {% extends 'layouts/conversation_layout.html.twig' %}
 
-{% block title %}Demande de Conversation{% endblock %}
-{% block subtitle %}Demande de conversation avec {{ otherUser.pseudo }}{% endblock %}
+{% block title %}Chat requests{% endblock %}
+
+{% set currentTab = 'requests_show' %}
+
 
 {% block message_content %}
+    <p class="font-gliker text-tertiary-dark text-4xl mt-5">{{otherUser.pseudo}} wants to say:</p>
     {% include 'partials/_message.html.twig' with { messages: conversation.messages } %}
 {% endblock %}
 
 {% block form_content %}
-    <div class="d-flex gap-2">
-        <a href="{{ path('conversation_accept', { 'slug': conversation.sender.slug }) }}" class="btn btn-success">Accepter</a>
-        <a href="{{ path('conversation_reject', { 'slug': conversation.sender.slug }) }}" class="btn btn-danger">Refuser</a>
+    <div class="w-full bg-background p-4 border-2 border-tertiary-dark shadow rounded-xl flex justify-between items-center">
+        <p class="font-bold text-tertiary-dark">Do you want to chat with this new friend ?</p>
+        <div class="flex gap-2">
+            <a href="{{ path('conversation_accept', { 'slug': conversation.sender.slug }) }}" class="btn btn-success">Yes !</a>
+            <a href="{{ path('conversation_reject', { 'slug': conversation.sender.slug }) }}" class="btn btn-danger">Uh no...</a>
+        </div>
     </div>
 {% endblock %}
 
 
 {% block partials_conv %}
     {% include 'partials/_conversation.html.twig' with {
+        unread: pendingRequests|length,
         items: pendingRequests,
     } %}
 {% endblock %}

@@ -1,11 +1,6 @@
 
 {% extends 'layouts/conversation_layout.html.twig' %}
 
-{% block title %}Messagerie{% endblock %}
-{% block subtitle %}Conversations{% endblock %}
+{% block title %}Chat{% endblock %}
 
-{% block partials_conv %}
-    {% include 'partials/_conversation.html.twig' with {
-        items: conversations,
-    } %}
-{% endblock %}
+{% set currentTab = 'conversations_index' %}

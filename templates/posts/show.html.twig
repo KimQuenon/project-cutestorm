@@ -93,13 +93,19 @@
                             </div>
                             {{ form_end(myForm) }}
 
+                        {% else %}
+                            <div class="w-full p-4 bg-highlight border-2 border-tertiary-dark rounded-xl text-background font-bold flex flex-row gap-2 items-center">
+                                <i class="fas fa-info-circle"></i>
+                                <p>You must be logged in to comment...</p>
+                            </div>
+                        {% endif %}
                             {% if comments is empty %}
                                 <div class="w-full p-4 bg-secondary border-2 border-tertiary-dark rounded-xl text-background font-bold flex flex-row gap-2 items-center">
                                     <i class="fas fa-info-circle"></i>
                                     <p>Be the first to comment this!</p>
                                 </div>
                             {% else %}
-                                <div class="w-full lg:h-[250px] h-[175px] overflow-y-auto custom-scrollbar">
+                                <div class="w-full lg:h-[200px] h-[175px] overflow-y-auto custom-scrollbar">
                                     {% for comment in comments %}
                                         {% if comment.parent is null %}
                                             <div class="w-full">
@@ -145,12 +151,6 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                        {% else %}
-                            <div class="w-full p-4 bg-highlight border-2 border-tertiary-dark rounded-xl text-background font-bold flex flex-row gap-2 items-center">
-                                <i class="fas fa-info-circle"></i>
-                                <p>You must be logged in to comment...</p>
-                            </div>
-                        {% endif %}
                     {% endif %}
                 </div>
             </div>

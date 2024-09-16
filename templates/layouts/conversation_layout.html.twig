@@ -1,48 +1,138 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="w-auto d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <h1>{% block subtitle %}{% endblock %}</h1>
-                    {% if totalUnread is not null and totalUnread > 0 %}
-                        <span class="badge rounded-pill bg-danger">{{ totalUnread }}</span>
-                    {% elseif pendingRequests is not null and pendingRequests|length > 0 %}
-                        <span class="badge rounded-pill bg-warning">{{ pendingRequests|length }}</span>
-                    {% endif %}        
-                </div>
-                <a href="{{ path('conversations_index') }}" class="btn btn-dark">Retour aux conversations</a>
+<div class="slide min-h-screen bg-primary">
+    <div class="container flex lg:flex-row flex-col lg:pt-0 pt-10 gap-10">
+        <div class="lg:w-1/3 w-full">
+            {% if currentTab == 'conversations_index' or currentTab == 'conversations_show' or currentTab == 'conversations_create' %}
+                {% include 'partials/_conversation.html.twig' with {
+                    title: 'Conversations',
+                    unread: totalUnread,
+                    items: conversations,
+                } %}
+            {% elseif currentTab == 'requests_index' or currentTab == 'requests_show' %}
+                {% include 'partials/_conversation.html.twig' with {
+                    title: 'Requests',
+                    unread: pendingRequests|length,
+                    items: pendingRequests,
+                } %}
+            {% endif %}
         </div>
-        <div class="container d-flex justify-content-between">
-            <div class="conversations-container w-25">
-                {% block partials_conv %}{% endblock %}
-            </div>
-            <div class="w-75 p-4">
-                <div id="message-container" style="height: 400px; overflow-y: auto;">
-                    <div class="w-100 container d-flex gap-20 flex-column">
-                        {% block message_content %}
-                            {# Default content, can be overridden #}
-                            <p>Contenu spécifique de la page ici.</p>
+        <div class="lg:w-2/3 w-full h-full">
+                {% if currentTab == 'conversations_index' or currentTab == 'requests_index' %}
+                    <div class="w-full">
+                        {% if currentTab == 'conversations_index' %}
+                            <a href="{{path('conversation_requests')}}" class="btn btn-blue ml-auto w-40 mt-2">requests</a>
+                        {% else %}
+                            <a href="{{path('conversations_index')}}" class="btn btn-blue ml-auto w-40 mt-2">chats</a>
+                        {% endif %}
+                    </div>
+                    <div class="w-full h-[70vh] flex flex-col justify-center items-center relative">
+                        <h2 class="font-gliker text-tertiary-dark text-6xl">Who are you talking to ?</h2>
+                        <h2 class="font-gliker text-tertiary-dark text-9xl">Let's chat !</h2>
+                        <div class="w-60 bg-background rounded-xl px-3 py-5 absolute -top-8 left-[25%] -translate-x-[25%]">
+                            <div class="w-full flex justify-between items-center">
+                                <div class="flex gap-2 items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/8.jpg" alt="chat1" class="w-8 h-8 object-cover border-2 border-tertiary-dark rounded-full">
+                                    <div class="flex flex-col">
+                                        <small class="font-bold text-tertiary-dark">Cassie Clarke</small>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded bg-success"></div>
+                                            <small>Online</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border border-primary-dark text-primary-dark flex items-center justify-center gap-1 p-1">
+                                    <i class="fa-solid fa-user-plus text-xs"></i>
+                                    <small>Add</small>
+                                </div>
+                            </div>
+                            <p class="mt-2">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et !</p>
+                        </div>
+                        <div class="w-60 bg-background rounded-xl px-3 py-5 absolute top-3 left-3/4 -translate-x-3/4">
+                            <div class="w-full flex justify-between items-center">
+                                <div class="flex gap-2 items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="chat1" class="w-8 h-8 object-cover border-2 border-tertiary-dark rounded-full">
+                                    <div class="flex flex-col">
+                                        <small class="font-bold text-tertiary-dark">Valentin Dumas</small>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded bg-success"></div>
+                                            <small>Online</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border border-primary-dark text-primary-dark flex items-center justify-center gap-1 p-1">
+                                    <i class="fa-solid fa-user-plus text-xs"></i>
+                                    <small>Add</small>
+                                </div>
+                            </div>
+                            <p class="mt-2">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et !</p>
+                        </div>
+                        <div class="w-60 bg-background rounded-xl px-3 py-5 absolute -bottom-3 left-5">
+                            <div class="w-full flex justify-between items-center">
+                                <div class="flex gap-2 items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="chat1" class="w-8 h-8 object-cover border-2 border-tertiary-dark rounded-full">
+                                    <div class="flex flex-col">
+                                        <small class="font-bold text-tertiary-dark">Amy Stells</small>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded bg-success"></div>
+                                            <small>Online</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border border-primary-dark text-primary-dark flex items-center justify-center gap-1 p-1">
+                                    <i class="fa-solid fa-user-plus text-xs"></i>
+                                    <small>Add</small>
+                                </div>
+                            </div>
+                            <p class="mt-2">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et !</p>
+                        </div>
+                        <div class="w-60 bg-background rounded-xl px-3 py-5 absolute bottom-10 right-5">
+                            <div class="w-full flex justify-between items-center">
+                                <div class="flex gap-2 items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="chat1" class="w-8 h-8 object-cover border-2 border-tertiary-dark rounded-full">
+                                    <div class="flex flex-col">
+                                        <small class="font-bold text-tertiary-dark">Edward Schmitt</small>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded bg-success"></div>
+                                            <small>Online</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border border-primary-dark text-primary-dark flex items-center justify-center gap-1 p-1">
+                                    <i class="fa-solid fa-user-plus text-xs"></i>
+                                    <small>Add</small>
+                                </div>
+                            </div>
+                            <p class="mt-2">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et !</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div id="message-container" class="lg:h-[65vh] h-[45vh] overflow-y-auto custom-scrollbar">
+                        <div class="flex flex-col gap-4">
+                            {% block message_content %}{% endblock %}
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        {% block form_content %}
                         {% endblock %}
                     </div>
-                </div>
-                <div class="mt-4">
-                    {% block form_content %}
-                        {# Default content, can be overridden #}
-                    {% endblock %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    {% block extra_scripts %}
-        <script>
-            document.addEventListener("DOMContentLoaded", function (event) {
-                var messagesContainer = document.getElementById('message-container');
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            });
-        </script>
-    {% endblock %}
+{% block javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var messagesContainer = document.getElementById('message-container');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    </script>
 {% endblock %}

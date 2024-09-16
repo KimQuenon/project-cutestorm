@@ -212,7 +212,7 @@ p, a{
     color: $dangerDark;
 }
 
-textarea{
+#contact_message{
     resize: none;
     height:170px!important;
 }
@@ -707,7 +707,7 @@ transition: all 0.7s ease-in-out;
 	width: 0;
 	border-width: 7px 10px 0 0;
 	border-style: solid;
-	border-color: #eceff1 transparent;
+	border-color: $primaryDark transparent;
 }
 
 .user-message:after {
@@ -718,17 +718,15 @@ transition: all 0.7s ease-in-out;
 	width: 0;
 	border-width: 7px 0 0 10px;
 	border-style: solid;
-	border-color: #2196F3 transparent;
-}
-
-.input-group{
-    width: 90%;
+	border-color: $secondary transparent;
 }
 
  #message_content{
+    width: 100%;
     resize:none;
     height:70px;
-    border-radius: 15px;
+    border-radius: 0.75rem;
+    outline:none;
 }
 
 .podium-badge {

@@ -1,14 +1,5 @@
 {% extends 'layouts/conversation_layout.html.twig' %}
 
-{% block title %}Demandes de Conversation{% endblock %}
-{% block subtitle %}Demandes{% endblock %}
+{% block title %}Chat requests{% endblock %}
 
-{% block message_content %}
-
-{% endblock %}
-
-{% block partials_conv %}
-    {% include 'partials/_conversation.html.twig' with {
-        items: pendingRequests,
-    } %}
-{% endblock %}
+{% set currentTab = 'requests_index' %}

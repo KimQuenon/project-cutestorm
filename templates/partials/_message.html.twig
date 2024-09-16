@@ -1,14 +1,14 @@
 {% for message in messages %}
-    <div class="w-100 d-flex flex-column p-2">
+    <div class="w-full flex flex-col p-2">
         {% if message.sender == app.user %}
-            <div class="w-75 user-message bg-primary p-3 text-white rounded align-self-end position-relative">
-                <div class="mt-1">{{ message.content }}</div>
-                <small class="text-muted d-block mt-1">{{ message.timestamp|date('d/m/Y H:i') }}</small>
+            <div class="w-3/4 user-message bg-secondary p-3 text-tertiary-dark rounded-xl self-end relative">
+                <div class="mt-1 font-bold">{{ message.content }}</div>
+                <small class="opacity-50">{{ message.timestamp|date('d/m/Y H:i') }}</small>
             </div>
         {% else %}
-            <div class="w-75 not-user-message bg-light p-3 rounded align-self-start position-relative">
-                <div class="mt-1">{{ message.content }}</div>
-                <small class="text-muted d-block mt-1">{{ message.timestamp|date('d/m/Y H:i') }}</small>
+            <div class="w-3/4 not-user-message bg-primary-dark text-background p-3 rounded-xl self-start relative">
+                <div class="mt-1 font-bold">{{ message.content }}</div>
+                <small class="opacity-50">{{ message.timestamp|date('d/m/Y H:i') }}</small>
             </div>
         {% endif %}
     </div>
