@@ -1,15 +1,7 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/errors_layout.html.twig" %}
 
-{% block title %}Page non trouvée{% endblock %}
+{% block title %}Not found{% endblock %}
 
-{% block body %}
-    <div class="container full">
-        <h1>Page non trouvée</h1>
-        <div class="alert alert-danger">
-            <p>La page que vous recherchez n'existe pas!</p>
-            <p>On a surement du mal vous reseigner! Aucun soucis, vous pouvez retourner à l'accueil ou voir nos dernière annonces</p>
-            <a href="{{path('homepage')}}" class='btn btn-primary m-2'>Retour à l'accueil</a>
-            <a href="{{path('artworks_index')}}" class='btn btn-success m-2'>Retour aux annonces</a>
-        </div>
-    </div>
-{% endblock %}
+{% set errorNumber = 'ERROR 404: Not found' %}
+
+{% set errorText = 'Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo veniam deserunt voluptas neque maxime, officia nam provident illum ipsam rerum. ' %}
