@@ -33,6 +33,8 @@
 
 {% set currentTab = 'account_settings' %}
 
+{% form_theme myForm _self %}
+
 {% block content %}
     {% block accountHeader %}
         {% set visibilityStatus = isPrivate ? 'private' : 'public' %}
@@ -47,8 +49,40 @@
             type: 'user'
         } %}
     {% endblock %}
-    <div class="w-full flex justify-between items-center">
-        <h2 class="title title-second">Settings</h2>
-        <a href="{{path('profile_edit')}}" class="btn btn-yellow w-40">Edit</a>
+    <div class="w-full flex justify-between items-center mt-8 mb-4">
+        <h2 class="title title-second text-tertiary-dark">Edit</h2>
+        <a href="{{path('account_settings')}}" class="btn btn-yellow w-40">Settings</a>
+    </div>
+    <div class="w-full bg-background border-2 border-tertiary-dark shadow rounded-xl p-6">
+        <h3 class="title title-third uppercase text-tertiary-dark mb-5">About you</h3>
+        {{form_start(myForm)}}
+		    {{form_row(myForm.pseudo)}}
+		    {{form_row(myForm.firstName)}}
+		    {{form_row(myForm.lastName)}}
+		    {{form_row(myForm.bio)}}
+            <h3 class="title title-third uppercase text-tertiary-dark mt-12 mb-5">Personal informations</h3>
+            {{form_row(myForm.address)}}
+            {{form_row(myForm.postalcode)}}
+            {{form_row(myForm.city)}}
+            {{form_row(myForm.country)}}
+            {{form_row(myForm.email)}}
+            <div class="w-full border-t border-tertiary-light mt-12 py-4">
+        	    <button type="submit" class="btn btn-yellow md:w-52 w-full">Edit</button>
+            </div>
+		{{form_end(myForm)}}
+    </div>
+{% endblock %}
+
+{% block form_row %}
+    <div class="lg:w-3/4 w-full">
+        <div class="flex lg:flex-row flex-col justify-between lg:items-center mb-5">
+            <div class="font-bold text-tertiary-dark">
+                {{form_label(form)}}
+            </div>
+            <div class="lg:w-2/3 w-full">
+                {{ form_widget(form, {'attr': {'class': 'w-full p-3 border border-tertiary-light rounded-xl focus:outline-none'}}) }}
+                {{form_errors(form)}}
+            </div>
+        </div>
     </div>
 {% endblock %}

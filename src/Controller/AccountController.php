@@ -156,7 +156,8 @@ class AccountController extends AbstractController
         }
 
         return $this->render("account/edit.html.twig",[
-            'myForm'=>$form->createView()
+            'myForm'=>$form->createView(),
+            'isPrivate' => $user->isPrivate(),
         ]);
     }
 

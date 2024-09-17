@@ -212,8 +212,11 @@ p, a{
     color: $dangerDark;
 }
 
+textarea{
+    resize:none!important;
+}
+
 #contact_message{
-    resize: none;
     height:170px!important;
 }
 
@@ -723,7 +726,6 @@ transition: all 0.7s ease-in-out;
 
  #message_content{
     width: 100%;
-    resize:none;
     height:70px;
     border-radius: 0.75rem;
     outline:none;
