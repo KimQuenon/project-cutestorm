@@ -1,15 +1,15 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="slide bg-background h-[100vh]">
-        <div class="w-1/2 h-[40vh] mx-auto flex flex-col items-center">
+    <div class="slide bg-background lg:h-[100vh] md:h-[70vh] h-[100vh]">
+        <div class="lg:w-1/2 md:w-3/4 w-[90%] lg:h-[40vh] md:h-[30vh] h-[50vh] mx-auto flex flex-col items-center">
             <h2 class="title text-tertiary-dark mt-5 text-center">{{ errorNumber}}</h2>
             <p class="text-center leading-7">{{errorText}}</p>
-            <div class="flex gap-5 mt-5">
-                <a href="{{path('store')}}" class="btn btn-yellow w-40">< store</a>
-                <a href="{{path('community')}}" class="btn btn-purple w-40">community ></a>
+            <div class="w-full flex gap-5 mt-5 md:flex-row flex-col">
+                <a href="{{path('store')}}" class="btn btn-yellow md:w-40 w-full">< store</a>
+                <a href="{{path('community')}}" class="btn btn-purple md:w-40 w-full">community ></a>
             </div>
         </div>
-        <div class="w-full h-[50vh] bg-cover bg-top bg-no-repeat" style="background-image: url('/images/error-img.svg');"></div>
+        <div class="w-full lg:h-[50vh] md:h-[70vh] h-[50vh] bg-cover bg-top bg-no-repeat" style="background-image: url('/images/error-img.svg');"></div>
     </div>
 {% endblock %}
