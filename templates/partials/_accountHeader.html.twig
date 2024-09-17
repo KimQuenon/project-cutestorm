@@ -1,12 +1,18 @@
 <div class="w-full lg:h-[45vh] md:h-[50vh] h-[75vh]">
-    <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-8">
+    <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 md:p-8 p-2">
         <div class="lg:w-1/2 w-full">
             <div class="w-full bg-background shadow border-2 border-tertiary-dark rounded-xl py-6 px-4">
                 <h2 class="title title-second text-tertiary-dark">{{title}}</h2>
-                <p>{{content}}</p>
+                <p>{{content|raw}}</p>
             </div>
-            <div class="w-full flex md:flex-row flex-col justify-between mt-8 gap-4">
-                {% if showButton %}
+            <div class="w-full flex md:flex-row flex-col justify-between mt-8 gap-4 items-center">
+                {% if currentTab == 'account_settings' %}
+                    <form action="{{ path('toggle_private') }}" method="post" class="mb-0 md:w-40 w-full">
+                        <button type="submit" class="btn btn-yellow md:w-40 w-full">
+                            switch
+                        </button>
+                    </form>
+                {% elseif showButton %}
                     <a href="{{ firstPath}}" class="btn btn-yellow md:w-40 w-full">{{ firstLink }}</a>
                 {% endif %}
                 <a href="{{ secondPath}}" class="btn btn-purple md:w-40 w-full">{{ secondLink }}</a>
@@ -17,10 +23,10 @@
                 <div class="absolute w-20 h-20 top-2 md:left-5 left-0 -rotate-12">
                     <img src="/images/emoji1.svg" alt="emoji1" class="w-full h-full object-contain">
                 </div>
-                <div class="absolute w-28 h-28 lg:bottom-3 -bottom-40 lg:left-6 md:left-1/4 left-5 lg:-translate-x-0 md:-translate-x-1/4 -rotate-12">
+                <div class="absolute w-28 h-28 lg:bottom-3 md:-bottom-32 -bottom-40 lg:left-6 md:left-[40%] left-5 lg:-translate-x-0 md:-translate-x-[40%] -rotate-12">
                     <img src="/images/emoji2.svg" alt="emoji2" class="w-full h-full object-contain">
                 </div>
-                <div class="absolute w-36 h-36 md:top-8 top-4 md:right-5 right-0 rotate-12">
+                <div class="absolute w-36 h-36 lg:top-8 md:-top-5 top-4 lg:right-5 right-0 rotate-12">
                     <img src="/images/emoji3.svg" alt="emoji3" class="w-full h-full object-contain">
                 </div>
             {% elseif type == 'admin' %}

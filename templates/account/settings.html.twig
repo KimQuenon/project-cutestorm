@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>Paramètres du compte</h1>
@@ -10,4 +10,96 @@
             {{ isPrivate ? 'Passer en Public' : 'Passer en Privé' }}
         </button>
     </form>
+{% endblock %} #}
+
+
+{% extends 'layouts/account_layout.html.twig' %}
+
+{% block title %}Settings{% endblock %}
+
+{% set currentTab = 'account_settings' %}
+
+{% block content %}
+    {% block accountHeader %}
+        {% set visibilityStatus = isPrivate ? 'private' : 'public' %}
+        {% set content = 'Your account is in <span class="font-bold text-tertiary-dark">' ~ visibilityStatus ~ '</span>. <br> <br> Would you like to switch this status?' %}
+
+        {% include "partials/_accountHeader.html.twig" with {
+            title: 'Visibility',
+            content: content|raw,
+            showButton: false,
+            secondPath: path('resume_activities'),
+            secondLink: 'Dashboard',
+            type: 'user'
+        } %}
+    {% endblock %}
+    <div class="w-full flex justify-between items-center mt-8 mb-4">
+        <h2 class="title title-second text-tertiary-dark">Settings</h2>
+        <a href="{{path('profile_edit')}}" class="btn btn-yellow w-40">Edit</a>
+    </div>
+    <div class="w-full bg-background border-2 border-tertiary-dark shadow rounded-xl p-6">
+        <h3 class="title title-third uppercase text-tertiary-dark">About you</h3>
+        <div class="w-full flex lg:flex-row flex-col gap-5 mt-4">
+            <div class="lg:w-1/2 w-full space-y-6">
+                {% set fields = [
+                    { label: 'Pseudo:', value: app.user.pseudo },
+                    { label: 'First name:', value: app.user.firstName },
+                    { label: 'Last name:', value: app.user.lastName },
+                    { label: 'Bio:', value: app.user.bio|raw }
+                ] %}
+
+                {% for field in fields %}
+                <div class="w-full flex md:flex-row flex-col justify-between">
+                    <div class="md:w-1/3 w-full font-bold text-tertiary-dark">
+                    {{ field.label }}
+                    </div>
+                    <div class="md:w-2/3 w-full">
+                    {{ field.value|raw }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="lg:w-1/2 w-full space-y-2">
+                <img src="/uploads/{{app.user.avatar}}" alt="img of {{app.user.pseudo}}" class="border-2 border-tertiary-dark w-full h-40 object-cover">
+                <a href="{{path('profile_avatar')}}" class="w-full p-1 border-2 border-tertiary-dark bg-highlight hover:bg-highlight-dark font-bold text-background rounded-md block text-center transition duration-300">Edit avatar</a>
+                <a href="{{path('profile_avatar_delete')}}" class="w-full p-1 border-2 border-tertiary-dark bg-danger-dark hover:bg-danger-hover font-bold text-background rounded-md block text-center transition duration-300">Delete avatar</a>
+            </div>
+        </div>
+
+        <h3 class="title title-third uppercase text-tertiary-dark mt-12">Personal informations</h3>
+        <div class="flex w-full lg:flex-row flex-col gap-5 mt-4">
+            <div class="lg:w-1/2 w-full space-y-6">
+                {% set personalFields = [
+                    { label: 'Address:', value: app.user.address },
+                    { label: 'Postal code:', value: app.user.postalCode },
+                    { label: 'City:', value: app.user.city },
+                    { label: 'Country:', value: app.user.country },
+                    { label: 'Email:', value: app.user.email },
+                    { label: 'Password:', value: '<a href="' ~ path('profile_password') ~ '" class="block border-2 border-danger-dark text-danger-dark bg-transparent hover:bg-danger-dark hover:text-background font-bold transition duration-300 rounded-md p-2 text-center">Change password</a>' }      ] %}
+
+                {% for field in personalFields %}
+                <div class="w-full flex md:flex-row flex-col justify-between">
+                    <div class="md:w-1/3 w-full font-bold text-tertiary-dark">
+                    {{ field.label }}
+                    </div>
+                    <div class="md:w-2/3 w-full">
+                    {{ field.value|raw }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="lg:w-1/2 w-full space-y-2">
+                <img src="/uploads/{{app.user.banner}}" alt="img of {{app.user.pseudo}}" class="border-2 border-tertiary-dark w-full h-40 object-cover">
+                <a href="{{path('profile_banner')}}" class="w-full p-1 border-2 border-tertiary-dark bg-highlight hover:bg-highlight-dark font-bold text-background rounded-md block text-center transition duration-300">Edit banner</a>
+                <a href="{{path('profile_banner_delete')}}" class="w-full p-1 border-2 border-tertiary-dark bg-danger-dark hover:bg-danger-hover font-bold text-background rounded-md block text-center transition duration-300">Delete banner</a>
+            </div>
+        </div>
+        <div class="w-full border-t border-tertiary-light mt-12 py-4">
+            <a href="{{path('profile_delete')}}" class="block w-36 font-bold text-danger-dark bg-transparent p-2 hover:bg-background-hover transition duration-300 text-center">Delete account</a>
+        </div>
+    </div>
 {% endblock %}
+
+
+
+
