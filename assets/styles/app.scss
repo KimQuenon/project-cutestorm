@@ -834,3 +834,13 @@ transition: all 0.7s ease-in-out;
 #search-results ul li a, .dropdown-item{
     color: gray!important;
 }
+
+.payment-success{
+    @include imgCover(cover);
+    background-image: url(../../public/images/payment-success.svg);
+}
+
+.payment-error{
+    @include imgCover(cover);
+    background-image: url(../../public/images/payment-error.svg);
+}

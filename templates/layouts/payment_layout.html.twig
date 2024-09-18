@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+	<div class="slide min-h-screen bg-background flex justify-center items-center
+			    {% if currentTab == 'payment_success' %}
+			        payment-success
+			    {% else %}
+			        payment-error
+			    {% endif %}">
+		<div class="lg:w-1/2 md:w-[70%] w-[90%] border-tertiary-dark shadow rounded-xl h-[1/2] flex flex-col relative">
+			{% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-tertiary' } %}
+			<div class="bg-white shadow-md border-2 border-tertiary-dark md:px-20 px-4 py-6 rounded-b-xl flex-1 space-y-5">
+				<h2 class="title title-second text-tertiary-dark text-center">
+					{% if currentTab == 'payment_success' %}
+						Paiement success !
+					{% elseif currentTab == 'payment_error' %}
+						Paiement error...
+					{% endif %}
+				</h2>
+				<p class="text-center leading-7">
+					{% if currentTab == 'payment_success' %}
+						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam aspernatur eum incidunt facere reiciendis amet aperiam harum, dolore ut accusamus?
+					{% elseif currentTab == 'payment_error' %}
+						Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corporis, sunt neque quis voluptas quibusdam ab ipsam deleniti eum dolores inventore unde quasi amet nulla alias officiis aliquid iste suscipit exercitationem?
+					{% endif %}
+				</p>
+				<a href="{{path('orders_index')}}" class="btn btn-yellow w-40 mx-auto">< Orders</a>
+					<div class="w-24 h-24 absolute -bottom-12 -right-12 md:block hidden">
+						{% if currentTab == 'payment_success' %}
+							<img src="/images/payment-success-icon.svg" alt="payment-success" class="w-full h-full object-contain">
+						{% elseif currentTab == 'payment_error' %}
+							<img src="/images/payment-error-icon.svg" alt="payment-success" class="w-full h-full object-contain">
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endblock %}
