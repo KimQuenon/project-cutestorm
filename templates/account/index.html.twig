@@ -6,22 +6,22 @@
     <div class="w-full h-screen flex bg-login overflow-hidden">
         <div class="w-0 h-full bg-background transition-all duration-1000 stillDiv flex justify-center items-center">
             <div class="md:w-3/4 w-full md:p-0 p-5 opacity-0 textDiv">
-                    {% if hasError %}
-                        <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
-                            <div class="flex gap-2 items-center">
-                                <i class="fas fa-info-circle"></i>
-                                An error has occurred, email address or password invalid.
-                            </div>
+                {% if hasError %}
+                    <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                        <div class="flex gap-2 items-center">
+                            <i class="fas fa-info-circle"></i>
+                            An error has occurred, email address or password invalid.
                         </div>
-                    {% endif %}
-                    {% if loginError %}
-                        <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
-                            <div class="flex gap-2 items-center ">
-                                <i class="fas fa-info-circle"></i>
-                                {{loginError}}
-                            </div>
+                    </div>
+                {% endif %}
+                {% if loginError %}
+                    <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                        <div class="flex gap-2 items-center ">
+                            <i class="fas fa-info-circle"></i>
+                            {{loginError}}
                         </div>
-                    {% endif %}
+                    </div>
+                {% endif %}
                 <h2 class="title text-tertiary-dark">Welcome back !</h2>
                 <p class="mb-12">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. <a href="{{path('account_register')}}" class="text-primary-dark underline font-bold">Create an account !</a></p>
                 <form action="{{ path('account_login') }}" method="POST">

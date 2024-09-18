@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion Admin{% endblock %}
+{% block title %}Admin Login{% endblock %}
 
-{% block body %}
+{# {% block body %}
     <div class="container mx-auto h-full flex justify-center items-center">
         <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
             <h1 class="text-2xl font-bold mb-6">Connexion</h1>
@@ -34,4 +34,53 @@
             </form>
         </div>
     </div>
+{% endblock %} #}
+
+{% block body %}
+<div class="slide min-h-screen bg-background flex justify-center items-center">
+    <div class="md:w-1/2 w-[90%] border-tertiary-dark shadow rounded-xl h-full flex flex-col">
+        {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-primary-dark' } %}
+        <div class="bg-white shadow-md border-2 border-tertiary-dark p-6 py-8 rounded-b-xl flex-1">
+            {% if hasError %}
+                <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                    <div class="flex gap-2 items-center">
+                        <i class="fas fa-info-circle"></i>
+                        An error has occurred, email address or password invalid.
+                    </div>
+                </div>
+            {% endif %}
+            {% if loginError %}
+                <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                    <div class="flex gap-2 items-center ">
+                        <i class="fas fa-info-circle"></i>
+                        {{loginError}}
+                    </div>
+                </div>
+            {% endif %}
+            <h2 class="title title-second text-tertiary-dark">Admin login</h2>
+            <p class="mb-12">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+            <form method="POST">
+                <div class="w-full">
+                    <div class="flex md:flex-row flex-col justify-between md:items-center mb-8">
+                        <label for="email" class="w-1/4 font-bold text-tertiary-dark pb-2">E-mail:</label>
+                        <div class="md:w-3/4 w-full">
+                            <input type="text" name="_username" id="email" class="w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none" placeholder="E-mail..." required value="{{ username }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="flex md:flex-row flex-col justify-between md:items-center mb-8">
+                        <label for="password" class="w-1/4 font-bold text-tertiary-dark pb-2">Password:</label>
+                        <div class="md:w-3/4 w-full">
+                            <input type="password" name="_password" id="password" class="w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none" placeholder="Password..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-52 ml-auto btn btn-yellow">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
