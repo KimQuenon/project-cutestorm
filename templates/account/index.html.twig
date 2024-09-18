@@ -1,38 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion au site{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto flex justify-center items-center min-h-screen">
-        <div class="w-full max-w-md bg-white shadow-md rounded-lg p-6">
-            <h1 class="text-2xl font-semibold mb-6">Connexion</h1>
-
-            {% if hasError %}
-                <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
-                    Une erreur est survenue, le nom d'utilisateur ou le mot de passe est invalide.
-                </div>
-            {% endif %}
-            {% if loginError %}
-                <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
-                    {{ loginError }}
-                </div>
-            {% endif %}
-
-            <form action="{{ path('account_login') }}" method="POST">
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700">E-mail</label>
-                    <input type="text" name="_username" id="email" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Adresse e-mail..." required value="{{ username }}">
-                </div>
-
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700">Mot de passe</label>
-                    <input type="password" name="_password" id="password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Mot de passe..." required>
-                </div>
-
-                <div class="mt-6">
-                    <button type="submit" class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors">Connexion</button>
-                </div>
-            </form>
+    <div class="w-full h-screen flex bg-login overflow-hidden">
+        <div class="w-0 h-full bg-background transition-all duration-1000 stillDiv flex justify-center items-center">
+            <div class="md:w-3/4 w-full md:p-0 p-5 opacity-0 textDiv">
+                    {% if hasError %}
+                        <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                            <div class="flex gap-2 items-center">
+                                <i class="fas fa-info-circle"></i>
+                                An error has occurred, email address or password invalid.
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if loginError %}
+                        <div class="p-4 mb-4 text-sm rounded-full font-bold border-2 border-tertiary-dark bg-danger-dark text-background">
+                            <div class="flex gap-2 items-center ">
+                                <i class="fas fa-info-circle"></i>
+                                {{loginError}}
+                            </div>
+                        </div>
+                    {% endif %}
+                <h2 class="title text-tertiary-dark">Welcome back !</h2>
+                <p class="mb-12">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. <a href="{{path('account_register')}}" class="text-primary-dark underline font-bold">Create an account !</a></p>
+                <form action="{{ path('account_login') }}" method="POST">
+                    <div class="w-full">
+                        <div class="flex md:flex-row flex-col justify-between md:items-center mb-8">
+                            <label for="email" class="w-1/4 font-bold text-tertiary-dark pb-2">E-mail:</label>
+                            <div class="md:w-3/4 w-full">
+                                <input type="text" name="_username" id="email" class="w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none" placeholder="E-mail..." required value="{{ username }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full">
+                        <div class="flex md:flex-row flex-col justify-between md:items-center mb-8">
+                            <label for="password" class="w-1/4 font-bold text-tertiary-dark pb-2">Password:</label>
+                            <div class="md:w-3/4 w-full">
+                                <input type="password" name="_password" id="password" class="w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none" placeholder="Password..." required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button type="submit" class="w-52 ml-auto btn btn-yellow">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="w-full h-full transition-all duration-1000 animatedDiv relative">
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('fadeAnim') }}
+    {{ encore_entry_script_tags('multiStep') }}
+    {{ encore_entry_script_tags('slideEffect') }}
 {% endblock %}

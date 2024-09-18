@@ -28,10 +28,12 @@ Encore
     .addEntry('keepInTouch', './assets/js/keepInTouch.js')
     .addEntry('like', './assets/js/like.js')
     .addEntry('likeComment', './assets/js/likeComment.js')
+    .addEntry('multiStep', './assets/js/multiStep.js')
     .addEntry('removeVariant', './assets/js/removeVariant.js')
     .addEntry('replyAdd', './assets/js/replyAdd.js')
     .addEntry('replyDisplay', './assets/js/replyDisplay.js')
     .addEntry('search', './assets/js/search.js')
+    .addEntry('slideEffect', './assets/js/slideEffect.js')
 
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

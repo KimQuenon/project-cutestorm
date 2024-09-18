@@ -1,62 +1,76 @@
-{# templates/account/registration.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block title %}Registration{% endblock %}
 
-{% block stylesheets %}
-<style>
-.step { display: none; }
-.step.active { display: block; }
-</style>
-{% endblock %}
+{% form_theme myForm _self %}
 
 {% block body %}
-<div class="container full">
-    <h1>Registration</h1>
-    {{ form_start(myForm) }}
-    
-    <div id="step1" class="step active">
-        {{ form_row(myForm.email) }}
-        {{ form_row(myForm.password) }}
-        {{ form_row(myForm.passwordConfirm) }}
-        <button type="button" onclick="nextStep(2)">Next</button>
-    </div>
-    
-    <div id="step2" class="step">
-        {{ form_row(myForm.pseudo) }}
-        {{ form_row(myForm.firstname) }}
-        {{ form_row(myForm.lastname) }}
-        {{ form_row(myForm.address) }}
-        <button type="button" onclick="previousStep(1)">Previous</button>
-        <button type="button" onclick="nextStep(3)">Next</button>
-    </div>
-    
-    <div id="step3" class="step">
-        {{ form_row(myForm.postalcode) }}
-        {{ form_row(myForm.city) }}
-        {{ form_row(myForm.country) }}
-        {{ form_row(myForm.bio) }}
-        {{ form_row(myForm.avatar) }}
-        {{ form_row(myForm.banner) }}
-        <button type="button" onclick="previousStep(2)">Previous</button>
-        <button type="submit" class="btn">Submit</button>
-    </div>
-    {{ form_end(myForm) }}
-</div>
+    <div class="w-full h-screen flex bg-login overflow-hidden">
+        <div class="w-full h-full transition-all duration-1000 animatedDiv relative">
+        </div>
+        <div class="w-0 h-full bg-background transition-all duration-1000 stillDiv flex justify-center items-center">
+            <div class="md:w-3/4 w-full md:p-0 p-5 opacity-0 textDiv">
+                <h2 class="title text-tertiary-dark">A new friend !</h2>
+                <p class="mb-12">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. <a href="{{path('account_login')}}" class="text-primary-dark underline font-bold">Already have an account ?</a></p>
+                {{ form_start(myForm) }}
+                <div id="step1" class="step active">
+                    {{ form_row(myForm.email) }}
+                    {{ form_row(myForm.password) }}
+                    {{ form_row(myForm.passwordConfirm) }}
+                    <button type="button" onclick="nextStep(2)" class="stepButton">Next</button>
+                </div>
+                <div id="step2" class="step">
+                    {{ form_row(myForm.pseudo) }}
+                    {{ form_row(myForm.firstname) }}
+                    {{ form_row(myForm.lastname) }}
+                    <div class="flex gap-3">
+                        <button type="button" onclick="previousStep(1)" class="stepButton">Previous</button>
+                        <button type="button" onclick="nextStep(3)" class="stepButton">Next</button>
+                    </div>
+                </div>
+                
+                <div id="step3" class="step">
+                    {{ form_row(myForm.address) }}
+                    {{ form_row(myForm.postalcode) }}
+                    {{ form_row(myForm.city) }}
+                    {{ form_row(myForm.country) }}
+                    <div class="flex gap-3">
+                        <button type="button" onclick="previousStep(2)" class="stepButton">Previous</button>
+                        <button type="button" onclick="nextStep(4)" class="stepButton">Next</button>
+                    </div>
+                </div>
 
-<script>
-function nextStep(step) {
-    document.querySelectorAll('.step').forEach(function (stepDiv) {
-        stepDiv.classList.remove('active');
-    });
-    document.getElementById('step' + step).classList.add('active');
-}
+                <div id="step4" class="step">
+                    {{ form_row(myForm.bio) }}
+                    {{ form_row(myForm.avatar) }}
+                    {{ form_row(myForm.banner) }}
+                    <div class="flex gap-3">
+                        <button type="button" onclick="previousStep(3)" class="stepButton">Previous</button>
+                        <button type="submit" class="btn btn-yellow w-40">Submit</button>
+                    </div>
+                </div>
+                {{ form_end(myForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-function previousStep(step) {
-    document.querySelectorAll('.step').forEach(function (stepDiv) {
-        stepDiv.classList.remove('active');
-    });
-    document.getElementById('step' + step).classList.add('active');
-}
-</script>
+{% block form_row %}
+    <div class="w-full">
+        <div class="flex md:flex-row flex-col justify-between mb-8">
+            <div class="font-bold text-tertiary-dark">
+                {{form_label(form)}}
+            </div>
+            <div class="md:w-2/3 w-full">
+                {{ form_widget(form, {'attr': {'class': 'w-full p-3 border-2 border-tertiary-dark rounded-2xl shadow focus:outline-none'}}) }}
+                {{form_errors(form)}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('fadeAnim') }}
+    {{ encore_entry_script_tags('multiStep') }}
+    {{ encore_entry_script_tags('slideEffect') }}
 {% endblock %}
