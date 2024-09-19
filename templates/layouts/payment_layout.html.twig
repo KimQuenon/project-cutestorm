@@ -1,5 +1,13 @@
 {% extends "base.html.twig" %}
 
+{% block title %}
+    {% if currentTab == 'payment_success' %}
+        Paiement success
+    {% elseif currentTab == 'payment_error' %}
+        Paiement error
+    {% endif %}
+{% endblock %}
+
 {% block body %}
 	<div class="slide min-h-screen bg-background flex justify-center items-center
 			    {% if currentTab == 'payment_success' %}
