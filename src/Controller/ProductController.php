@@ -191,7 +191,7 @@ class ProductController extends AbstractController
                 }
     
                 $manager->flush();
-                $this->addFlash('success', 'Item added to cart. <a href="' . $this->generateUrl('cart_show') . '">View Cart</a>');
+                $this->addFlash('success', 'Item added to cart. <a href="' . $this->generateUrl('cart_show') . '" class="underline">View Cart</a>');
             }
     
             return $this->redirectToRoute('product_show', [

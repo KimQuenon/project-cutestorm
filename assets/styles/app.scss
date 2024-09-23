@@ -276,6 +276,16 @@ input[type="number"] {
     background-image: url(../../public/images/linear-background-bold.svg);
 }
 
+.linear-background-full {
+    @include imgCover(cover);
+    background-image: url(../../public/images/linear-background-full.svg);
+    height: auto;
+    width: auto;
+    min-height: 100vh;
+}
+
+
+
 .square-background{
     @include imgCover(cover);
     height:80vh;
