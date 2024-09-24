@@ -111,7 +111,7 @@
                                 $ {{ cartItems|reduce((carry, item) => carry + (item.productVariant.product.price * item.quantity), 0) | number_format(2) }}
                             </p>
                         </div>
-                        <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 w-full lg:ml-auto mt-8">create order</a>
+                        <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 lg:ml-auto mt-8">create order</a>
                     </div>
                 {% endif %}
             </div>

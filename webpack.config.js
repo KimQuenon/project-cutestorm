@@ -34,6 +34,9 @@ Encore
     .addEntry('replyDisplay', './assets/js/replyDisplay.js')
     .addEntry('search', './assets/js/search.js')
     .addEntry('slideEffect', './assets/js/slideEffect.js')
+    .addEntry('updateCart', './assets/js/updateCart.js')
+    .addEntry('updateOrder', './assets/js/updateOrder.js')
+    .addEntry('updateStock', './assets/js/updateStock.js')
 
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
