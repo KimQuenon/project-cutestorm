@@ -3,207 +3,120 @@
 {% block title %}Cart{% endblock %}
 
 {% block body %}
-{# <div class="container mt-5">
-    <h1 class="mb-4">My Cart</h1>
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                </thead>
-                <tbody>
-                    {% for cartItem in cartItems %}
-                        <tr>
-                            <td>
-                                <form method="post" action="{{ path('cart_edit', {id: cartItem.id}) }}">
-                                    <div class="input-group">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity('{{ cartItem.id }}', -1)">-</button>
-                                        <input type="number" name="quantity" value="{{ cartItem.quantity }}" min="1" class="form-control text-center" id="quantity-{{ cartItem.id }}">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantity('{{ cartItem.id }}', 1)">+</button>
-                                    </div>
-                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Save Changes</button>
-                                </form>
-                            </td>
-                            <td class="text-right">{{ cartItem.productVariant.product.price|number_format(2, ',', '.')}} $</td>
-                            <td class="text-right" id="total-{{ cartItem.id }}">{{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}} $</td>
-                            <td class="text-center">
-                                {% include 'partials/_deleteModal.html.twig' with {
-                                    'slug': cartItem.id,
-                                    'modalAction': path('cart_remove', { id: cartItem.id }) 
-                                } %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                        <td class="text-right">
-                            <strong>
-                                {{ cartItems|reduce((carry, item) => carry + (item.productVariant.product.price * item.quantity), 0) | number_format(2) }} $
-                            </strong>
-                        </td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    {% endif %}
-</div>
-
-<script>
-function updateQuantity(itemId, change) {
-    const quantityInput = document.getElementById('quantity-' + itemId);
-    let currentQuantity = parseInt(quantityInput.value, 10);
-    currentQuantity += change;
-
-    if (currentQuantity < 1) {
-        currentQuantity = 1;
-    }
-
-    quantityInput.value = currentQuantity;
-
-    const priceText = quantityInput.closest('tr').querySelector('td:nth-child(4)').textContent.replace('$', '').replace('.', '').replace(',', '.').trim();
-    const price = parseFloat(priceText);
-    
-    const totalCell = document.getElementById('total-' + itemId);
-    const total = (price * currentQuantity).toFixed(2);
-    totalCell.textContent = total.replace('.', ',') + ' $';
-
-    updateCartTotal();
-}
-
-function updateCartTotal() {
-    let cartTotal = 0;
-    const totalCells = document.querySelectorAll('td[id^="total-"]');
-    totalCells.forEach(cell => {
-        const totalText = cell.textContent.replace(' $', '').replace('.', '').replace(',', '.').trim();
-        const total = parseFloat(totalText);
-        if (!isNaN(total)) {
-            cartTotal += total;
-        }
-    });
-    
-    const totalRow = document.querySelector('tfoot tr td:nth-child(2) strong');
-    totalRow.textContent = cartTotal.toFixed(2).replace('.', ',') + ' $';
-}
-
-
-
-</script> #}
-
-<div class="slide min-h-screen bg-background">
-    {% include "partials/_shoppingStep.html.twig" with {step:'cart'} %}
-    <div class="container min-h-full flex md:flex-row flex-col justify-between gap-10 p-5 linear-background-full">
-        <div class="lg:w-1/5 lg:block hidden h-fit md:sticky top-4 z-10">
-            <div class="w-full shadow rounded-xl">
-                {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-tertiary' } %}
-                <div class="w-full h-full bg-white border-2 border-tertiary-dark p-6 rounded-b-xl flex-1">
-                    <div class="flex flex-col">
-                        <h2 class="title title-second text-tertiary-dark">Your cart</h2>
-                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
-                        <a href="{{path('store')}}" class="btn btn-yellow w-40 mt-5">< Store</a>
+    <div class="slide min-h-screen bg-background">
+        {% include "partials/_shoppingStep.html.twig" with {step:'cart'} %}
+        <div class="container min-h-full flex md:flex-row flex-col justify-between gap-10 p-5 linear-background-full">
+            <div class="lg:w-1/5 lg:block hidden h-fit md:sticky top-4 z-10">
+                <div class="w-full shadow rounded-xl">
+                    {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-tertiary' } %}
+                    <div class="w-full h-full bg-white border-2 border-tertiary-dark p-6 rounded-b-xl flex-1">
+                        <div class="flex flex-col">
+                            <h2 class="title title-second text-tertiary-dark">Your cart</h2>
+                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+                            <a href="{{path('store')}}" class="btn btn-yellow w-40 mt-5">< Store</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="lg:w-4/5 w-full min-h-full space-y-8">
-            <div class="w-full bg-secondary border-2 border-tertiary-dark shadow p-8 rounded-xl flex md:flex-row flex-col gap-5 items-start">
-                <img src="/images/cutestorm-logo.svg" alt="cutestorm-logo" class="w-12 object-contain">
-                <div>
-                    {% if cartItems %}
-                        <p class="subtitle">What's next ?</p>
-                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
-                        <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
-                            <a href="{{ path('cart_clear') }}" class="btn btn-danger md:w-40 w-full">clear cart</a>
-                            <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 w-full">create order</a>
-                        </div>
-                    {% else %}
-                        <p class="subtitle">Empty cart</p>
-                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
-                        <div class="flex items-center justify-end mt-5 gap-3">
-                            <a href="{{ path('store') }}" class="btn btn-yellow w-40">back to store</a>
-                        </div>
-                    {% endif %}
+            <div class="lg:w-4/5 w-full min-h-full space-y-8">
+                <div class="w-full bg-secondary border-2 border-tertiary-dark shadow p-8 rounded-xl flex md:flex-row flex-col gap-5 items-start">
+                    <img src="/images/cutestorm-logo.svg" alt="cutestorm-logo" class="w-12 object-contain">
+                    <div>
+                        {% if cartItems %}
+                            <p class="subtitle">What's next ?</p>
+                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                            <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
+                                <a href="{{ path('cart_clear') }}" class="btn btn-danger md:w-40 w-full">clear cart</a>
+                                <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 w-full">create order</a>
+                            </div>
+                        {% else %}
+                            <p class="subtitle">Empty cart</p>
+                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                            <div class="flex items-center justify-end mt-5 gap-3">
+                                <a href="{{ path('store') }}" class="btn btn-yellow w-40">back to store</a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            {% if cartItems %}
-                <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
-                    <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
-                        <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
-                            <tr class="font-bold text-background text-xs uppercase text-center">
-                                <th class="p-4">Cover</th>
-                                <th class="p-4">Name</th>
-                                <th class="p-4">Size</th>
-                                <th class="p-4">Quantity</th>
-                                <th class="p-4">New Quantity</th>
-                                <th class="p-4">Price</th>
-                                <th class="p-4">Subtotal</th>
-                                <th class="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-background border-x-2 border-tertiary-dark">
-                            {% for cartItem in cartItems %}
-                                <tr class="divide-x divide-tertiary h-full">
-                                    <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
-                                        <div class="w-20 h-20 border-2 border-tertiary-dark">
-                                            <a href="{{ path('product_show', {'slug': cartItem.productVariant.product.slug}) }}">
-                                                {% if cartItem.productVariant.product.productImages|length > 0 %}
-                                                    {% set firstImage = cartItem.productVariant.product.productImages|first %}
-                                                    {% if firstImage is not null and firstImage.filename is defined %}
-                                                        <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{cartItem.productVariant.product.name}}" class="w-full h-full object-cover">
-                                                    {% else %}
-                                                        <p>No image available</p>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <p>No images available</p>
-                                                {% endif %}
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="p-4 whitespace-nowrap">
-                                        <p class="text-xs text-tertiary-dark font-bold">{{ cartItem.productVariant.product.reference }}</p>
-                                        <p class="text-sm text-tertiary-dark font-bold">{{ cartItem.productVariant.product.name }}</p>
-                                        <p>{{ cartItem.productVariant.product.description|striptags|slice(0, 30) ~ '...' }}</p>
-                                    </td>
-                                    <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.productVariant.size }}</td>
-                                    <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.quantity }}</td>
-                                    <td class="p-4 whitespace-nowrap text-tertiary text-sm">
-                                        <form method="post" action="{{ path('cart_edit', {id: cartItem.id}) }}">
-                                            <div class="inline-flex flex-col gap-2 w-full">
-                                                <div class="inline-flex w-full justify-center">
-                                                    <button type="button" class="w-10 border-2 border-tertiary-dark rounded-l-full font-bold text-tertiary-dark h-10" onclick="updateQuantity('{{ cartItem.id }}', -1)">-</button>
-                                                    <input type="number" name="quantity" value="{{ cartItem.quantity }}" min="1" class="form-control d-inline-block w-20 text-center" id="quantity-{{ cartItem.id }}">
-                                                    <button type="button" class="w-10 border-2 border-tertiary-dark rounded-r-full font-bold text-tertiary-dark" onclick="updateQuantity('{{ cartItem.id }}', 1)">+</button>
-                                                </div>
-                                                <button type="submit" class="btn btn-success w-40 mx-auto">Save Changes</button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                    <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ cartItem.productVariant.product.price|number_format(2, ',', '.')}}</td>
-                                    <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center" id="total-{{ cartItem.id }}">{{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}} $</td>
-                                    <td class="p-4 whitespace-nowrap text-center">
-                                        <div class="inline-flex justify-center items-center">
-                                            {% include 'partials/_deleteModal.html.twig' with {
-                                                'slug': cartItem.id,
-                                                'modalAction': path('cart_remove', { id: cartItem.id }) 
-                                            } %}
-                                        </div>
-                                    </td>
+                {% if cartItems %}
+                    <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+                        <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+                            <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                                <tr class="font-bold text-background text-xs uppercase text-center">
+                                    <th class="p-4">Cover</th>
+                                    <th class="p-4">Name</th>
+                                    <th class="p-4">Size</th>
+                                    <th class="p-4">Quantity</th>
+                                    <th class="p-4">New Quantity</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Subtotal</th>
+                                    <th class="p-4">Actions</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <div class="md:w-1/2 w-full lg:ml-auto rounded-full flex mt-8">
-                        <p class="w-1/2 bg-tertiary-dark text-bold text-background rounded-l-full text-center font-bold p-2 uppercase">Total:</p>
-                        <p class="w-1/2 bg-background text-bold text-tertiary-dark rounded-r-full text-center font-bold p-2 border-2 border-tertiary-dark totalRow">
-                            {{ cartItems|reduce((carry, item) => carry + (item.productVariant.product.price * item.quantity), 0) | number_format(2) }} $
-                        </p>
+                            </thead>
+                            <tbody class="bg-white border-x-2 border-tertiary-dark">
+                                {% for cartItem in cartItems %}
+                                    <tr class="divide-x divide-tertiary h-full">
+                                        <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
+                                            <div class="w-20 h-20 border-2 border-tertiary-dark">
+                                                <a href="{{ path('product_show', {'slug': cartItem.productVariant.product.slug}) }}">
+                                                    {% if cartItem.productVariant.product.productImages|length > 0 %}
+                                                        {% set firstImage = cartItem.productVariant.product.productImages|first %}
+                                                        {% if firstImage is not null and firstImage.filename is defined %}
+                                                            <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{cartItem.productVariant.product.name}}" class="w-full h-full object-cover">
+                                                        {% else %}
+                                                            <p>No image available</p>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <p>No images available</p>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap">
+                                            <p class="text-xs text-tertiary-dark font-bold">{{ cartItem.productVariant.product.reference }}</p>
+                                            <p class="text-sm text-tertiary-dark font-bold">{{ cartItem.productVariant.product.name }}</p>
+                                            <p>{{ cartItem.productVariant.product.description|striptags|slice(0, 30) ~ '...' }}</p>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.productVariant.size }}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.quantity }}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary text-sm">
+                                            <form method="post" action="{{ path('cart_edit', {id: cartItem.id}) }}">
+                                                <div class="inline-flex flex-col gap-2 w-full">
+                                                    <div class="inline-flex w-full justify-center">
+                                                        <button type="button" class="w-10 border-2 border-tertiary-dark rounded-l-full font-bold text-tertiary-dark h-10" onclick="updateQuantity('{{ cartItem.id }}', -1)">-</button>
+                                                        <input type="number" name="quantity" value="{{ cartItem.quantity }}" min="1" class="form-control d-inline-block w-20 text-center border-y-2 border-tertiary-dark" id="quantity-{{ cartItem.id }}">
+                                                        <button type="button" class="w-10 border-2 border-tertiary-dark rounded-r-full font-bold text-tertiary-dark" onclick="updateQuantity('{{ cartItem.id }}', 1)">+</button>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success w-40 mx-auto">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ cartItem.productVariant.product.price|number_format(2, ',', '.')}}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center" id="total-{{ cartItem.id }}">$ {{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}}</td>
+                                        <td class="p-4 whitespace-nowrap text-center">
+                                            <div class="inline-flex justify-center items-center">
+                                                {% include 'partials/_deleteModal.html.twig' with {
+                                                    'slug': cartItem.id,
+                                                    'modalAction': path('cart_remove', { id: cartItem.id }) 
+                                                } %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="md:w-1/2 w-full lg:ml-auto rounded-full flex mt-8">
+                            <p class="w-1/2 bg-tertiary-dark text-bold text-background rounded-l-full text-center font-bold p-2 uppercase">Total:</p>
+                            <p class="w-1/2 bg-white text-bold text-tertiary-dark rounded-r-full text-center font-bold p-2 border-2 border-tertiary-dark totalRow">
+                                $ {{ cartItems|reduce((carry, item) => carry + (item.productVariant.product.price * item.quantity), 0) | number_format(2) }}
+                            </p>
+                        </div>
+                        <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 w-full lg:ml-auto mt-8">create order</a>
                     </div>
-                    <a href="{{ path('order_create') }}" class="btn btn-success w-40 lg:ml-auto mt-8">create order</a>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}

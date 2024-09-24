@@ -284,8 +284,6 @@ input[type="number"] {
     min-height: 100vh;
 }
 
-
-
 .square-background{
     @include imgCover(cover);
     height:80vh;
@@ -418,6 +416,48 @@ form[name="add_to_cart"]{
         }
     }
 }
+
+// .custom-radio-input {
+//     display: none;
+// }
+
+// .custom-radio-input + label {
+//     display: inline-block;
+//     padding-left: 35px;
+//     position: relative;
+//     cursor: pointer;
+// }
+
+// .custom-radio-input + label::before {
+//     content: '';
+//     width: 20px;
+//     height: 20px;
+//     border-radius: 50%;
+//     border: 2px solid #4a4a4a; /* Couleur de la bordure du radio */
+//     background-color: #fff;
+//     position: absolute;
+//     left: 0;
+//     top: 50%;
+//     transform: translateY(-50%);
+// }
+
+// .custom-radio-input:checked + label::before {
+//     background-color: #3490dc; /* Couleur de sélection */
+//     border-color: #3490dc;
+// }
+
+// .custom-radio-input:checked + label::after {
+//     content: '';
+//     width: 12px;
+//     height: 12px;
+//     border-radius: 50%;
+//     background-color: #fff;
+//     position: absolute;
+//     left: 4px;
+//     top: 50%;
+//     transform: translateY(-50%);
+// }
+
 
 #product_productVariants, #product_productImages, #post_postImages {
     display: none;

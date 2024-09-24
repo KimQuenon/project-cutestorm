@@ -2,7 +2,9 @@
 
 {% block title %}Create Order{% endblock %}
 
-{% block body %}
+{% form_theme form _self %}
+
+{# {% block body %}
 <div class="container mt-5">
     <h1>Create Order</h1>
     {{app.user.address}}
@@ -16,26 +18,6 @@
         <h2 class="mt-5">Order Summary</h2>
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Product</th>
-                        <th scope="col">Size</th>
-                        <th scope="col" class="text-center">Quantity</th>
-                        <th scope="col" class="text-right">Price</th>
-                        <th scope="col" class="text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cartItem in cartItems %}
-                        <tr>
-                            <td>{{ cartItem.productVariant.product.name }}</td>
-                            <td>{{ cartItem.productVariant.size }}</td>
-                            <td class="text-center">{{ cartItem.quantity }}</td>
-                            <td class="text-right">{{ cartItem.productVariant.product.price|number_format(2, ',', '.') }} $</td>
-                            <td class="text-right">{{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.') }} $</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-right"><strong>Total:</strong></td>
@@ -104,4 +86,188 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+{% endblock %} #}
+
+{% block body %}
+<div class="slide min-h-screen bg-background">
+    {% include "partials/_shoppingStep.html.twig" with {step:'order'} %}
+    <div class="container min-h-full flex md:flex-row flex-col justify-between gap-10 p-5 linear-background-full">
+        <div class="lg:w-1/5 lg:block hidden h-fit md:sticky top-4 z-10">
+            <div class="w-full shadow rounded-xl">
+                {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-tertiary' } %}
+                <div class="w-full h-full bg-white border-2 border-tertiary-dark p-6 rounded-b-xl flex-1">
+                    <div class="flex flex-col">
+                        <h2 class="title title-second text-tertiary-dark">Your order</h2>
+                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+                        <a href="{{path('cart_show')}}" class="btn btn-yellow w-40 mt-5">< Edit cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="lg:w-4/5 w-full min-h-full space-y-8">
+            <div class="w-full bg-secondary border-2 border-tertiary-dark shadow p-8 rounded-xl flex md:flex-row flex-col gap-5 items-start">
+                <img src="/images/cutestorm-logo.svg" alt="cutestorm-logo" class="w-12 object-contain">
+                <div>
+                    {% if cartItems %}
+                        <p class="subtitle">What's next ?</p>
+                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                        <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
+                            <a href="{{ path('cart_show') }}" class="btn btn-danger md:w-40 w-full">edit cart</a>
+                        </div>
+                    {% else %}
+                        <p class="subtitle">Empty cart</p>
+                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                        <div class="flex items-center justify-end mt-5 gap-3">
+                            <a href="{{ path('store') }}" class="btn btn-yellow w-40">back to store</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if cartItems %}
+                <div>
+                    <p class="title title-third text-tertiary-dark mb-3">1. Check your address</p>
+                    <div class="w-full border-2 border-tertiary-dark rounded-xl bg-white p-3 flex md:flex-row flex-col justify-between items-center md:gap-0 gap-5">
+                        <div class="space-y-2">
+                            <p><span class="font-bold text-tertiary-dark">Address: </span>{{app.user.address}}</p>
+                            <p><span class="font-bold text-tertiary-dark">City: </span>{{app.user.postalcode}} {{app.user.city}}</p>
+                            <p><span class="font-bold text-tertiary-dark">Country: </span>{{app.user.country}}</p>
+                        </div>
+                        <a href="{{path('profile_edit')}}" class="btn btn-blue md:w-40 w-full">Edit address</a>
+                    </div>
+                </div>
+                {{ form_start(form) }}
+                    <div>
+                        <p class="title title-third text-tertiary-dark mb-3">2. Choose your delivery method</p>
+                        <div class="w-full flex md:flex-row flex-col gap-4">
+                            {% for choice in form.delivery %}
+                                <div class="md:w-1/2 w-full bg-white border-2 border-tertiary-dark p-3 rounded-xl flex items-center {{ choice.vars.checked ? 'bg-light' : '' }}">
+                                    {{ form_widget(choice, {attr: {class: 'custom-radio-input'}}) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <p class="title title-third text-tertiary-dark mb-3 mt-8">3. Check your order one last time</p>
+                    <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+                        <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+                            <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                                <tr class="font-bold text-background text-xs uppercase text-center">
+                                    <th class="p-4">Cover</th>
+                                    <th class="p-4">Product</th>
+                                    <th class="p-4">Size</th>
+                                    <th class="p-4">Quantity</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Subtotal</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white border-x-2 border-tertiary-dark">
+                                {% for cartItem in cartItems %}
+                                    <tr class="divide-x divide-tertiary h-full">
+                                        <td class="p-4 whitespace-nowrap flex justify-center items-center h-full">
+                                            <div class="w-20 h-20 border-2 border-tertiary-dark">
+                                                <a href="{{ path('product_show', {'slug': cartItem.productVariant.product.slug}) }}">
+                                                    {% if cartItem.productVariant.product.productImages|length > 0 %}
+                                                        {% set firstImage = cartItem.productVariant.product.productImages|first %}
+                                                        {% if firstImage is not null and firstImage.filename is defined %}
+                                                            <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{cartItem.productVariant.product.name}}" class="w-full h-full object-cover">
+                                                        {% else %}
+                                                            <p>No image available</p>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <p>No images available</p>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap">
+                                            <p class="text-xs text-tertiary-dark font-bold">{{ cartItem.productVariant.product.reference }}</p>
+                                            <p class="text-sm text-tertiary-dark font-bold">{{ cartItem.productVariant.product.name }}</p>
+                                            <p>{{ cartItem.productVariant.product.description|striptags|slice(0, 30) ~ '...' }}</p>
+                                        </td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.productVariant.size }}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ cartItem.quantity }}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ cartItem.productVariant.product.price|number_format(2, ',', '.')}}</td>
+                                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ (cartItem.productVariant.product.price * cartItem.quantity)|number_format(2, ',', '.')}}</td>
+                                        <td class="p-4 whitespace-nowrap text-center">
+                                            <div class="inline-flex justify-center items-center">
+                                                {% include 'partials/_deleteModal.html.twig' with {
+                                                    'slug': cartItem.id,
+                                                    'modalAction': path('cart_remove', { id: cartItem.id }) 
+                                                } %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="md:w-1/2 w-full lg:ml-auto mt-8">
+                            <div class="w-full flex">
+                                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase rounded-tl-xl"><p>Subtotal:</p></div>
+                                <div class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-b-0 border-tertiary-dark rounded-tr-xl">
+                                    <p id="order-total-price">$ {{ totalPrice|number_format(2, ',', '.') }}</p>
+                                </div>
+                            </div>
+                            <div class="w-full flex">
+                                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase"><p>Delivery cost:</p></div>
+                                <div id="delivery-row" class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-b-0 border-tertiary-dark">
+                                    <p id="delivery-cost">$ 0.00</p>
+                                </div>
+                            </div>
+                            <div class="w-full flex">
+                                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase rounded-bl-xl"><p>Total:</p></div>
+                                <div class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-tertiary-dark rounded-br-xl">
+                                    <p id="grand-total">$ {{ totalPrice|number_format(2, ',', '.') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success md:w-40 w-full lg:ml-auto mt-8">Pay order</button>
+                    </div>
+                {{ form_end(form) }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the total price
+    var totalPrice = parseFloat('{{ totalPrice }}');
+
+    // Find all delivery options
+    var deliveryOptions = document.querySelectorAll('input[name="order[delivery]"]');
+
+    // Initialize delivery cost to the first delivery option if available
+    var deliveryCost = 0;
+    if (deliveryOptions.length > 0) {
+        var firstDeliveryOption = deliveryOptions[0];
+        firstDeliveryOption.checked = true; // Set the first option as checked
+        deliveryCost = parseFloat(firstDeliveryOption.getAttribute('data-price'));
+    }
+
+    // Update the delivery cost display
+    document.getElementById('delivery-cost').textContent = '$ ' + deliveryCost.toFixed(2);
+
+    // Update the grand total display
+    var grandTotal = totalPrice + deliveryCost;
+    document.getElementById('grand-total').textContent = '$ ' + grandTotal.toFixed(2);
+
+    deliveryOptions.forEach(function(option) {
+        option.addEventListener('change', function() {
+            // Update delivery cost based on selected option
+            var selectedDeliveryOption = document.querySelector('input[name="order[delivery]"]:checked');
+            if (selectedDeliveryOption) {
+                deliveryCost = parseFloat(selectedDeliveryOption.getAttribute('data-price'));
+            }
+            // Update total and grand total
+            grandTotal = totalPrice + deliveryCost;
+            document.getElementById('delivery-cost').textContent = '$ ' + deliveryCost.toFixed(2);
+            document.getElementById('grand-total').textContent = '$ ' + grandTotal.toFixed(2);
+        });
+    });
+});
+</script>
+
 {% endblock %}

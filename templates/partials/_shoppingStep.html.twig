@@ -5,15 +5,15 @@
     {'path': 'orders_index', 'icon': 'payment-icon.svg', 'step_name': 'payment'}
 ] %}
 
-<div class="w-fit mx-auto bg-primary-dark rounded-full border-2 border-tertiary-dark p-4 flex items-center gap-4">
+<div class="w-fit mx-auto bg-primary-dark rounded-full border-2 border-tertiary-dark p-4 flex items-center gap-4 lg:mt-0 mt-5">
     {% for stepInfo in steps %}
         <a href="{{ path(stepInfo.path) }}">
-            <div class="w-16 h-16 rounded-full border-2 border-tertiary-dark {{ step == stepInfo.step_name ? 'bg-secondary' : 'bg-primary' }} p-2">
+            <div class="lg:w-16 w-12 lg:h-16 h-12 rounded-full border-2 border-tertiary-dark {{ step == stepInfo.step_name ? 'bg-secondary' : 'bg-primary' }} p-2">
                 <img src="/images/{{ stepInfo.icon }}" alt="{{ stepInfo.step_name }}-icon" class="w-full h-full object-contain">
             </div>
         </a>
         {% if not loop.last %}
-            <hr class="w-32 h-1 bg-background rounded-full">
+            <hr class="lg:w-32 md:w-24 md:block hidden h-1 bg-background rounded-full">
         {% endif %}
     {% endfor %}
 </div>
