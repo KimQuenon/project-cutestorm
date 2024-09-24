@@ -15,6 +15,7 @@ use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -98,6 +99,10 @@ class ReportController extends AbstractController
     }
 
     #[Route('/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function index(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy([], ['timestamp' => 'DESC']);
@@ -117,6 +122,10 @@ class ReportController extends AbstractController
     }
 
     #[Route('/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function reportsPosts(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'post'], ['timestamp' => 'DESC']);
@@ -136,6 +145,10 @@ class ReportController extends AbstractController
     }
 
     #[Route('/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function reportsComments(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'comment'], ['timestamp' => 'DESC']);
@@ -155,6 +168,10 @@ class ReportController extends AbstractController
     }
 
     #[Route('/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function reportsUsers(int $page, ReportRepository $reportRepository, PaginationService $paginationService): Response
     {
         $reports = $reportRepository->findBy(['type' => 'user'], ['timestamp' => 'DESC']);
@@ -172,18 +189,12 @@ class ReportController extends AbstractController
             'totalPages' => $totalPages,
         ]);
     }
-    
-    #[Route('/moderation/reports/{id}', name: 'report_show')]
-    public function show(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepository): Response
-    {
-
-        return $this->render('reports/show.html.twig', [
-            'report' => $report,
-        ]);
-    }
-
 
     #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function validate(
         #[MapEntity(mapping: ['id' => 'id'])] Report $report,
         UserRepository $userRepo,
@@ -282,6 +293,10 @@ class ReportController extends AbstractController
     
 
     #[Route('/moderation/reports/{id}/keep', name: 'report_reject')]
+    #[IsGranted(
+        attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
+        message: "You are not allowed to see this"
+    )]
     public function keep(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
     {
         // Déterminer l'objet signalé

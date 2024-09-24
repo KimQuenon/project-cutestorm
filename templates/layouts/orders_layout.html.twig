@@ -5,6 +5,7 @@
 {% block content %}
 	{% block accountHeader %}{% endblock %}
 	
+	{% block order_content %}
     <div class="flex justify-between items-center mt-8 mb-4">
         <h2 class="title title-second text-tertiary-dark">Orders</h2>
 		{% if 'ROLE_ADMIN' in app.user.roles%}
@@ -16,6 +17,7 @@
         	<a href="{{ path('cart_show') }}" class="text-tertiary-dark underline">View cart</a>
 		{% endif %}
     </div>
-    {% include "partials/_orderItem.html.twig" with {orders: orders} %}
+    	{% include "partials/_orderItem.html.twig" with {orders: orders} %}
+	{% endblock %}
 	{% block pagination %}{% endblock %}
 {% endblock %}

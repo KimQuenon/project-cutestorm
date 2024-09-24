@@ -20,13 +20,9 @@ class OrderType extends ApplicationType
                 'choices' => $options['deliveries'],
                 'choice_label' => function(Delivery $delivery) {
                     return sprintf(
-
                         '<p class="text-tertiary-dark"><strong>%s</strong></p><p>%s</p><p>%s $</p>',
-
                         $delivery->getName(),
-
                         $delivery->getDeliveryTime(),
-
                         $delivery->getPrice()
 
                     );

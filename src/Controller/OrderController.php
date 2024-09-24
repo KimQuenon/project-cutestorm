@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -124,8 +125,12 @@ class OrderController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/order/{reference}', name: 'order_show')]
-    #[IsGranted('ROLE_USER')]
+    #[Route('/order/{reference}', name: 'order_show')]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
+        subject: new Expression('args["order"].getUser()'),
+        message: "You are not allowed to see this"
+    )]
     public function show(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order): Response
     {
         $user = $this->getUser();
@@ -138,19 +143,15 @@ class OrderController extends AbstractController
         ]);
     }
     
-    #[Route('profile/order/{reference}/pdf', name: 'order_pdf')]
-    #[IsGranted('ROLE_USER')]
+    #[Route('/order/{reference}/pdf', name: 'order_pdf')]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
+        subject: new Expression('args["order"].getUser()'),
+        message: "You are not allowed to see this"
+    )]
     public function generatePdf(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, PdfGeneratorService $pdfGeneratorService): Response
     {
-        $user = $this->getUser();
-
-        if ($order->getUser() !== $user) {
-            $this->addFlash(
-                'danger',
-                "You do not have permission to access this."
-            );
-            return $this->redirectToRoute('products_index');
-        }
+        $user = $order->getUser();
 
         $html = $this->renderView('orders/pdf.html.twig', [
             'order' => $order,

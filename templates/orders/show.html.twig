@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Order Details{% endblock %}
 
@@ -55,4 +55,85 @@
     {% endif %}
     <a href="{{ path('orders_index') }}" class="btn btn-secondary">Back to Orders</a>
 </div>
+{% endblock %} #}
+
+{% extends 'layouts/orders_layout.html.twig' %}
+
+{% set currentTab = 'orders_index' %}
+
+{% block accountHeader %}
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+        {% set userType = 'admin' %}
+        {% set userPath = path('admin_orders_index') %}
+    {% else %}
+        {% set userType = 'user' %}
+        {% set userPath = path('orders_index') %}
+    {% endif %}
+
+    {% include "partials/_accountHeader.html.twig" with {
+        title: 'View order',
+        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        showButton: false,
+        secondPath: userPath,
+        secondLink: 'Orders',
+        type: userType
+    } %}
+{% endblock %}
+
+{% block order_content %}
+    <div class="flex lg:flex-row flex-col justify-between items-center mt-8 mb-4">
+        <div class="flex items-center gap-2">
+           <div class="w-4 h-4 border-2 border-tertiary-dark rounded-full {{ order.isPaid ? 'bg-success' : 'bg-danger-dark' }}"></div>
+            <h2 class="title title-second text-tertiary-dark">REF: {{order.reference}}</h2>
+        </div>
+        <a href="{{ path('order_pdf', { reference: order.reference }) }}" class="btn btn-blue">Download PDF</a>
+    </div>
+
+    <div class="w-full lg:overflow-visible overflow-x-auto overflow-y-visible">
+        <table class="lg:w-full min-w-full lg:overflow-auto overflow-x-auto shadow rounded-xl border-b-2 border-tertiary-dark">
+            <thead class="w-full bg-tertiary border-2 border-tertiary-dark">
+                <tr class="font-bold text-background text-xs uppercase text-center">
+                    <th class="p-4">Product</th>
+                    <th class="p-4">Size</th>
+                    <th class="p-4">Quantity</th>
+                    <th class="p-4">Price</th>
+                    <th class="p-4">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white border-x-2 border-tertiary-dark">
+                {% for orderItem in orderItems %}
+                    <tr class="divide-x divide-tertiary text-sm text-tertiary-dark font-bold text-center">
+                        <td class="p-4 whitespace-nowrap">{{ orderItem.productVariant.product.name }}</td>
+                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ orderItem.productVariant.size }}</td>
+                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">{{ orderItem.quantity }}</td>
+                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ orderItem.productVariant.product.price|number_format(2, ',', '.')}}</td>
+                        <td class="p-4 whitespace-nowrap text-tertiary-dark font-bold text-sm text-center">$ {{ (orderItem.productVariant.product.price * orderItem.quantity)|number_format(2, ',', '.')}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="md:w-1/2 w-full lg:ml-auto mt-8">
+            <div class="w-full flex">
+                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase rounded-tl-xl"><p>Subtotal:</p></div>
+                <div class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-b-0 border-tertiary-dark rounded-tr-xl">
+                    <p>$ {{ (order.totalPrice - order.delivery.price)|number_format(2, ',', '.') }}</p>
+                </div>
+            </div>
+            <div class="w-full flex">
+                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase"><p>Delivery cost:</p></div>
+                <div class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-b-0 border-tertiary-dark">
+                    <p>$ {{ order.delivery.price }}</p>
+                </div>
+            </div>
+            <div class="w-full flex">
+                <div class="w-1/2 bg-tertiary-dark text-bold text-background text-center font-bold p-2 uppercase rounded-bl-xl"><p>Total:</p></div>
+                <div class="w-1/2 bg-white text-bold text-tertiary-dark text-center font-bold p-2 border-2 border-tertiary-dark rounded-br-xl">
+                    <p>$ {{ order.totalPrice|number_format(2, ',', '.') }}</p>
+                </div>
+            </div>
+        </div>
+        {% if not order.isPaid and app.user == order.user %}
+            <a href="{{ path('payment_stripe', { reference: order.reference }) }}" class="btn btn-success md:w-40 w-full lg:ml-auto mt-8">Pay order</a>
+        {% endif %}
+    </div>
 {% endblock %}
