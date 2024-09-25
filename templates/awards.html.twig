@@ -3,15 +3,121 @@
 {% block title %}Awards{% endblock %}
 
 {% block body %}
+    <div class="slide bg-primary h-fit">
+        <div class="container flex items-center relative" data-aos="fade-up" data-aos-duration="1000">
+            <h2 class="mt-12 font-gliker lg:text-[110px] md:text-[80px] text-[50px] leading-0 text-white text-center uppercase">Dare to <span class="text-secondary">Create</span>, Dare to <span class="text-danger-dark">Win</span> : <span class="text-danger">Recognizing</span> the Best in Custom <span class="text-primary-dark">Fashion </span>!</h2>
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute top-16 left-5 star">
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute top-8 right-20 star">
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute top-[40%] -translate-y-[40%] right-[25%] -translate-x-[25%] star">
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute bottom-[30%] -translate-y-[30%] right-[10%] -translate-x-[10%] star">
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute -bottom-2 left-[20%] -translate-x-[20%] star">
+            <img src="/images/star-icon.svg" alt='star-icon' class="w-10 h-10 absolute bottom-3 right-[30%] -translate-x-[30%] star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute top-12 left-20 star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute top-20 right-16 star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute top-[40%] -translate-y-[40%] left-[15%] -translate-x-[15%] star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute bottom-[30%] -translate-y-[30%] left-[5%] -translate-x-[5%] star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute bottom-[25%] -translate-y-[25%] left-[50%] -translate-x-[50%] star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute bottom-[15%] -translate-y-[15%] right-[15%] -translate-x-[15%] star">
+            <img src="/images/star-filled-icon.svg" alt='star-icon' class="w-3 h-3 absolute bottom-4 left-[23%] -translate-x-[23%] star">
+        </div>
+    </div>
+
+    <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
+        <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
+          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+        </div>
+    </div>
 
     {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedPosts, 'itemType': 'post', 'itemCategory': 'likedPost'} %}
 
+    <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
+        <div class="element absolute top-0 -right-[100%] bg-blue -rotate-3" delta-x="-25"  delta-y="25">
+          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in -rotate-3">
+        </div>
+    </div>
+
     {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Commented Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCommentedPosts, 'itemType': 'post', 'itemCategory': 'commentedPost'} %}
+
+    <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
+        <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
+          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+        </div>
+    </div>
     
     {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
     
+    <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
+        <div class="element absolute top-0 -right-[100%] bg-blue -rotate-3" delta-x="-25"  delta-y="25">
+          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in -rotate-3">
+        </div>
+    </div>
+
     {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Active Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCreators, 'itemType': 'user', 'itemCategory': 'activeUser'} %}
     
+    <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
+        <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
+          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+        </div>
+    </div>
+
     {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Popular Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topFollowedUsers, 'itemType': 'user', 'itemCategory': 'followedUser'} %}
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init();
+            const stars = document.querySelectorAll('.star');
+
+            stars.forEach(star => {
+                const randomDuration = (Math.random() * 3) + 1; // Durée aléatoire entre 1s et 4s
+                const randomDelay = Math.random() * 5; // Délai aléatoire entre 0 et 5s
+
+                star.style.animationDuration = `${randomDuration}s`;
+                star.style.animationDelay = `${randomDelay}s`;
+            });
+
+        });
+
+
+            const scenes = document.querySelectorAll('.scene');
+            scenes.forEach(scene => {
+            const elements = scene.querySelectorAll('.element');
+            const transitionDelay = 100; // Délai en millisecondes entre les dates
+        
+            const moveElements = (percent) => {
+                elements.forEach((element, elementIndex) => {
+                
+    if (element.getAttribute('delta-x')) {
+
+      const deltaX = parseFloat(element.getAttribute('delta-x'));
+
+      const deltaY = parseFloat(element.getAttribute('delta-y')); // Add this
+
+      element.style.transform = `translate(${deltaX * percent * 4}vw, ${deltaY * percent * 4}px)`;
+
+    }
+
+
+                
+
+                if(element.getAttribute('data-transi')){
+                    const transit = parseFloat(element.getAttribute('data-transi'));
+                    const opacity = (percent>=transit)? 1 : 0;
+                    element.style.opacity = opacity;
+                }
+
+                });
+            };
+  
+            document.addEventListener('scroll', () => {
+                const start = (window.scrollY + window.innerHeight) - scene.offsetTop;
+                const length = window.innerHeight + scene.offsetHeight;
+                const percent = Math.max(0, Math.min(1, start / length));
+                moveElements(percent);
+            });
+            
+    });
+    </script>
 {% endblock %}

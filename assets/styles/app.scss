@@ -895,16 +895,16 @@ transition: all 0.7s ease-in-out;
     background-image: url(../../public/images/payment-error.svg);
 }
 
-select option:hover::before {
-
-    content: attr(label);
-  
-    background-color: $backgroundHover;
-  
-    color: $tertiaryDark;
-  
-    display: block;
-  
-    padding: 0 10px;
-  
+@keyframes twinkle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
+  
+.star {
+opacity: 1;
+animation: twinkle 2s infinite ease-in-out;
+}

@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary-dark', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
+
 {% block title %}Product Store{% endblock %}
 
 {% block body %}
@@ -74,7 +78,7 @@
 				<!-- Products Grid -->
 				<div class="w-full lg:w-3/4 md:w-2/3 px-4">
 					<div class="flex justify-between mb-8 lg:flex-row flex-col">
-						<h2 class="title title-second text-tertiary-dark">Our Products</h2>
+						<h2 class="title title-second text-tertiary-dark">Our store</h2>
 						{% include "partials/_search.html.twig" %}
 					</div>
 					{% if products|length > 0 %}
