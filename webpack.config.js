@@ -34,6 +34,7 @@ Encore
     .addEntry('replyDisplay', './assets/js/replyDisplay.js')
     .addEntry('search', './assets/js/search.js')
     .addEntry('slideEffect', './assets/js/slideEffect.js')
+    .addEntry('toggleDisplay', './assets/js/toggleDisplay.js')
     .addEntry('updateCart', './assets/js/updateCart.js')
     .addEntry('updateOrder', './assets/js/updateOrder.js')
     .addEntry('updateStock', './assets/js/updateStock.js')

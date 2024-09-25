@@ -894,3 +894,17 @@ transition: all 0.7s ease-in-out;
     @include imgCover(cover);
     background-image: url(../../public/images/payment-error.svg);
 }
+
+select option:hover::before {
+
+    content: attr(label);
+  
+    background-color: $backgroundHover;
+  
+    color: $tertiaryDark;
+  
+    display: block;
+  
+    padding: 0 10px;
+  
+  }
