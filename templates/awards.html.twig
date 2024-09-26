@@ -2,6 +2,11 @@
 
 {% block title %}Awards{% endblock %}
 
+
+{% block header %}
+    {% include "partials/_header.html.twig" with { megaMenu: 'bg-primary', textColor: 'text-tertiary-dark', textHover: 'hover:text-tertiary' } %}
+{% endblock %}
+
 {% block body %}
     <div class="slide bg-primary h-fit">
         <div class="container flex items-center relative" data-aos="fade-up" data-aos-duration="1000">

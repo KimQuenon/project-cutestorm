@@ -65,3 +65,8 @@ document.addEventListener('click', (e) => {
         bar3.classList.remove('-rotate-45', '-translate-y-2');
     }
 });
+
+document.querySelector('button').addEventListener('click', function() {
+    const dropdown = document.querySelector('[role="menu"]');
+    dropdown.classList.toggle('hidden');
+});

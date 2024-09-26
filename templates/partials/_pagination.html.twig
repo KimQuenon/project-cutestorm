@@ -1,43 +1,50 @@
-<div class="d-flex justify-content-center">
-    <ul class="pagination pagination-sm">
-        <!-- Premier Bouton de Page -->
-        <li class="page-item {% if page == 1 %}disabled{% endif %}">
-            <a href="{{ path(route, parameters | merge({ 'page': 1 })) }}" class="page-link">First</a>
+<div class="w-full flex justify-center pt-10">
+    <ul class="w-1/4 pagination pagination-sm flex justify-between items-center">
+        <!-- first page -->
+        <li class="page-item">
+            <a href="{{ path(route, parameters | merge({ 'page': 1 })) }}" class="page-link text-tertiary-dark {% if page == 1 %}opacity-50 cursor-not-allowed{% endif %}">
+                <i class="fa-solid fa-angles-left"></i>
+            </a>
         </li>
 
-        <!-- Bouton Page Précédente -->
-        <li class="page-item {% if page == 1 %}disabled{% endif %}">
-
-            <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">&laquo;</a>
+        <!-- previous page button -->
+        <li class="page-item">
+            <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link text-tertiary-dark {% if page == 1 %}opacity-50 cursor-not-allowed{% endif %}">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
         </li>
 
-        <!-- Page Précédente -->
+        <!-- previous page -->
         {% if page > 1 %}
             <li class="page-item">
-                <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link">{{ page - 1 }}</a>
+                <a href="{{ path(route, parameters | merge({ 'page': page - 1 })) }}" class="page-link w-8 h-8 transition duration-300 hover:bg-white hover:border-2 hover:border-tertiary-dark rounded-full hover:font-bold hover:text-tertiary-dark text-tertiary flex justify-center items-center">{{ page - 1 }}</a>
             </li>
         {% endif %}
 
-        <!-- Page Actuelle -->
-        <li class="page-item active">
+        <!-- current page -->
+        <li class="page-item active w-8 h-8 bg-white border-2 border-tertiary-dark rounded-full font-bold text-tertiary-dark flex justify-center items-center">
             <span class="page-link">{{ page }}</span>
         </li>
 
-        <!-- Page Suivante -->
+        <!-- next page -->
         {% if page < pages %}
             <li class="page-item">
-                <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link">{{ page + 1 }}</a>
+                <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link w-8 h-8 transition duration-300 hover:bg-white hover:border-2 hover:border-tertiary-dark rounded-full hover:font-bold hover:text-tertiary-dark text-tertiary flex justify-center items-center">{{ page + 1 }}</a>
             </li>
         {% endif %}
 
-        <!-- Bouton Page Suivante -->
-        <li class="page-item {% if page == pages %}disabled{% endif %}">
-            <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link">&raquo;</a>
+        <!-- next page button -->
+        <li class="page-item">
+            <a href="{{ path(route, parameters | merge({ 'page': page + 1 })) }}" class="page-link {% if page == pages %}opacity-50 cursor-not-allowed{% endif %}">
+                <i class="fa-solid fa-angle-right"></i>
+            </a>
         </li>
 
-        <!-- Dernier Bouton de Page -->
-        <li class="page-item {% if page == pages %}disabled{% endif %}">
-            <a href="{{ path(route, parameters | merge({ 'page': pages })) }}" class="page-link">Last</a>
+        <!-- last page -->
+        <li class="page-item">
+            <a href="{{ path(route, parameters | merge({ 'page': pages })) }}" class="page-link text-tertiary-dark {% if page == pages %}opacity-50 cursor-not-allowed{% endif %}">
+                <i class="fa-solid fa-angles-right"></i>
+            </a>
         </li>
     </ul>
 </div>
