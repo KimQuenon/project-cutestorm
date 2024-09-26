@@ -45,13 +45,21 @@
             </div>
         {% endfor %}
 
-
-
         {% block body %}{% endblock %}
+        <div class="relative">
+            <button class="w-20 h-20 fixed z-40 bottom-6 right-6 bg-secondary hover:bg-secondary-hover rounded-full transition duration-300 hover:rotate-180 " id="back-to-top">
+                <img src="/images/back-to-top.svg" alt="back-to-top" class="w-full h-full object-cover">
+            </button>
+        </div>
         {% block footer %}
             {% include "partials/_footer.html.twig" %}
         {% endblock %}
-        {% block javascripts %}
-        {% endblock %}
+        <script>
+            const backToTopButton = document.getElementById('back-to-top');
+            backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        </script>
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
