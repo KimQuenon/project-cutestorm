@@ -70,7 +70,7 @@ class ProductController extends AbstractController
         } elseif ($categoryId) {
             $products = $productRepo->findByCategory($categoryId, $orderBy);
         } else {
-            $products = $productRepo->findBy([], $orderBy);
+            $products = $productRepo->findAllProducts();
         }
     
         $currentPage = $page;

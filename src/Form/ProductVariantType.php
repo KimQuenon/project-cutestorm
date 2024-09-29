@@ -34,6 +34,7 @@ class ProductVariantType extends ApplicationType
                 '48'=>'48',
                 '49'=>'49',
                 '50'=>'50',
+                '00'=>'00',
             ]])
             ->add('stock', IntegerType::class, $this->getConfiguration("Stock:", '...'))
         ;

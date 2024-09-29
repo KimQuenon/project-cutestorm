@@ -483,7 +483,7 @@ input[type=file]::file-selector-button {
 
 }
 
-input[name='product_image[file]'], input[name='post_image[file]'], input[name*='product[productImages]['], input[name*='post[postImages]['], input[name='registration[avatar]'], input[name='registration[banner]']{
+input[name='product_image[file]'], input[name='post_image[file]'], input[name*='product[productImages]['], input[name*='post[postImages]['], input[name='registration[avatar]'], input[name='registration[banner]'], input[name='avatar[newAvatar]'], input[name='banner[newBanner]']{
     padding:0px!important;
 }
 
@@ -499,7 +499,7 @@ input[name='product_image[file]'], input[name='post_image[file]'], input[name*='
 /*----NAV----*/
 .mega-menu-img{
     @include imgCover(cover);
-    background-image: url(../../public/images/mega-menu.jpg);
+    background-image: url(../../public/images/mega-menu.webp);
     height:30vh;
 }
 

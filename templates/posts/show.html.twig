@@ -34,7 +34,11 @@
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('uploads/' ~ post.author.avatar) }}" alt="image of {{ post.author.pseudo }}" class="object-cover w-12 h-12 rounded-full border-2 border-tertiary-dark">
                             <div>
-                                <p class="font-bold text-tertiary-dark">{{ post.author.pseudo }}</p>
+                                {% if app.user == post.author %}
+                                    <a href="{{ path('profile_feed') }}" class="font-bold text-tertiary-dark">{{ post.author.pseudo }}</a></p>
+                                {% else %}
+                                    <a href="{{ path('profile_show', {'slug': post.author.slug}) }}" class="font-bold text-tertiary-dark">{{ post.author.pseudo }}</a></p>
+                                {% endif %}
                                 <p>{{ post.timestamp|date('d-m-Y') }}</p>
                             </div>
                         </div>

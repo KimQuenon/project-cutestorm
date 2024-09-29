@@ -17,6 +17,16 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    public function findAllProducts()
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.name != :excludedName')
+            ->setParameter('excludedName', 'Deleted Product')
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByColorAndCategory(int $colorId, int $categoryId, array $orderBy = ['id' => 'DESC'])
     {
         $qb = $this->createQueryBuilder('p')
@@ -34,7 +44,6 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
-    
 
     public function findByColor(int $colorId, array $orderBy = ['id' => 'DESC'])
     {
@@ -50,8 +59,6 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
-    
-
     public function getColors()
     {
         return $this->createQueryBuilder('p')
@@ -76,8 +83,6 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
-    
-
     public function getCategories()
     {
         return $this->createQueryBuilder('p')
@@ -95,13 +100,14 @@ class ProductRepository extends ServiceEntityRepository
             ->select('p')
             ->join('p.productVariants', 'pv')
             ->join('pv.orderItems', 'oi')
+            ->where('p.name != :excludedName')
+            ->setParameter('excludedName', 'Deleted Product')
             ->groupBy('p')
             ->orderBy('COUNT(oi)', $order)
             ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->getQuery();
     
-        return $qb;
+        return $qb->getOneOrNullResult();
     }
     
     public function findBestSeller(): ?Product

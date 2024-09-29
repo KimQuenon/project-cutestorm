@@ -47,7 +47,7 @@
                 {% if posts|length > 0 %}
                     {% for post in posts %}
                         <div class="my-10">
-                            {% include "partials/_cardPost.html.twig" with {post: post, imgHeight: 'h-[275px]'} %}
+                            {% include "partials/_cardPost.html.twig" with {post: post, imgHeight: 'lg:h-[500px] h-[250px]'} %}
                         </div>
                     {% endfor %}
                 {% block pagination %}{% endblock %}

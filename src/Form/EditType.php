@@ -21,8 +21,8 @@ class EditType extends ApplicationType
         
         $builder
         ->add('pseudo', TextType::class, $this->getConfiguration("Pseudo", "Be creative..."))
-        ->add('firstName', TextType::class, $this->getConfiguration("First name", "John"))
-        ->add('lastName', TextType::class, $this->getConfiguration("Last name", "Doe"))
+        ->add('firstname', TextType::class, $this->getConfiguration("First name", "John"))
+        ->add('lastname', TextType::class, $this->getConfiguration("Last name", "Doe"))
         ->add('email', EmailType::class, $this->getConfiguration("Mail", "john.doe@gmail.com"))
         ->add('address', TextType::class, $this->getConfiguration("Address", "New Street 77"))
         ->add('postalcode', IntegerType::class, $this->getConfiguration("Post Code:", 'Exemple : 75000'))
@@ -34,6 +34,7 @@ class EditType extends ApplicationType
         ])
         ->add('bio', TextareaType::class, $this->getConfiguration("Bio", "Be careful of what you share..."))
         ;
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

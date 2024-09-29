@@ -104,7 +104,7 @@
                     <a href="{{path('cart_show')}}">
                         <div class="relative">
                             <i class="fa-solid fa-bag-shopping text-tertiary-dark text-lg hover:text-tertiary transition duration-300"></i>
-                            {% if app.user.cart.cartItems|length > 0 %}
+                            {% if app.user.cart and app.user.cart.cartItems|length > 0 %}
                                 <div class="w-2 h-2 absolute -top-1 -right-2 rounded-full p-2 bg-danger-dark font-bold text-background flex justify-center items-center text-xs">{{app.user.cart.cartItems|length}}</div>
                             {% endif %}
                         </div>
@@ -119,15 +119,15 @@
                         <div class="absolute right-0 mt-2 w-48 rounded-xl bg-white border-2 border-tertiary-dark hidden z-50" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                             <div class="py-1" role="none">
                                 <a href="{{path('profile_feed')}}" class="block px-4 py-2 mt-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Feed</a>
-                                <hr class="border-t border-tertiary-light mx-2">
+                                <hr class="border-t border-tertiary-light mx-2 py-1">
                                 <a href="{{path('cart_show')}}" class="block px-4 py-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Cart</a>
                                 <a href="{{path('orders_index')}}" class="block px-4 py-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Orders</a>
-                                <hr class="border-t border-tertiary-light mx-2">
+                                <hr class="border-t border-tertiary-light mx-2 py-1">
                                 <a href="{{path('resume_activities')}}" class="block px-4 py-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Dashboard</a>
                                 <a href="{{path('conversations_index')}}" class="block px-4 py-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Conversations</a>
                                 <a href="{{path('account_settings')}}" class="block px-4 py-2 text-sm hover:bg-background hover:text-tertiary-dark transition duration-300" role="menuitem">Profile settings</a>
                                 <hr class="border-t border-tertiary-light mx-2">
-                                <a href="{{path('account_logout')}}" class="block px-4 py-2 mb-2 text-sm text-danger-dark hover:bg-background transition duration-300 font-bold" role="menuitem">Log out</a>
+                                <a href="{{path('account_logout')}}" class="block px-4 py-2 my-2 text-sm text-danger-dark hover:bg-background transition duration-300 font-bold" role="menuitem">Log out</a>
                             </div>
                         </div>
                     </div>

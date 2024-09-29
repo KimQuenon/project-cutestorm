@@ -88,11 +88,8 @@ class Post
     #[ORM\PreUpdate]
     public function initializeSlug(): void
     {
-        if(empty($this->slug))
-        {
-            $slugify = new Slugify();
-            $this->slug = $slugify->slugify($this->title.' '.uniqid());
-        }
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($this->title.' '.uniqid());
     }
 
     /**

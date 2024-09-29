@@ -93,32 +93,26 @@
             <h2 class="title text-tertiary-dark mb-4">Our closet</h2>
             {% include "partials/_search.html.twig" %}
         </div>
-        <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8">
-            <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
-                <div class="flex-1">
-                    {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'lg:h-[275px] h-48'} %}
-                </div>
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8 min-h-full">
+            <div class="lg:col-span-2 lg:row-span-2 h-fit bg-red-200">
+                {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'lg:h-[280px] h-48'} %}
             </div>
 
             {% for i in 1..6 %}
-                <div class="lg:h-full h-[48vh]">
-                    <div class="flex-1">
-                        {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
-                    </div>
+                <div class="lg:h-[36vh] h-[48vh]">
+                    {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
                 </div>
             {% endfor %}
 
-            <div class="lg:col-span-2 lg:row-span-2 lg:h-[75vh] h-full">
+            <div class="lg:col-span-2 lg:row-span-2 lg:h-fit h-full">
                 <div class="flex-1">
-                    {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'lg:h-[275px] h-48'} %}
+                    {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'lg:h-[280px] h-48'} %}
                 </div>
             </div>
 
             {% for i in [8, 7] %}
-                <div class="lg:h-full h-[48vh]">
-                    <div class="flex-1">
-                        {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
-                    </div>
+                <div class="lg:h-[36vh] h-[48vh]">
+                    {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
                 </div>
             {% endfor %}
         </div>

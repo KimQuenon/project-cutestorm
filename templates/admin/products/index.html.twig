@@ -8,8 +8,12 @@
     <div class="w-full lg:h-[45vh] md:h-[60vh] h-[150vh]">
         <a href="{{path('product_new')}}" class="btn btn-purple w-40 ml-auto">New product</a>
         <div class="w-full linear-background-bold flex lg:flex-row flex-col gap-10 p-5">
-            {% include "partials/_sellerItem.html.twig" with { product: bestSeller, title: 'Best Seller'} %}
-            {% include "partials/_sellerItem.html.twig" with { product: worstSeller, title: 'Worst Seller'} %}
+            {% if bestSeller %}
+                {% include "partials/_sellerItem.html.twig" with { product: bestSeller, title: 'Best Seller'} %}
+            {% endif %}
+            {% if worstSeller %}
+                {% include "partials/_sellerItem.html.twig" with { product: worstSeller, title: 'Worst Seller'} %}
+            {% endif %}
         </div>
     </div>
     <div class="flex flex-wrap justify-between items-center mt-16 mb-4">
@@ -40,7 +44,7 @@
                                                 {% set firstImage = product.productImages|first %}
                                                 {% if firstImage is not null and firstImage.filename is defined %}
                                                     
-                                                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{worstSeller.name}}" class="w-full h-full object-cover">
+                                                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{product.name}}" class="w-full h-full object-cover">
                                                 {% else %}
                                                     <p>No image available</p>
                                                 {% endif %}

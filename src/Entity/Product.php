@@ -85,15 +85,12 @@ class Product
     #[ORM\PreUpdate]
     public function initializeSlug(): void
     {
-        if(empty($this->slug))
-        {
-            $slugify = new Slugify();
+        $slugify = new Slugify();
 
-            $productName = $slugify->slugify($this->name);
-            $productRef = $slugify->slugify($this->reference);
+        $productName = $slugify->slugify($this->name);
+        $productRef = $slugify->slugify($this->reference);
 
-            $this->slug = $productName . '-' . $productRef;
-        }
+        $this->slug = $productName . '-' . $productRef;
     }
 
     public function getId(): ?int

@@ -33,7 +33,7 @@ class AdminProductController extends AbstractController
     #[Route('/admin/products/{page<\d+>?1}', name: 'products_index')]
     public function index(int $page, ProductRepository $productRepo, OrderItemRepository $orderItemRepo, PaginationService $paginationService): Response
     {
-        $products = $productRepo->findBy([], ['id' => 'DESC']);
+        $products = $productRepo->findAllProducts();
         $bestSeller = $productRepo->findBestSeller();
         $worstSeller = $productRepo->findWorstSeller();
 
@@ -232,6 +232,7 @@ class AdminProductController extends AbstractController
             }
 
             $product->setName(ucwords($product->getName()));
+            
             foreach ($product->getProductCategories() as $category)
             {
                 $category->addProduct($product);
@@ -306,23 +307,12 @@ class AdminProductController extends AbstractController
         return $this->redirectToRoute('products_index');
     }
 
-    #[Route("admin/product/{slug}/pictures", name: "product_pictures")]
-    public function displayPictures(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product): Response
-    {
-        $images = $product->getProductImages();
-
-        return $this->render("admin/products/display_pictures.html.twig", [
-            'product' => $product,
-            'images' => $images
-        ]);
-    }
-
     #[Route("admin/product/{slug}/add-image", name: "product_add_image")]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, Request $request, EntityManagerInterface $manager): Response
     {
         if (count($product->getProductImages()) >= 5) {
             $this->addFlash('danger', 'Limit of 5 pictures reached. Please delete one before adding a new image.');
-            return $this->redirectToRoute('product_pictures', ['slug' => $product->getSlug()]);
+            return $this->redirectToRoute('product_edit', ['slug' => $product->getSlug()]);
         }
 
         $productImage = new ProductImage();
@@ -352,7 +342,7 @@ class AdminProductController extends AbstractController
                 $manager->flush();
 
                 $this->addFlash('success', 'New image added successfully!');
-                return $this->redirectToRoute('product_pictures', ['slug' => $product->getSlug()]);
+                return $this->redirectToRoute('product_add_image', ['slug' => $product->getSlug()]);
             }
         }
 
@@ -370,7 +360,7 @@ class AdminProductController extends AbstractController
 
         if (count($product->getProductImages()) <= 1) {
             $this->addFlash('danger', 'A product must have at least one image. Add another image first before deleting this one.');
-            return $this->redirectToRoute('product_pictures', [
+            return $this->redirectToRoute('product_add_picture', [
                 'slug' => $product->getSlug(),
             ]);
         }
@@ -385,7 +375,7 @@ class AdminProductController extends AbstractController
         
         $this->addFlash('success', 'Picture deleted!');
         
-        return $this->redirectToRoute('product_pictures', [
+        return $this->redirectToRoute('product_edit', [
             'slug' => $product->getSlug(),
         ]);
     }

@@ -3,9 +3,13 @@
 		<img src="{{ asset('uploads/' ~ comment.author.avatar) }}" alt="image of {{comment.author.pseudo}}" class="object-cover w-12 h-12 rounded-full border-2 border-tertiary-dark">
 		<div>
             <div class="flex items-center">
-			    <a href="{{ path('profile_show', {'slug': comment.author.slug}) }}" class="font-bold text-tertiary-dark">{{ comment.author.pseudo }}</a>
+				{% if app.user == comment.author %}
+					<a href="{{ path('profile_feed') }}" class="font-bold text-tertiary-dark">{{ comment.author.pseudo }}</a>
+				{% else %}
+			    	<a href="{{ path('profile_show', {'slug': comment.author.slug}) }}" class="font-bold text-tertiary-dark">{{ comment.author.pseudo }}</a>
+				{% endif %}
                 {% if comment.author == comment.post.author %}
-                    <p> • <span class="text-highlight font-bold">creator</span></p>
+                    <p class="pl-1 text-tertiary-dark"> • <span class="text-highlight font-bold">creator</span></p>
                 {% endif %}
             </div>
 			{% include "partials/_follow.html.twig" with {user: post.author}%}

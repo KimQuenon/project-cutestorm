@@ -6,15 +6,15 @@
     {# ------------------------------SLIDE 1 - ADD TO CART------------------------------ #}
     <div class="slide bg-background">
         <div class="container flex lg:flex-row flex-col gap-10">
-            <div class="lg:w-1/2 w-full linear-background">
-                <div class="md:m-10 lg:mt-0 mt-20 border-tertiary-dark shadow rounded-xl flex flex-col h-full">
+            <div class="lg:w-1/2 w-full linear-background ">
+                <div class="md:m-10 lg:mt-10 mt-20 border-tertiary-dark shadow rounded-xl flex flex-col h-full">
                     {% include "partials/_cardHeader.html.twig" with { backgroundClass: 'bg-primary-dark' } %}
                     <div class="bg-white border-2 border-tertiary-dark p-6 py-8 rounded-b-xl flex-1">
                         <div class="swiper-container w-full lg:h-[65vh] h-[45vh] relative">
                             <div class="swiper-wrapper h-full relative">
                                 {% for image in product.productImages %}
                                     <div class="swiper-slide w-full h-full flex items-center justify-center">
-                                        <img src="{{ asset('uploads/' ~ image.filename) }}" alt="image of {{product.name}}" class="max-h-full max-w-full object-contain object-center">
+                                        <img src="{{ asset('uploads/' ~ image.filename) }}" alt="image of {{product.name}}" class="h-full w-full object-cover object-center">
                                     </div>
                                 {% endfor %}
                             </div>

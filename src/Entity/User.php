@@ -80,13 +80,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
-    #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
+    // #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
+    // #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $avatar = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
-    #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
+    // #[Assert\Image(mimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], mimeTypesMessage: "Upload a jpg, jpeg, png or gif file")]
+    // #[Assert\File(maxSize: "1024k", maxSizeMessage: "This file is too big to be uploaded.")]
     private ?string $banner = null;
 
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', cascade: ['remove'], orphanRemoval: true)]
@@ -198,10 +198,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreUpdate]
     public function initializeSlug(): void
     {
-        if (empty($this->slug)) {
-            $slugify = new Slugify();
-            $this->slug = $slugify->slugify($this->pseudo);
-        }
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($this->pseudo);
     }
 
     #[ORM\PrePersist]

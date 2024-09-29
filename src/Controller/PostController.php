@@ -102,31 +102,6 @@ class PostController extends AbstractController
 
         return new JsonResponse($results);
     }
-    
-    // #[Route('/posts/search/ajax', name: 'posts_search_ajax', methods: ['GET'])]
-    // public function searchAjax(Request $request, PostRepository $postRepo): JsonResponse
-    // {
-    //     $query = $request->query->get('query', '');
-
-    //     if (empty($query)) {
-    //         return new JsonResponse([]);
-    //     }
-
-    //     $results = $postRepo->findByTitleOrPseudoQuery($query)
-    //         ->setMaxResults(10)
-    //         ->getQuery()
-    //         ->getResult();
-
-    //     $jsonResults = array_map(function ($post) {
-    //         return [
-    //             'title' => $post->getTitle(),
-    //             'author'=> $post->getAuthor()->getPseudo(),
-    //             'slug' => $post->getSlug(),
-    //         ];
-    //     }, $results);
-
-    //     return new JsonResponse($jsonResults);
-    // }
 
     #[Route("/post/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]
@@ -401,7 +376,7 @@ class PostController extends AbstractController
                 $manager->flush();
 
                 $this->addFlash('success', 'New image added successfully!');
-                return $this->redirectToRoute('post_edit', ['slug' => $post->getSlug()]);
+                return $this->redirectToRoute('post_add_image', ['slug' => $post->getSlug()]);
             }
         }
 

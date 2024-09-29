@@ -1,7 +1,7 @@
 {% if app.user %}
     {% set isFollowing = app.user.followings|filter(following => following.followedUser.id == user.id) %}
     <form action="{{ path('toggle_follow', {'slug': user.slug}) }}" method="post" class="mb-0">
-        <button type="submit" class="border p-1 font-bold text-sm transition-all duration-300 {{ isFollowing|length > 0 ? 'bg-primary-dark text-white hover:bg-primary-hover' : 'text-primary-dark border-none hover:bg-background-hover' }}">
+        <button type="submit" class="border p-1 font-bold text-xs transition-all duration-300 {{ isFollowing|length > 0 ? 'bg-primary-dark text-white hover:bg-primary-hover' : 'text-primary-dark border-none hover:bg-background-hover' }}">
             {% if isFollowing|length > 0 %}
                 Unfollow
             {% else %}

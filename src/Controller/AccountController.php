@@ -92,7 +92,7 @@ class AccountController extends AbstractController
                 $user->setAvatar($newFilename);
             } else {
                 // Assigner l'avatar par défaut
-                $user->setAvatar('default-avatar.jpg');
+                $user->setAvatar('default-avatar.webp');
             }
 
             $bannerFile = $form->get('banner')->getData(); // Adaptez cette ligne si nécessaire
@@ -110,11 +110,7 @@ class AccountController extends AbstractController
                 }
                 $user->setBanner($newFilename);
             } else {
-                $defaultBanners = [
-                    'banner1.jpg',
-                    'banner2.jpg',
-                    'banner3.jpg',
-                ];
+                $defaultBanners = ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.webp', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'];
                 $randomBanner = $defaultBanners[array_rand($defaultBanners)];
                 $user->setBanner($randomBanner);
             }
@@ -149,8 +145,8 @@ class AccountController extends AbstractController
             $manager->flush();
 
             $this->addFlash(
-            'success',
-            'Data has been saved successfully'    
+                'success',
+                'Data has been saved successfully'    
             );
             return $this->redirectToRoute('account_settings');
         }
@@ -242,7 +238,7 @@ class AccountController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             //get rid of the old avatar
-            if(!empty($user->getAvatar() && $user->getAvatar() !== 'default-avatar.jpg'))
+            if(!empty($user->getAvatar() && $user->getAvatar() !== 'default-avatar.webp'))
             {
                 unlink($this->getParameter('uploads_directory').'/'.$user->getAvatar());
             }
@@ -287,11 +283,11 @@ class AccountController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!empty($user->getAvatar()) && $user->getAvatar() !== 'default-avatar.jpg') {
+        if (!empty($user->getAvatar()) && $user->getAvatar() !== 'default-avatar.webp') {
             unlink($this->getParameter('uploads_directory').'/'.$user->getAvatar());
         }
 
-        $user->setAvatar('default-avatar.jpg');
+        $user->setAvatar('default-avatar.webp');
 
         $manager->persist($user);
         $manager->flush();
@@ -359,7 +355,7 @@ class AccountController extends AbstractController
     {
         $user = $this->getUser();
 
-        $defaultBanners = ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'];
+        $defaultBanners = ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.webp', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'];
 
         // Vérifier si la bannière actuelle est dans les bannières par défaut
         if (in_array($user->getBanner(), $defaultBanners)) {
@@ -389,14 +385,14 @@ class AccountController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!empty($user->getBanner()) && $user->getBanner() !== 'banner1.jpg' && $user->getBanner() !== 'banner2.jpg' && $user->getBanner() !== 'banner3.jpg') {
+        if (!empty($user->getBanner()) && !preg_match('/^banner\d+\.webp$/', $user->getBanner())) {
             $bannerPath = $this->getParameter('uploads_directory').'/'.$user->getBanner();
             if (file_exists($bannerPath)) {
                 unlink($bannerPath); 
             }
         }
 
-        $defaultBanners = ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'];
+        $defaultBanners = ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.webp', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'];
         $randomBanner = $defaultBanners[array_rand($defaultBanners)];
         $user->setBanner($randomBanner);
 
@@ -449,11 +445,11 @@ class AccountController extends AbstractController
                             $manager->remove($userReport);
                         }
     
-                        if ($user->getAvatar() && $user->getAvatar() !== 'default-avatar.jpg') {
+                        if ($user->getAvatar() && $user->getAvatar() !== 'default-avatar.webp') {
                             unlink($this->getParameter('uploads_directory').'/'.$user->getAvatar());
                         }
     
-                        if ($user->getBanner() && !in_array($user->getBanner(), ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'])) {
+                        if ($user->getBanner() && !in_array($user->getBanner(), ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.wepb', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'])) {
                             unlink($this->getParameter('uploads_directory').'/'.$user->getBanner());
                         }
                     }

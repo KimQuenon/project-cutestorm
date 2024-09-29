@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the total price
-    // var totalPrice = parseFloat('{{ totalPrice }}');
     var totalPriceElement = document.getElementById('order-total-price');
     var totalPrice = parseFloat(totalPriceElement.getAttribute('data-total-price'));
 

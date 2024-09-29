@@ -1,5 +1,5 @@
-<div class="w-full flex justify-center pt-10">
-    <ul class="w-1/4 pagination pagination-sm flex justify-between items-center">
+<div class="w-full flex justify-center py-10">
+    <ul class="lg:w-1/4 md:w-1/2 w-full pagination pagination-sm flex justify-between items-center">
         <!-- first page -->
         <li class="page-item">
             <a href="{{ path(route, parameters | merge({ 'page': 1 })) }}" class="page-link text-tertiary-dark {% if page == 1 %}opacity-50 cursor-not-allowed{% endif %}">
