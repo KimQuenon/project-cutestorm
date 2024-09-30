@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const prototype = imagesWrapper.dataset.prototype;
     const addImageButton = document.getElementById('add-image');
 
+    //limit to 5 uploads/element
     const updateAddImageButtonState = () => {
         if (index >= 5) {
             addImageButton.disabled = true;
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    //add upload file
     addImageButton.addEventListener('click', function() {
         if (index < 5) {
             const newForm = prototype.replace(/__name__/g, index);
@@ -24,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    //remove upload file
     imagesWrapper.addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('remove-image')) {
             e.target.closest('.image-form').remove();

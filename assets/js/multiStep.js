@@ -1,3 +1,4 @@
+// go to previous/next step in a multi-step form
 function nextStep(step) {
     document.querySelectorAll('.step').forEach(function (stepDiv) {
         stepDiv.classList.remove('active');

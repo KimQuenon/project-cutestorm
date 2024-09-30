@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var replies = document.getElementById('replies-' + commentId);
             var repliesCount = replies.querySelectorAll('.list-group-item').length;
 
+            //display replies for a comment
             if (replies.classList.contains('show')) {
                 replies.classList.remove('show');
                 this.textContent = repliesCount === 1 ? 'View reply' : 'View ' + repliesCount + ' replies';

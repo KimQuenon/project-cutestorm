@@ -1,5 +1,3 @@
-// search.js
-
 function search(searchInputId, searchResultsId, apiUrl, resultTemplate) {
     const searchInput = document.querySelector(`#${searchInputId}`);
     const searchResults = document.querySelector(`#${searchResultsId}`);
@@ -9,11 +7,13 @@ function search(searchInputId, searchResultsId, apiUrl, resultTemplate) {
       const query = this.value.trim();
   
       if (query.length > 1) {
+        // json request to display results
         fetch(`${apiUrl}?query=${encodeURIComponent(query)}`)
           .then((response) => response.json())
           .then((data) => {
             resultsList.innerHTML = '';
-  
+            
+            //if results => display a list of links
             if (data.length > 0) {
               searchResults.style.display = 'block';
   

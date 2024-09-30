@@ -1,11 +1,14 @@
 console.log('updateCart.js loaded');
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    // update quantity
     function updateQuantity(itemId, change) {
         const quantityInput = document.getElementById('quantity-' + itemId);
         let currentQuantity = parseInt(quantityInput.value, 10);
         currentQuantity += change;
     
+        // limit to positive value
         if (currentQuantity < 1) {
             currentQuantity = 1;
         }
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCartTotal();
     }
     
+    //update cart total
     function updateCartTotal() {
         let cartTotal = 0;
         const totalCells = document.querySelectorAll('td[id^="total-"]');

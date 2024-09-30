@@ -1,3 +1,4 @@
+//add each element x seconds after the slide is visible
 function observeAllSlides() {
     const slides = document.querySelectorAll('.slide');
 

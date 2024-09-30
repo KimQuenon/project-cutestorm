@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const prototype = container.dataset.prototype;
     let index = container.querySelectorAll('.form-row').length;
 
+    //add variant field (size + stock)
     addButton.addEventListener('click', () => {
         const newElement = document.createElement('div');
         newElement.classList.add('form-row', 'mb-3');
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(newElement);
     });
 
+    // remove variant field
     container.addEventListener('click', (event) => {
         if (event.target.classList.contains('remove-variant')) {
             event.target.closest('.form-row').remove();

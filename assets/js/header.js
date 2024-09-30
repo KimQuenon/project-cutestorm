@@ -6,16 +6,19 @@ const bar1 = document.getElementById('burger-bar-1');
 const bar2 = document.getElementById('burger-bar-2');
 const bar3 = document.getElementById('burger-bar-3');
 
+
+//display mega menu on while hovering the nav
 nav.addEventListener('mouseover', () => {
   megaMenu.classList.remove('hidden');
 });
 
+//hide the mega menu
 megaMenu.addEventListener('mouseout', () => {
   megaMenu.classList.add('hidden');
 });
 
 burgerMenu.addEventListener('click', () => {
-    // Afficher/masquer le menu burger avec animation
+    // toggle to display/hide menu burger
     if (burgerMenuContainer.classList.contains('hidden')) {
         burgerMenuContainer.classList.remove('hidden');
         burgerMenuContainer.classList.add('slide-in');
@@ -25,7 +28,7 @@ burgerMenu.addEventListener('click', () => {
         burgerMenuContainer.classList.add('slide-out');
         document.body.classList.remove('overflow-hidden');
 
-        // Réinitialiser les classes après l'animation
+        // reset classes
         burgerMenuContainer.addEventListener('animationend', () => {
             if (burgerMenuContainer.classList.contains('slide-out')) {
                 burgerMenuContainer.classList.add('hidden');

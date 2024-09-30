@@ -2,7 +2,7 @@
     <div class="w-full flex md:flex-row flex-col justify-between gap-4">
         <div class="md:w-1/2 w-full border-2 border-tertiary-dark aspect-[1/1]">
             {% if product.productImages|length > 0 %}
-                {% set firstImage = bestSeller.productImages|first %}
+                {% set firstImage = product.productImages|first %}
                 {% if firstImage is not null and firstImage.filename is defined %}
                     <img src="{{ asset('uploads/' ~ firstImage.filename) }}" alt="image of {{product.name}}" class="w-full h-full object-cover">
                 {% else %}
@@ -20,5 +20,5 @@
             <p><span class="font-bold">Color : </span>  {{ product.color.name }}</p>
         </div>
     </div>
-    <p class="mt-4">{{product.description|raw}}</p>
+    <p class="mt-4">{{product.description|striptags|slice(0, 120) ~ '...'}}</p>
 </div>

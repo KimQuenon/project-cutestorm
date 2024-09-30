@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.change-quantity').forEach(button => {
+        //define quantity to add
         button.addEventListener('click', () => {
             const input = button.closest('td').querySelector('.stock-input');
             let currentValue = parseInt(input.value, 10);
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // display new total
     document.querySelectorAll('.stock-input').forEach(input => {
         input.addEventListener('change', () => {
             const initialStock = parseInt(input.dataset.initial, 10);
