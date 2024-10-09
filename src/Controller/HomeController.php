@@ -15,6 +15,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
+    /**
+     * homepage + display employees + contact
+     *
+     * @param ReviewRepository $reviewRepo
+     * @param TeamRepository $teamRepo
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/', name: 'homepage')]
     public function index(ReviewRepository $reviewRepo, TeamRepository $teamRepo, Request $request, EntityManagerInterface $manager): Response
     {
@@ -54,10 +63,15 @@ class HomeController extends AbstractController
         ]);
     }
 
+    /**
+     * legals mentions
+     *
+     * @return void
+     */
     #[Route('/private-policy', name: 'private_policy')]
     public function policy()
     {
-        return $this->render('policy.html.twig', [
+        return $this->render('privacy.html.twig', [
 
         ]);
     }

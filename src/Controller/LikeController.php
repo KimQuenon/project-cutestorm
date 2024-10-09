@@ -26,12 +26,16 @@ class LikeController extends AbstractController
         $this->notificationService = $notificationService;
     }
     
+    /**
+     * Like post (JSON for dynamic response)
+     */
     #[Route('/posts/{slug}/like', name: 'post_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function addLike(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager, LikeRepository $likeRepo, NotificationRepository $notificationRepo): JsonResponse
     {
         $user = $this->getUser();
 
+        // cannot auto-like
         if ($post->getAuthor() === $user) {
             return new JsonResponse(['error' => 'Cannot like your own post'], Response::HTTP_FORBIDDEN);
         }
@@ -62,6 +66,7 @@ class LikeController extends AbstractController
             $manager->flush();
             $liked = true;
 
+            //generate a like notification
             $this->notificationService->addNotification('like', $user, $post->getAuthor(), $post, null);
 
         }
@@ -73,7 +78,9 @@ class LikeController extends AbstractController
         return new JsonResponse(['likeCount' => $likeCount, 'liked' => $liked]);
     }
 
-    
+    /**
+     * Like comment (JSON for dynamic response)
+     */
     #[Route('/comments/{id}/like', name: 'comment_like', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function addLikeComment(Comment $comment, EntityManagerInterface $manager, LikeCommentRepository $likeCommentRepo, NotificationRepository $notificationRepo): JsonResponse

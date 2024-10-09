@@ -7,7 +7,7 @@
 {% block accountHeader %}
     {% include "partials/_accountHeader.html.twig" with {
         title:  "$ " ~ (totalUnpaid | number_format(2, ',', '.')),
-        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        content: "Uh oh, it seems like there is some unpaid invoices in there... Let's keep that in check, just in case we need to intervene...",
         showButton: false,
         secondPath: path('admin_orders_index'),
         secondLink: 'Orders',

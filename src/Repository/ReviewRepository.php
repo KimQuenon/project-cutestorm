@@ -19,6 +19,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
+    // average rating with decimal
     public function getAverageRating(int $productId): ?float
     {
         $qb = $this->createQueryBuilder('r')
@@ -33,6 +34,7 @@ class ReviewRepository extends ServiceEntityRepository
         return $result ? round((float) $result, 1) : null;
     }
 
+    // has the user bought that product?
     public function hasUserBoughtProduct(User $user, Product $product)
     {
         if ($user === null) {
@@ -54,6 +56,7 @@ class ReviewRepository extends ServiceEntityRepository
         return $query->getQuery()->getOneOrNullResult() !== null;
     }
 
+    // find review rated between 4 & 5 stars
     public function findTopRatedReviews(): array
     {
         return $this->createQueryBuilder('r')

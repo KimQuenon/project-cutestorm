@@ -49,16 +49,6 @@
                     </div>
                 </div>
             </a>
-            {# <a href="{{ path('conversation_show', {'slug': (app.user == item.sender) ? item.recipient.slug : item.sender.slug}) }}" class="list-group-item list-group-item-action w-full flex p-4">
-                <div class="bg-secondary">
-                    <a href="{{ path('profile_show', {'slug': item.sender.slug}) }}">
-                        <img src="{{ asset('uploads/' ~ item.sender.avatar) }}" alt="img of {{item.sender.pseudo}}" class="w-12 h-12 border-2 border-tertiary-dark rounded-full"></img>
-                    </a>
-                    <div class="w-full flex justify-between">
-
-                    </div>
-                </div>
-            </a> #}
         {% endfor %}
     </div>
 </div>

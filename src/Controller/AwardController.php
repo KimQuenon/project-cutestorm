@@ -10,6 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AwardController extends AbstractController
 {
+    /**
+     * list of awards
+     *
+     * @param PostRepository $postRepo
+     * @param UserRepository $userRepo
+     * @return Response
+     */
     #[Route('/awards', name: 'awards')]
     public function index(PostRepository $postRepo, UserRepository $userRepo): Response
     {

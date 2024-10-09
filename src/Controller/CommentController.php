@@ -22,6 +22,14 @@ class CommentController extends AbstractController
         $this->entityManager = $entityManager;
     }
     
+    /**
+     * Reply to a comment
+     *
+     * @param Comment $comment
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("/comments/reply/{id}", name: "comment_reply", methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function reply(Comment $comment, Request $request, EntityManagerInterface $manager): Response {
@@ -42,7 +50,6 @@ class CommentController extends AbstractController
             $manager->persist($reply);
             $manager->flush();
 
-            // $this->notificationService->addNotification('comment', $user, $post->getAuthor(), $post, $reply);
             $this->notificationService->addNotification('reply', $user, $comment->getAuthor(), $post, $reply);
     
             $this->addFlash('success', 'Reply posted');
@@ -54,6 +61,14 @@ class CommentController extends AbstractController
         return $this->redirectToRoute('post_show', ['slug' => $post->getSlug()]);
     }
     
+    /**
+     * Delete comment
+     *
+     * @param EntityManagerInterface $manager
+     * @param Comment $comment
+     * @param UserRepository $userRepo
+     * @return Response
+     */
     #[Route('/comment/delete/{id}', name:"comment_delete")]
     #[IsGranted(
         attribute: New Expression('(user == subject and is_granted("ROLE_USER"))'),
@@ -64,6 +79,7 @@ class CommentController extends AbstractController
     {
         $this->addFlash('danger','Comment deleted.');
 
+        // replace author & content
         $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
 
         $comment->setContent('This comment has been deleted.')

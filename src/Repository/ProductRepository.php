@@ -17,6 +17,7 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    //find all products by desc order except the delete one
     public function findAllProducts()
     {
         return $this->createQueryBuilder('p')
@@ -27,6 +28,7 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    // add a filter by category and color
     public function findByColorAndCategory(int $colorId, int $categoryId, array $orderBy = ['id' => 'DESC'])
     {
         $qb = $this->createQueryBuilder('p')
@@ -44,7 +46,7 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
-
+    // filter color
     public function findByColor(int $colorId, array $orderBy = ['id' => 'DESC'])
     {
         $qb = $this->createQueryBuilder('p')
@@ -59,6 +61,7 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
+    // display all colors available
     public function getColors()
     {
         return $this->createQueryBuilder('p')
@@ -69,6 +72,7 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    // filter category
     public function findByCategory(int $categoryId, array $orderBy = ['id' => 'DESC'])
     {
         $qb = $this->createQueryBuilder('p')
@@ -83,6 +87,7 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
     
+    // display all categories available
     public function getCategories()
     {
         return $this->createQueryBuilder('p')
@@ -94,6 +99,7 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    // finding best and worst seller
     private function findSeller($order): ?Product
     {
         $qb = $this->createQueryBuilder('p')
@@ -110,16 +116,19 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getOneOrNullResult();
     }
     
+    // parameters for best
     public function findBestSeller(): ?Product
     {
         return $this->findSeller('DESC');
     }
     
+    // parameters for worst
     public function findWorstSeller(): ?Product
     {
         return $this->findSeller('ASC');
     }
 
+    // for searchbar => find by product name
     public function findByProductNameQuery(string $term): QueryBuilder
     {
         return $this->createQueryBuilder('p')

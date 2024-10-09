@@ -20,6 +20,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class OrderController extends AbstractController
 {
+    /**
+     * Display all orders for a connected user
+     *
+     * @param integer $page
+     * @param PaginationService $paginationService
+     * @param OrderRepository $orderRepo
+     * @return Response
+     */
     #[Route('/profile/orders/{page<\d+>?1}', name: 'orders_index')]
     #[IsGranted('ROLE_USER')]
     public function index(int $page, PaginationService $paginationService, OrderRepository $orderRepo): Response
@@ -41,6 +49,15 @@ class OrderController extends AbstractController
         ]);
     }
 
+    /**
+     * create order + select delivery method
+     *
+     * @param Request $request
+     * @param DeliveryRepository $deliveryRepo
+     * @param OrderRepository $orderRepo
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/order/create', name: 'order_create')]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, DeliveryRepository $deliveryRepo, OrderRepository $orderRepo, EntityManagerInterface $manager): Response
@@ -125,6 +142,9 @@ class OrderController extends AbstractController
         ]);
     }
 
+    /**
+     * View order
+     */
     #[Route('/order/{reference}', name: 'order_show')]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
@@ -143,6 +163,9 @@ class OrderController extends AbstractController
         ]);
     }
     
+    /**
+     * Generate PDF for invoice
+     */
     #[Route('/order/{reference}/pdf', name: 'order_pdf')]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
@@ -160,6 +183,7 @@ class OrderController extends AbstractController
 
         $userName = $user->getLastName();
 
+        // pdf name
         $fileName = sprintf('Order_%s-%s.pdf', $order->getReference(), $userName);
 
         return $pdfGeneratorService->generatePdf($html, $fileName);

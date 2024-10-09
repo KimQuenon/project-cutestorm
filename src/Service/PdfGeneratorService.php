@@ -12,7 +12,7 @@ class PdfGeneratorService
     {
         // Initialize Dompdf with options
         $options = new Options();
-        $options->set('defaultFont', 'Arial');
+        $options->set('fontFamily', 'Quicksand');
         $dompdf = new Dompdf($options);
 
         // Load HTML content

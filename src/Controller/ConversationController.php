@@ -14,11 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ConversationController extends AbstractController
 {
+    /**
+     * display all conversations
+     *
+     * @param ConversationRepository $convRepo
+     * @param MessageRepository $messageRepo
+     * @return Response
+     */
     #[Route('/profile/conversations', name: 'conversations_index')]
+    #[IsGranted('ROLE_USER')]
     public function index(ConversationRepository $convRepo, MessageRepository $messageRepo): Response
     {
         $user = $this->getUser();
@@ -41,8 +50,14 @@ class ConversationController extends AbstractController
         ]);
     }
     
-
+    /**
+     * display all conversations requests
+     *
+     * @param ConversationRepository $convRepo
+     * @return Response
+     */
     #[Route('/profile/conversations/requests', name: 'conversation_requests')]
+    #[IsGranted('ROLE_USER')]
     public function requests(ConversationRepository $convRepo): Response
     {
         $user = $this->getUser();
@@ -54,7 +69,11 @@ class ConversationController extends AbstractController
         ]);
     }
 
+    /**
+     * display single conversation
+     */
     #[Route('/profile/conversations/{slug}', name: 'conversation_show')]
+    #[IsGranted('ROLE_USER')]
     public function show(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $otherUser,
         Request $request,
@@ -137,9 +156,12 @@ class ConversationController extends AbstractController
         }
     }
     
-    
 
+    /**
+     * create conversation
+     */
     #[Route('/conversations/create/{slug}', name: 'conversation_new')]
+    #[IsGranted('ROLE_USER')]
     public function create(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $otherUser, Request $request, EntityManagerInterface $entityManager,
         UserRepository $userRepo,
@@ -205,8 +227,11 @@ class ConversationController extends AbstractController
         ]);
     }
     
-
+    /**
+     * accept request
+     */
     #[Route('/conversations/accept/{slug}', name: 'conversation_accept')]
+    #[IsGranted('ROLE_USER')]
     public function accept(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $sender,
         EntityManagerInterface $manager,
@@ -233,8 +258,11 @@ class ConversationController extends AbstractController
     }
     
 
-
+    /**
+     * reject request
+     */
     #[Route('/conversations/reject/{slug}', name: 'conversation_reject')]
+    #[IsGranted('ROLE_USER')]
     public function reject(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $sender,
         EntityManagerInterface $manager,

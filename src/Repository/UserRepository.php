@@ -33,6 +33,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    //most liked users
     public function findTopLikedUsers(int $limit = 3): array
     {
         return $this->createQueryBuilder('u')
@@ -47,6 +48,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getArrayResult();
     }
     
+    //most active users
     public function findTopCreators(int $limit = 3): array
     {
         return $this->createQueryBuilder('u')
@@ -60,6 +62,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getArrayResult();
     }
 
+    //most popular users
     public function findTopFollowedUsers(int $limit = 3): array
     {
         return $this->createQueryBuilder('u')
@@ -80,7 +83,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->innerJoin('u.followings', 'f')
             ->where('f.followedUser = :user')
             ->setParameter('user', $user)
-            ->orderBy('f.id', 'DESC'); // Assurez-vous d'avoir un champ de date pour le tri
+            ->orderBy('f.id', 'DESC');
         
         if ($limit) {
             $qb->setMaxResults($limit);
@@ -97,7 +100,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->innerJoin('u.followedByUsers', 'f')
             ->where('f.followerUser = :user')
             ->setParameter('user', $user)
-            ->orderBy('f.id', 'DESC'); // Assurez-vous d'avoir un champ de date pour le tri
+            ->orderBy('f.id', 'DESC');
     
         if ($limit) {
             $qb->setMaxResults($limit);

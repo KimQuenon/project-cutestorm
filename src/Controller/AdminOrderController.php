@@ -12,6 +12,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminOrderController extends AbstractController
 {
+    /**
+     * Admin - Display all orders
+     *
+     * @param integer $page
+     * @param OrderRepository $orderRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/admin/orders/{page<\d+>?1}', name: 'admin_orders_index')]
     public function index(int $page, OrderRepository $orderRepo, PaginationService $paginationService): Response
     {
@@ -33,6 +41,14 @@ class AdminOrderController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Display all paid orders
+     *
+     * @param integer $page
+     * @param OrderRepository $orderRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/admin/orders/paid/{page<\d+>?1}', name: 'admin_orders_paid')]
     public function paid(int $page, OrderRepository $orderRepo, PaginationService $paginationService): Response
     {
@@ -56,6 +72,14 @@ class AdminOrderController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Display all unpaid orders
+     *
+     * @param integer $page
+     * @param OrderRepository $orderRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/admin/orders/unpaid/{page<\d+>?1}', name: 'admin_orders_unpaid')]
     public function unpaid(int $page, OrderRepository $orderRepo, PaginationService $paginationService): Response
     {
@@ -79,8 +103,15 @@ class AdminOrderController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Generate pdf
+     */
     #[Route('admin/order/{reference}/pdf', name: 'admin_order_pdf')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
+        subject: new Expression('args["order"].getUser()'),
+        message: "You are not allowed to see this"
+    )]
     public function generatePdf(#[MapEntity(mapping: ['reference' => 'reference'])] Order $order, PdfGeneratorService $pdfGeneratorService): Response
     {
 

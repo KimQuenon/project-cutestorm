@@ -64,32 +64,35 @@ class PostRepository extends ServiceEntityRepository
     }
     
 
+    //most liked posts
     public function findTopLikedPosts(int $limit = 3): array
     {
         return $this->createQueryBuilder('p')
             ->leftJoin('p.likes', 'l')
             ->innerJoin('p.author', 'a')
-            ->where('a.isPrivate = false') // Vérifier que l'auteur n'est pas privé
+            ->where('a.isPrivate = false')
             ->groupBy('p.id')
-            ->orderBy('COUNT(l.id)', 'DESC') // Trier par nombre de likes décroissant
+            ->orderBy('COUNT(l.id)', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
 
+    // most commented post
     public function findTopCommentedPosts(int $limit = 3): array
     {
         return $this->createQueryBuilder('p')
-            ->leftJoin('p.comments', 'c') // Supposez que vous avez une relation 'comments' sur l'entité Post
+            ->leftJoin('p.comments', 'c')
             ->innerJoin('p.author', 'a')
-            ->where('a.isPrivate = false') // Vérifier que l'auteur n'est pas privé
+            ->where('a.isPrivate = false')
             ->groupBy('p.id')
-            ->orderBy('COUNT(c.id)', 'DESC') // Trier par nombre de commentaires décroissant
+            ->orderBy('COUNT(c.id)', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
 
+    // liked by users
     public function findLikedPostsByUser(User $user, ?int $limit = null): array
     {
         $qb = $this->createQueryBuilder('p')
@@ -106,6 +109,7 @@ class PostRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    //for searchbar results
     public function findByTitleOrPseudoQuery(string $term): QueryBuilder
     {
         return $this->createQueryBuilder('p')

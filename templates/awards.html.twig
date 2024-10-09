@@ -29,55 +29,56 @@
 
     <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
         <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
-          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+          <img src="/images/awards-border.svg" alt="awards-border" class="md:w-[100vw] w-[170vw] elemn-in rotate-3">
         </div>
     </div>
 
-    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedPosts, 'itemType': 'post', 'itemCategory': 'likedPost'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Posts', 'text': 'These posts are quite the hype for now ! Congrats for making it so lovely, look at those ideas, this creativity is stunning !', 'showButton': false, 'items': topLikedPosts, 'itemType': 'post', 'itemCategory': 'likedPost'} %}
 
     <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
         <div class="element absolute top-0 -right-[100%] bg-blue -rotate-3" delta-x="-25"  delta-y="25">
-          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in -rotate-3">
+          <img src="/images/awards-border.svg" alt="awards-border" class="md:w-[100vw] w-[170vw] elemn-in -rotate-3">
         </div>
     </div>
 
-    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Commented Posts', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCommentedPosts, 'itemType': 'post', 'itemCategory': 'commentedPost'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Commented Posts', 'text': 'These posts sure know how to engage a conversation ! Take a look at the most commented publications and take part of it...', 'showButton': false, 'items': topCommentedPosts, 'itemType': 'post', 'itemCategory': 'commentedPost'} %}
 
     <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
         <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
-          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+          <img src="/images/awards-border.svg" alt="awards-border" class="md:w-[100vw] w-[170vw] elemn-in rotate-3">
         </div>
     </div>
     
-    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Liked Users', 'text': 'Spread the love around those users, their posts are so stunning they got all the hearts in the world... Will they have yours too ?', 'showButton': false, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
     
     <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
         <div class="element absolute top-0 -right-[100%] bg-blue -rotate-3" delta-x="-25"  delta-y="25">
-          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in -rotate-3">
+          <img src="/images/awards-border.svg" alt="awards-border" class="md:w-[100vw] w-[170vw] elemn-in -rotate-3">
         </div>
     </div>
 
-    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Active Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topCreators, 'itemType': 'user', 'itemCategory': 'activeUser'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Active Users', 'text': 'Wow, a wind of creativity blow on those users ! Nobody can stop them from posting, even us ! They must be a great source of inspiration for all of us... Even you !', 'showButton': false, 'items': topCreators, 'itemType': 'user', 'itemCategory': 'activeUser'} %}
     
     <div class="scene w-full lg:h-[30vh] h-[15vh] relative overflow-hidden bg-primary">
         <div class="element absolute top-0 -left-[100%] bg-blue rotate-3" delta-x="25"  delta-y="25">
-          <img src="/images/awards-border.svg" alt="awards-border" class="w-[100vw] elemn-in rotate-3">
+          <img src="/images/awards-border.svg" alt="awards-border" class="md:w-[100vw] w-[170vw] elemn-in rotate-3">
         </div>
     </div>
 
-    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Popular Users', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': false, 'items': topFollowedUsers, 'itemType': 'user', 'itemCategory': 'followedUser'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Top 3 Most Popular Users', 'text': 'Everybody knows their name, or at least one of their posts... We are sure you have heard of them too ! Visit the profil of our most popular users and become friends with them !', 'showButton': false, 'items': topFollowedUsers, 'itemType': 'user', 'itemCategory': 'followedUser'} %}
 
 {% endblock %}
 
 {% block javascripts %}
     <script>
+        //twinkle stars
         document.addEventListener('DOMContentLoaded', function () {
             AOS.init();
             const stars = document.querySelectorAll('.star');
 
             stars.forEach(star => {
-                const randomDuration = (Math.random() * 3) + 1; // Durée aléatoire entre 1s et 4s
-                const randomDelay = Math.random() * 5; // Délai aléatoire entre 0 et 5s
+                const randomDuration = (Math.random() * 3) + 1;
+                const randomDelay = Math.random() * 5;
 
                 star.style.animationDuration = `${randomDuration}s`;
                 star.style.animationDelay = `${randomDelay}s`;
@@ -85,27 +86,21 @@
 
         });
 
-
+            //parallax
             const scenes = document.querySelectorAll('.scene');
             scenes.forEach(scene => {
-            const elements = scene.querySelectorAll('.element');
-            const transitionDelay = 100; // Délai en millisecondes entre les dates
-        
-            const moveElements = (percent) => {
-                elements.forEach((element, elementIndex) => {
-                
-    if (element.getAttribute('delta-x')) {
+                const elements = scene.querySelectorAll('.element');
+                const transitionDelay = 100;
+            
+                const moveElements = (percent) => {
+                    elements.forEach((element, elementIndex) => {
+                    
+                if (element.getAttribute('delta-x')) {
+                    const deltaX = parseFloat(element.getAttribute('delta-x'));
+                    const deltaY = parseFloat(element.getAttribute('delta-y'));
+                    element.style.transform = `translate(${deltaX * percent * 4}vw, ${deltaY * percent * 4}px)`;
+                }
 
-      const deltaX = parseFloat(element.getAttribute('delta-x'));
-
-      const deltaY = parseFloat(element.getAttribute('delta-y')); // Add this
-
-      element.style.transform = `translate(${deltaX * percent * 4}vw, ${deltaY * percent * 4}px)`;
-
-    }
-
-
-                
 
                 if(element.getAttribute('data-transi')){
                     const transit = parseFloat(element.getAttribute('data-transi'));

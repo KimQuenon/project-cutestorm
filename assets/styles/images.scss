@@ -1,0 +1,185 @@
+@import 'mixins.scss';
+@import 'variables.scss';
+
+//----------------------GENERAL----------------------
+.linear-background{
+    @include imgCover(cover);
+    background-image: url(../../public/images/linear-background.svg);
+    width:50%;
+    &-width{
+        width:33%!important;
+        @media all and (max-width: 1200px){
+            width:100%!important;
+        }
+    }
+    @media all and (max-width: 1200px){
+        width:100%;
+    }
+}
+
+.linear-background-bold{
+    @include imgCover(cover);
+    background-image: url(../../public/images/linear-background-bold.svg);
+}
+
+.linear-background-full {
+    @include imgCover(cover);
+    background-image: url(../../public/images/linear-background-full.svg);
+    height: auto;
+    width: auto;
+    min-height: 100vh;
+}
+
+.square-background{
+    @include imgCover(cover);
+    height:80vh;
+    background-image: url(../../public/images/square-background.svg);
+}
+
+.logo-eyes{
+    @include imgCover(contain);
+    background-image: url(../../public/images/cutestorm-logo.svg);
+}
+
+.normal-eyes{
+    height:3.5vh;
+    @media all and (max-width: 1200px){
+        height:2.5vh;
+    }
+}
+
+.miniature-eyes{
+    height:2vh;
+    @media all and (max-width: 1200px){
+        height:1vh;
+    }
+}
+
+//----------------------NAV----------------------
+.mega-menu-img{
+    @include imgCover(cover);
+    background-image: url(../../public/images/mega-menu.webp);
+    height:30vh;
+}
+
+.mega-menu-background{
+    @include imgCover(cover);
+    background-image: url(../../public/images/mega-menu-background.svg);
+    width:65%;
+    height:50vh;
+}
+
+//----------------------HOME----------------------
+#homepage-hero{
+    @include imgCover(contain);
+    background-image: url(../../public/images/homepage-hero.png);
+    width:90%;
+    height:80vh;
+    @media all and (max-width: 1200px){
+        height:65vh;
+    }
+    @media all and (max-width: 768px){
+        height:80vh;
+    }
+}
+
+#concept-img{
+    @include imgCover(contain);
+    background-image: url(../../public/images/concept.svg);
+    width:70%;
+    height:80vh;
+    @media all and (max-width: 1200px){
+        height:40vh;
+    }
+    @media all and (max-width: 768px){
+        height:40vh;
+    }  
+}
+
+#reviews-slide{
+    @include imgCover(cover);
+    background-image: url(../../public/images/reviews.webp);
+    height:55vh;
+    @media all and (max-width: 1200px){
+        height:40vh;
+    }
+    @media all and (max-width: 768px){
+        background-position: 75% 50%;
+        height:65vh;
+    }  
+}
+
+.rank{
+    @include imgCover(cover);
+    height:5vh;
+    width:77%!important;
+    @media all and (max-width: 1200px){
+        height:2vh;
+     }
+    &#rank1{
+        background-image: url(../../public/images/rank1.svg);
+    }
+    &#rank2{
+        background-image: url(../../public/images/rank2.svg);
+        @media all and (max-width: 768px){
+            background-size: contain!important;
+         }
+    }
+}
+
+#slide-store{
+    background-image: url(../../public/images/slide-store.webp);
+}
+
+#slide-community{
+    background-image: url(../../public/images/slide-community.webp);
+}
+
+//----------------------LOGIN----------------------
+.bg-login{
+    @include imgCover(cover);
+    background-image: url(../../public/images/bg-login.webp);
+}
+
+//----------------------POSTS----------------------
+#buy-it-img, #sketch-it-img, #share-it-img, #post-hero-1, #post-hero-2{
+    @include imgCover(contain);
+    width:395px;
+    height:395px;
+    @media all and (max-width: 768px){
+        width:325px;
+        height:325px;
+    }
+}
+
+#buy-it-img{
+    background-image: url(../../public/images/buy-it-img.svg);
+}
+
+#sketch-it-img{
+    background-image: url(../../public/images/sketch-it-img.svg);
+}
+
+#share-it-img{
+    background-image: url(../../public/images/share-it-img.svg);
+}
+
+#post-hero-1{
+    background-image: url(../../public/images/post-hero-1.png); 
+}
+
+#post-hero-2{
+    background-image: url(../../public/images/post-hero-2.png); 
+}
+
+//----------------------PAYMENT----------------------
+.payment-success{
+    @include imgCover(cover);
+    background-image: url(../../public/images/payment-success.svg);
+}
+
+.payment-error{
+    @include imgCover(cover);
+    background-image: url(../../public/images/payment-error.svg);
+}
+

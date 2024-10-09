@@ -23,6 +23,14 @@ class FollowRequestController extends AbstractController
         $this->notificationService = $notificationService;
     }
     
+    /**
+     * list of follow requests for private account
+     *
+     * @param integer $page
+     * @param FollowRequestRepository $requestRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/requests/{page<\d+>?1}', name: 'requests_index')]
     #[IsGranted('ROLE_USER')]
     public function index(int $page, FollowRequestRepository $requestRepo, PaginationService $paginationService): Response
@@ -45,6 +53,9 @@ class FollowRequestController extends AbstractController
         ]);
     }
 
+    /**
+     * accept request
+     */
     #[Route('/requests/{id}/accept', name: 'request_accept')]
     #[IsGranted('ROLE_USER')]
     public function acceptRequest(#[MapEntity(mapping: ['id' => 'id'])] FollowRequest $request, FollowRequestRepository $requestRepo, EntityManagerInterface $manager): RedirectResponse
@@ -80,6 +91,9 @@ class FollowRequestController extends AbstractController
         return $this->redirectToRoute('requests_index');
     }
 
+    /**
+     * reject request
+     */
     #[Route('/requests/{id}/reject', name: 'request_reject')]
     #[IsGranted('ROLE_USER')]
     public function rejectRequest(#[MapEntity(mapping: ['id' => 'id'])] FollowRequest $request, FollowRequestRepository $requestRepo, EntityManagerInterface $manager): RedirectResponse

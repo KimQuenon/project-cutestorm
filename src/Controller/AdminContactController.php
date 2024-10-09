@@ -13,6 +13,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdminContactController extends AbstractController
 {
     #[Route('/admin/contacts/{page<\d+>?1}', name: 'contact_index')]
+    /**
+     * Admin - Display all messages sent from the contact form
+     *
+     * @param integer $page
+     * @param ContactRepository $contactRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     public function contact(int $page, ContactRepository $contactRepo, PaginationService $paginationService): Response
     {
         $contacts = $contactRepo->findBy([], ['id' => 'DESC']);
@@ -31,6 +39,12 @@ class AdminContactController extends AbstractController
         ]);
     }
 
+    /**
+     * Mark as read
+     *
+     * @param ContactRepository $contactRepo
+     * @return Response
+     */
     #[Route('/admin/contact/mark-read', name: 'mark_contact_read')]
     public function markRead(ContactRepository $contactRepo): Response
     {
@@ -52,6 +66,9 @@ class AdminContactController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete message
+     */
     #[Route("admin/contact/{id}/delete", name:"contact_delete")]
     public function deleteContact(#[MapEntity(mapping: ['id' => 'id'])] Contact $contact, EntityManagerInterface $manager): Response
     {

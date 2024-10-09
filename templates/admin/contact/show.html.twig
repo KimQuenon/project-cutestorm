@@ -1,22 +1,3 @@
-{# {% extends 'base.html.twig' %}
-
-{% block title %}Messagerie{% endblock %}
-
-{% block body %}
-    <div class="container full">
-        <a href="{{path('contact_index')}}" type="button" class="btn btn-secondary">Back</a>
-        <h1>Message from {{contact.name}}</h1>
-        <p>{{contact.message}}</p>
-        <a href="mailto:{{contact.email}}" type="button" class="btn btn-primary">Répondre</a>
-        <a href="#deleteModal{{ contact.id }}" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ contact.id }}">Delete</a>
-        {% include 'partials/_deleteModal.html.twig' with {
-            'modalId': 'deleteModal' ~ contact.id,
-            'modalAction': path('contact_delete', {'id':contact.id})
-            } 
-        %}
-    </div>
-{% endblock %} #}
-
 {% extends 'layouts/account_layout.html.twig' %}
 
 {% block title %}Contacts{% endblock %}
@@ -26,7 +7,7 @@
 {% block content %}
     {% include "partials/_accountHeader.html.twig" with {
         title: 'Message',
-        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        content: "Some users tried to reach you during your absence... Let's give them a helpful feedback ;)",
         showButton: false,
         secondPath: path('contact_index'),
         secondLink: 'Contacts',

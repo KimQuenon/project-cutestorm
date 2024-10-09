@@ -16,6 +16,7 @@ class ContactRepository extends ServiceEntityRepository
         parent::__construct($registry, Contact::class);
     }
 
+    // mark all as read
     public function markAllAsRead(): void
     {
         $this->createQueryBuilder('c')
@@ -25,6 +26,7 @@ class ContactRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    //count unread messages
     public function countUnreadMessages(): int
     {
         return (int) $this->createQueryBuilder('c')

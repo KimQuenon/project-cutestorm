@@ -7,7 +7,7 @@
 {% block accountHeader %}
     {% include "partials/_accountHeader.html.twig" with {
         title:  "$ " ~ (totalPaid | number_format(2, ',', '.')),
-        content: 'Curabitur accumsan sed risus vel faucibus. Vivamus init dignissim elit elit, et sollicitudin augue.',
+        content: "Good clients are hard to find, but here they are. Here's how much you earned from them...",
         showButton: false,
         secondPath: path('admin_orders_index'),
         secondLink: 'Orders',

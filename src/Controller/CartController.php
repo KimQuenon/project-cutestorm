@@ -9,11 +9,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CartController extends AbstractController
 {
+    /**
+     * view cart
+     *
+     * @return Response
+     */
     #[Route('/cart', name: 'cart_show')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $user = $this->getUser();
@@ -25,25 +32,12 @@ class CartController extends AbstractController
             'cartItems' => $cartItems,
         ]);
     }
-    
-    #[Route('/cart/clear', name: 'cart_clear')]
-    public function clearCart(EntityManagerInterface $manager): RedirectResponse
-    {
-        $user = $this->getUser();
 
-        $cart = $user->getCart();
-        if ($cart) {
-            foreach ($cart->getCartItems() as $cartItem) {
-                $manager->remove($cartItem);
-            }
-            $manager->flush();
-            $this->addFlash('success', 'Cart has been cleared.');
-        }
-
-        return $this->redirectToRoute('cart_show');
-    }
-
+    /**
+     * Edit cart
+     */
     #[Route('/cart/edit/{id}', name: 'cart_edit', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function editItem(#[MapEntity(mapping: ['id' => 'id'])] CartItem $cartItem, ProductVariantRepository $productVariantRepo, Request $request, EntityManagerInterface $manager): RedirectResponse
     {
         $user = $this->getUser();
@@ -76,7 +70,32 @@ class CartController extends AbstractController
         return $this->redirectToRoute('cart_show');
     }
 
+    /**
+     * Clear cart
+     */
+    #[Route('/cart/clear', name: 'cart_clear')]
+    #[IsGranted('ROLE_USER')]
+    public function clearCart(EntityManagerInterface $manager): RedirectResponse
+    {
+        $user = $this->getUser();
+
+        $cart = $user->getCart();
+        if ($cart) {
+            foreach ($cart->getCartItems() as $cartItem) {
+                $manager->remove($cartItem);
+            }
+            $manager->flush();
+            $this->addFlash('success', 'Cart has been cleared.');
+        }
+
+        return $this->redirectToRoute('cart_show');
+    }
+
+    /**
+     * Remove item from cart
+     */
     #[Route('/cart/remove/{id}', name: 'cart_remove')]
+    #[IsGranted('ROLE_USER')]
     public function removeItem(#[MapEntity(mapping: ['id' => 'id'])] CartItem $cartItem, EntityManagerInterface $manager): RedirectResponse
     {
         $user = $this->getUser();
@@ -96,6 +115,4 @@ class CartController extends AbstractController
     
         return $this->redirectToRoute('cart_show');
     }
-
-
 }

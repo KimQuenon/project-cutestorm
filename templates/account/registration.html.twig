@@ -10,8 +10,23 @@
         </div>
         <div class="w-0 h-full bg-background transition-all duration-1000 stillDiv flex justify-center items-center">
             <div class="md:w-3/4 w-full md:p-0 p-5 opacity-0 textDiv">
-                <h2 class="title text-tertiary-dark">A new friend !</h2>
-                <p class="mb-12">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. <a href="{{path('account_login')}}" class="text-primary-dark underline font-bold">Already have an account ?</a></p>
+                <h2 class="title text-tertiary-dark pt-10">A new friend !</h2>
+                <p class="mb-5">Look like someone is eager to join our community ? Well, you're welcome, dear friend. Please take a moment to fill this form so we can get to know you a bit better before diving into this new aventure. <a href="{{path('account_login')}}" class="text-primary-dark underline font-bold">Already have an account ?</a></p>
+
+                <div class="mb-5">
+                    <div class="flex items-center justify-between relative" id="progressBar">
+                        {% for i in 1..4 %}
+                            <div class="flex items-center relative z-10">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 border-tertiary-dark font-bold text-tertiary-dark">{{ i }}</div>
+                                {% if i < 4 %}
+                                    <div class="flex-1 h-1"></div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <hr class="absolute top-1/2 left-0 w-full h-[3px] bg-tertiary-dark"></hr>
+                    </div>
+                </div>
+
                 {{ form_start(myForm) }}
                 <div id="step1" class="step active">
                     {{ form_row(myForm.email) }}

@@ -12,6 +12,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommunityController extends AbstractController
 {
+    /**
+     * introduction to the community space
+     *
+     * @param PostRepository $postRepo
+     * @param LikeRepository $likeRepo
+     * @param ReportRepository $reportRepo
+     * @param UserRepository $userRepo
+     * @return Response
+     */
     #[Route('/community', name: 'community')]
     public function index(PostRepository $postRepo, LikeRepository $likeRepo, ReportRepository $reportRepo, UserRepository $userRepo): Response
     {

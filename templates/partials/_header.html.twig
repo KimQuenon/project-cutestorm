@@ -1,7 +1,7 @@
 <header class="absolute top-0 left-0 z-50 w-full">
 	<div class="mx-auto flex items-center justify-between py-5 lg:px-20 px-5 pr-16 relative">
 		<div>
-			<a href="#" class="flex items-center">
+			<a href="{{path('homepage')}}" class="flex items-center">
 				<img src="/images/cutestorm-logo.svg" alt="Logo" class="h-8 mr-3">
 				<div>
 					<p class="font-gliker text-tertiary-dark">CUTESTORM</p>
@@ -163,45 +163,48 @@
                         </div>
                     </div>
                     <div class="flex flex-row gap-10 justify-between md:my-12 my-8" id="burger-menu-content">
-                            <ul>
-                                <li class="mb-4">
-                                    <a href="{{path('homepage')}}" class="subtitle">HOME</a>
-                                </li>
-                                <li class="mb-2 text-tertiary-dark">
-                                    <a href="#">Concept</a>
-                                </li>
-                                <li class="mb-2 text-tertiary-dark">
-                                    <a href="#">About us</a>
-                                </li>
-                                <li class="text-tertiary-dark">
-                                    <a href="#">Contact us</a>
-                                </li>
-                            </ul>
-                            <ul>
-                                <li class="mb-4">
-                                    <a href="{{path('store')}}" class="subtitle">STORE</a>
-                                </li>
-                                <li class="mb-2 text-tertiary-dark">
-                                    <a href="#">Filtres</a>
-                                </li>
-                                <li class="mb-2 text-tertiary-dark">
-                                    <a href="#">Filtres</a>
-                                </li>
-                                <li class="text-tertiary-dark">
-                                    <a href="#">Filtres</a>
-                                </li>
-                            </ul>
-                            <ul>
-                                <li class="mb-4">
-                                    <a href="{{path('community')}}" class="subtitle">COMMUNITY</a>
-                                </li>
-                                <li class="mb-2 text-tertiary-dark">
-                                    <a href="#">Posts</a>
-                                </li>
-                                <li class="text-tertiary-dark">
-                                    <a href="#">Awards</a>
-                                </li>
-                            </ul>
+                        <ul>
+                            <li class="mb-4">
+                                <a href="{{path('homepage')}}" class="subtitle">HOME</a>
+                            </li>
+                            <li class="mb-2 text-tertiary-dark">
+                                <a href="{{path('homepage')}}">Concept</a>
+                            </li>
+                            <li class="mb-2 text-tertiary-dark">
+                                <a href="{{path('homepage')}}">About us</a>
+                            </li>
+                            <li class="text-tertiary-dark">
+                                <a href="{{path('homepage')}}">Contact us</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="mb-4">
+                                <a href="{{path('store')}}" class="subtitle">STORE</a>
+                            </li>
+                            <li class="mb-2 text-tertiary-dark">
+                                <a href="{{path('store')}}">Products</a>
+                            </li>
+                            <li class="mb-2 text-tertiary-dark">
+                                <a href="{{path('cart_show')}}">Cart</a>
+                            </li>
+                            <li class="text-tertiary-dark">
+                                <a href="{{path('orders_index')}}">Orders</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="mb-4">
+                                <a href="{{path('community')}}" class="subtitle">COMMUNITY</a>
+                            </li>
+                            <li class="mb-2 text-tertiary-dark">
+                                <a href="{{path('posts_index')}}">Posts</a>
+                            </li>
+                            <li class="text-tertiary-dark">
+                                <a "{{path('awards')}}">Awards</a>
+                            </li>
+                            <li class="text-tertiary-dark">
+                                <a "{{path('account_register')}}">Join us</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="w-full h-40 border-4 border-tertiary-dark rounded-xl mega-menu-img"></div>
                 </div>

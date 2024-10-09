@@ -47,7 +47,14 @@
 
         {% block body %}{% endblock %}
         <div class="relative">
-            <button class="w-20 h-20 fixed z-40 bottom-6 right-6 bg-secondary hover:bg-secondary-hover rounded-full transition duration-300 hover:rotate-180 " id="back-to-top">
+            {% if app.user %}
+                <a href='{{path('post_create')}}' class="md:w-20 md:h-20 w-12 h-12 fixed z-45 md:bottom-28 bottom-24 right-6 bg-highlight hover:bg-highlight-dark rounded-full transition duration-300 flex justify-center items-center">
+                    <div class="div md:w-16 md:h-16 w-10 h-10 rounded-full flex justify-center items-center border-background border-2">
+                        <i class="fa-solid fa-camera text-background md:text-3xl text-xl"></i>
+                    </div>
+                </a>
+            {% endif %}
+            <button class="md:w-20 md:h-20 w-12 h-12 fixed z-45 bottom-6 right-6 bg-secondary hover:bg-secondary-hover rounded-full transition duration-300 hover:rotate-180 " id="back-to-top">
                 <img src="/images/back-to-top.svg" alt="back-to-top" class="w-full h-full object-cover">
             </button>
         </div>

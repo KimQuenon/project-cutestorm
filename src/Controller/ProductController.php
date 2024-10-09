@@ -37,6 +37,15 @@ class ProductController extends AbstractController
     }
 
     
+    /**
+     * Display all products + filters
+     *
+     * @param integer $page
+     * @param ProductRepository $productRepo
+     * @param PaginationService $paginationService
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/store/{page<\d+>?1}', name: 'store')]
     public function index(int $page, ProductRepository $productRepo, PaginationService $paginationService, Request $request): Response
     {
@@ -44,6 +53,7 @@ class ProductController extends AbstractController
         $categoryId = $request->query->get('category');
         $sort = $request->query->get('sort');
     
+        //  filter sort by
         $orderBy = [];
         switch ($sort) {
             case 'name_asc':
@@ -63,6 +73,7 @@ class ProductController extends AbstractController
                 break;
         }
     
+        // filter by colors or categoriess
         if ($colorId && $categoryId) {
             $products = $productRepo->findByColorAndCategory($colorId, $categoryId, $orderBy);
         } elseif ($colorId) {
@@ -73,6 +84,7 @@ class ProductController extends AbstractController
             $products = $productRepo->findAllProducts();
         }
     
+        //pagination
         $currentPage = $page;
         $itemsPerPage = 9;
     
@@ -91,10 +103,16 @@ class ProductController extends AbstractController
             'selectedColor' => $colorId,
             'categories' => $categories,
             'selectedCategory' => $categoryId,
-            'sort' => $sort // Passe le paramètre de tri au template
+            'sort' => $sort // passing through the slug for pagination
         ]);
     }
     
+    /**
+     * Search through products
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/store/search/ajax', name: 'store_search_ajax', methods: ['GET'])]
     public function searchAjax(Request $request): JsonResponse
     {
@@ -109,6 +127,9 @@ class ProductController extends AbstractController
         return new JsonResponse($results);
     }
 
+    /**
+     * Display single product
+     */
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(
         #[MapEntity(mapping: ['slug' => 'slug'])] Product $product,
@@ -125,7 +146,8 @@ class ProductController extends AbstractController
         $delivery = $deliveryRepo->findAll();
 
         $cart = null;
-    
+        
+        // create cart if user is connected and doesn't have one yet
         if ($user) {
             $cart = $user->getCart();
             if (!$cart) {
@@ -138,11 +160,12 @@ class ProductController extends AbstractController
 
         $productVariants = $product->getProductVariants()->toArray();
 
-        // Trier les variantes par taille
+        // sort sizes from smaller to bigger
         usort($productVariants, function (ProductVariant $a, ProductVariant $b) {
             return $a->getSize() <=> $b->getSize();
         });
     
+        //create form
         $form = $this->createForm(AddToCartType::class, null, [
             'product_variants' => $productVariants,
         ]);
@@ -170,7 +193,7 @@ class ProductController extends AbstractController
                 ]);
     
                 if ($cartItem) {
-                    // If the cart item exists, update the quantity
+                    // If the cart item exists, update the quantity + check the stock
                     $newQuantity = $cartItem->getQuantity() + $quantity;
     
                     if ($newQuantity > $productVariant->getStock()) {
@@ -182,6 +205,7 @@ class ProductController extends AbstractController
     
                     $cartItem->setQuantity($newQuantity);
                 } else {
+                    //if not, create a cart item
                     $cartItem = new CartItem();
                     $cartItem->setProductVariant($productVariant);
                     $cartItem->setQuantity($quantity);
@@ -207,6 +231,7 @@ class ProductController extends AbstractController
         $existingReview = null;
         $productBought = false;
 
+        // check if the user connected has bought the product or already reviewed it
         if ($user) {
             $existingReview = $reviewRepo->findOneBy([
                 'author' => $user,

@@ -22,7 +22,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ReportController extends AbstractController
 {
+    /**
+     * Generate new report
+     *
+     * @param UserRepository $userRepo
+     * @param PostRepository $postRepo
+     * @param CommentRepository $commentRepo
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param string $type
+     * @param integer $id
+     * @return Response
+     */
     #[Route('/report/{type}/{id}', name: 'report_item')]
+    #[IsGranted('ROLE_USER')]
     public function report(UserRepository $userRepo, PostRepository $postRepo, CommentRepository $commentRepo, Request $request, EntityManagerInterface $manager, string $type, int $id): Response
     {
         if (!in_array($type, ['user', 'post', 'comment'])) {
@@ -69,7 +82,6 @@ class ReportController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $report->setType($type);
             $report->setReportedBy($this->getUser());
-            // $report->setReportedAt(new \DateTime());
 
             // Set the appropriate reported entity
             if ($type === 'post') {
@@ -98,6 +110,14 @@ class ReportController extends AbstractController
         ]);
     }
 
+    /**
+     * Display all reports
+     *
+     * @param integer $page
+     * @param ReportRepository $reportRepository
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/moderation/reports/{page<\d+>?1}', name: 'reports_index')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -121,6 +141,14 @@ class ReportController extends AbstractController
         ]);
     }
 
+    /**
+     * Display reports - type post
+     *
+     * @param integer $page
+     * @param ReportRepository $reportRepository
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/moderation/reports/posts/{page<\d+>?1}', name: 'reports_posts')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -144,6 +172,14 @@ class ReportController extends AbstractController
         ]);
     }
 
+    /**
+     * Display reports - type comment
+     *
+     * @param integer $page
+     * @param ReportRepository $reportRepository
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/moderation/reports/comments/{page<\d+>?1}', name: 'reports_comments')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -167,6 +203,14 @@ class ReportController extends AbstractController
         ]);
     }
 
+    /**
+     * Display reports - type user
+     *
+     * @param integer $page
+     * @param ReportRepository $reportRepository
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/moderation/reports/users/{page<\d+>?1}', name: 'reports_users')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -190,6 +234,9 @@ class ReportController extends AbstractController
         ]);
     }
 
+    /**
+     * mark report as reported
+     */
     #[Route('/moderation/reports/{id}/validate', name: 'report_validate')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -206,7 +253,7 @@ class ReportController extends AbstractController
     ): RedirectResponse
     {
         if ($report->getReportedPost()) {
-            // Traitement du post signalé
+            // handle reported post
             foreach ($report->getReportedPost()->getPostImages() as $image) {
                 if (!empty($image->getFilename())) {
                     $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
@@ -219,7 +266,7 @@ class ReportController extends AbstractController
             $manager->remove($report->getReportedPost());
     
         } elseif ($report->getReportedComment()) {
-            // Traitement du commentaire signalé
+            // handle reported comment
             $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
             $comment = $report->getReportedComment();
         
@@ -230,12 +277,13 @@ class ReportController extends AbstractController
             $manager->flush();
     
         } elseif ($report->getReportedUser()) {
-            // Traitement de l'utilisateur signalé
+            // handle reported user
             $user = $report->getReportedUser();
             $reportCount = $user->getReportCount();
     
+            //if user had less than 3 reports: just a mail => otherwise delete profile
             if ($reportCount < 3) {
-                // Incrémente le compteur de signalements
+                // add a report to the count
                 $user->incrementReportCount();
                 $manager->persist($user);
                 $manager->remove($report);
@@ -283,7 +331,7 @@ class ReportController extends AbstractController
                     $manager->remove($report);
                     $manager->flush();
     
-                    $this->addFlash('danger', 'L\'utilisateur a été banni après plusieurs signalements.');
+                    $this->addFlash('danger', 'This user is banned for good now...');
                 }
             }
         }
@@ -292,6 +340,9 @@ class ReportController extends AbstractController
     }
     
 
+    /**
+     * keep the reported object
+     */
     #[Route('/moderation/reports/{id}/keep', name: 'report_reject')]
     #[IsGranted(
         attribute: new Expression('(is_granted("ROLE_MODERATOR")) or is_granted("ROLE_ADMIN")'),
@@ -299,12 +350,12 @@ class ReportController extends AbstractController
     )]
     public function keep(#[MapEntity(mapping: ['id' => 'id'])] Report $report, ReportRepository $reportRepo, EntityManagerInterface $manager): RedirectResponse
     {
-        // Déterminer l'objet signalé
+        // type of entity reported
         $reportedPost = $report->getReportedPost();
         $reportedComment = $report->getReportedComment();
         $reportedUser = $report->getReportedUser();
     
-        // Trouver tous les signalements associés à cet objet
+        // find all reports about this object
         if ($reportedPost) {
             $relatedReports = $reportRepo->findBy(['reportedPost' => $reportedPost]);
         } elseif ($reportedComment) {
@@ -316,16 +367,16 @@ class ReportController extends AbstractController
             return $this->redirectToRoute('reports_index');
         }
     
-        // Supprimer tous les signalements associés
+        // delete them all
         foreach ($relatedReports as $relatedReport) {
             $manager->remove($relatedReport);
         }
     
-        // Supprimer le signalement actuel
+        //and this report too
         $manager->remove($report);
         $manager->flush();
     
-        $this->addFlash('success', 'Le signalement et tous les signalements associés ont été supprimés.');
+        $this->addFlash('success', 'All reports about this object has been deleted.');
     
         return $this->redirectToRoute('reports_index');
     }

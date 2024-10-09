@@ -1,5 +1,5 @@
 <p class="subtitle mt-5">{{items|length}} {{ title }}</p>
-<div class="grid grid-cols-5 gap-2 lg:h-[30vh] h-[15vh] overflow-y-auto custom-scrollbar"> <!-- Utilise grid et grid-cols-4 pour une grille de 4 colonnes -->
+<div class="grid grid-cols-5 gap-2 lg:h-[30vh] h-[15vh] overflow-y-auto custom-scrollbar">
     {% if items|length > 0 %}
         {% for item in items %}
             <a href="{{ path('profile_show', {'slug': item.slug}) }}" class="flex justify-center">
@@ -11,6 +11,6 @@
             </a>
         {% endfor %}
     {% else %}
-        <p class="text-tertiary-dark col-span-4 text-center">No user found... yet!</p> <!-- col-span-4 pour occuper toute la ligne si aucun utilisateur -->
+        <p class="text-tertiary-dark col-span-4 text-center">No user found... yet!</p>
     {% endif %}
 </div>

@@ -1,14 +1,10 @@
 @import 'fonts.scss';
-@import 'variables.scss';
 @import 'mixins.scss';
+@import 'variables.scss';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body{
-    color:$tertiary;
-}
 
 /* scrollbar edge-chrome-safari */
 .custom-scrollbar::-webkit-scrollbar {
@@ -31,9 +27,9 @@ body{
     scrollbar-color: $tertiary $tertiaryLight;
 }
 
-
-.font-gliker {
-    font-family: 'Gliker Black Condensed', sans-serif;
+//----------------------GENERAL SETTINGS----------------------
+body{
+    color:$tertiary;
 }
 
 .slide{
@@ -61,6 +57,10 @@ p, a{
     font-size: 14px;
 }
 
+.font-gliker {
+    font-family: 'Gliker Black Condensed', sans-serif;
+}
+
 .title{
     font-family: 'Gliker Black Condensed', sans-serif;
     font-size: 60px;
@@ -81,6 +81,47 @@ p, a{
     color: $tertiaryDark;
 }
 
+.shadow{
+    box-shadow: 5px 5px $tertiaryDark; 
+}
+
+.swiper-container {
+    overflow-x: hidden;
+    .swiper-pagination-bullet{
+        background-color: transparent;
+        opacity: 1;
+        border: 2px solid $background;
+        &-active{
+            background-color: $background;
+            border: none;
+        }
+    }
+    &#review-swiper{
+        height: 35vh;
+        @media all and (max-width: 1200px){
+            height:25vh;
+        }
+        @media all and (max-width: 768px){
+            height:55vh;
+        }
+        .swiper-pagination-bullet{
+            border: 2px solid $background;
+                &-active{
+                    background-color: $background;
+            }
+        }
+    }
+}
+
+.swiper-width{
+    width:99%;
+}
+
+.swiper-button-prev, .swiper-button-next{
+    color: $background;
+}
+
+//----------------------BUTTONS----------------------
 .btn{
     display:block;
     border-radius: 50px;
@@ -147,25 +188,6 @@ p, a{
     }
 }
 
-.step {
-    display: none;
-}
-
-.step.active {
-    display: block;
-}
-
-.stepButton{
-    display: block;
-    width: 150px;
-    background-color: $tertiaryDark;
-    padding: 0.5rem 2rem;
-    border-radius: 1000px;
-    font-weight: 900;
-    color: $background;
-    text-align: center;
-}
-
 .badge{
     width: 1.25rem;
     height: 1.25rem;
@@ -223,113 +245,8 @@ p, a{
     color: $dangerDark;
 }
 
-textarea{
-    resize:none!important;
-}
 
-#contact_message{
-    height:170px!important;
-}
-
-.invalid-feedback{
-    color:$dangerDark;
-    font-weight: 900;
-    margin-top: 5px;
-}
-
-// .form-check{
-//     display: none;
-// }
-
-/* Pour WebKit (Chrome, Safari, Edge) */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
-/* Pour Firefox */
-input[type="number"] {
-    -moz-appearance: textfield;
-}
-
-
-
-.linear-background{
-    @include imgCover(cover);
-    background-image: url(../../public/images/linear-background.svg);
-    width:50%;
-    &-width{
-        width:33%!important;
-        @media all and (max-width: 1200px){
-            width:100%!important;
-        }
-    }
-    @media all and (max-width: 1200px){
-        width:100%;
-    }
-}
-
-.linear-background-bold{
-    @include imgCover(cover);
-    background-image: url(../../public/images/linear-background-bold.svg);
-}
-
-.linear-background-full {
-    @include imgCover(cover);
-    background-image: url(../../public/images/linear-background-full.svg);
-    height: auto;
-    width: auto;
-    min-height: 100vh;
-}
-
-.square-background{
-    @include imgCover(cover);
-    height:80vh;
-    background-image: url(../../public/images/square-background.svg);
-}
-
-.card, .opacity-0 {
-    opacity: 0;
-    transition: opacity 0.5s;
-}
-
-.card{
-    @media all and (max-width: 1200px){
-        opacity: 1;
-    }
-}
-
-.card-visible, .opacity-100 {
-    opacity: 1;
-}
-  
-.opacity-100 {
-    transition: opacity 0.5s;
-}
-
-.shadow{
-    box-shadow: 5px 5px $tertiaryDark; 
-}
-
-.logo-eyes{
-    @include imgCover(contain);
-    background-image: url(../../public/images/cutestorm-logo.svg);
-}
-.normal-eyes{
-    height:3.5vh;
-    @media all and (max-width: 1200px){
-        height:2.5vh;
-    }
-}
-.miniature-eyes{
-    height:2vh;
-    @media all and (max-width: 1200px){
-        height:1vh;
-    }
-}
-
+//----------------------FORMS----------------------
 
 form{
     #review div{
@@ -361,12 +278,6 @@ form{
     #review div:nth-of-type(2){
         display: flex;
         flex-direction: column;
-    }
-}
-
-form[name="add_to_cart"]{
-    .form-check{
-        display: none!important;
     }
 }
 
@@ -417,9 +328,6 @@ form[name="add_to_cart"]{
     }
 }
 
-#product_productVariants, #product_productImages, #post_postImages {
-    display: none;
-}
 
 form[name="product"], form[name="post"]{
     legend{
@@ -427,24 +335,15 @@ form[name="product"], form[name="post"]{
     }
 }
 
-input[type=file]::file-selector-button {
-    height:100%;
-    border: none!important;
-    background: $tertiary;
-    padding: 8px 12px;
-    color: #fff;
-    cursor: pointer;
-    border-top-left-radius: 0.75rem;
-    border-bottom-left-radius: 0.75rem;
-    font-family: 'Quicksand', sans-serif;
-    margin-right: 8px;
-
+form[name="add_to_cart"]{
+    .form-check{
+        display: none!important;
+    }
 }
 
-input[name='product_image[file]'], input[name='post_image[file]'], input[name*='product[productImages]['], input[name*='post[postImages]['], input[name='registration[avatar]'], input[name='registration[banner]'], input[name='avatar[newAvatar]'], input[name='banner[newBanner]']{
-    padding:0px!important;
+#product_productVariants, #product_productImages, #post_postImages {
+    display: none;
 }
-
 
 #comment_content, #reply_content{
     width: 100%;
@@ -454,20 +353,78 @@ input[name='product_image[file]'], input[name='post_image[file]'], input[name*='
     padding: 10px;
     outline: none;
 }
-/*----NAV----*/
-.mega-menu-img{
-    @include imgCover(cover);
-    background-image: url(../../public/images/mega-menu.webp);
-    height:30vh;
+
+#contact_message{
+    height:170px!important;
 }
 
-.mega-menu-background{
-    @include imgCover(cover);
-    background-image: url(../../public/images/mega-menu-background.svg);
-    width:65%;
-    height:50vh;
+#message_content{
+    width: 100%;
+    height:70px;
+    border-radius: 0.75rem;
+    outline:none;
 }
 
+input[type=file]::file-selector-button {
+    height:100%;
+    border: none!important;
+    background: $tertiary;
+    padding: 8px 12px;
+    color: $white;
+    cursor: pointer;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+    font-family: 'Quicksand', sans-serif;
+    margin-right: 8px;
+}
+
+input[name='product_image[file]'], input[name='post_image[file]'], input[name*='product[productImages]['], input[name*='post[postImages]['], input[name='registration[avatar]'], input[name='registration[banner]'], input[name='avatar[newAvatar]'], input[name='banner[newBanner]']{
+    padding:0px!important;
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+textarea{
+    resize:none!important;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+.stepButton{
+    display: block;
+    width: 150px;
+    background-color: $tertiaryDark;
+    padding: 0.5rem 2rem;
+    border-radius: 1000px;
+    font-weight: 900;
+    color: $background;
+    text-align: center;
+}
+
+.invalid-feedback{
+    color:$dangerDark;
+    font-weight: 900;
+    margin-top: 5px;
+}
+
+//----------------------ANIMATIONS----------------------
 @keyframes slide-in {
     from {
       transform: translateY(-100%);
@@ -498,30 +455,44 @@ to {
     animation: slide-out 0.5s forwards;
 }
 
-.bg-login{
-    @include imgCover(cover);
-    background-image: url(../../public/images/bg-login.webp);
-}
-
 .textDiv {
-    transition: opacity 0.5s; /* adjust the duration to your liking */
+    transition: opacity 0.5s;
 }
 
+.card, .opacity-0 {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
 
-/*-----HOME-----*/
-#homepage-hero{
-    @include imgCover(contain);
-    background-image: url(../../public/images/homepage-hero.png);
-    width:90%;
-    height:80vh;
+.card{
     @media all and (max-width: 1200px){
-        height:65vh;
-    }
-    @media all and (max-width: 768px){
-        height:80vh;
+        opacity: 1;
     }
 }
 
+.card-visible, .opacity-100 {
+    opacity: 1;
+}
+  
+.opacity-100 {
+    transition: opacity 0.5s;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  
+.star {
+    opacity: 1;
+    animation: twinkle 2s infinite ease-in-out;
+}
+
+//----------------------HOME----------------------
 #concept-slide{
     min-height: 130vh;
     @media all and (max-width: 1200px){
@@ -531,88 +502,6 @@ to {
         min-height:140vh;
     }
 }
-
-#concept-img{
-    @include imgCover(contain);
-    background-image: url(../../public/images/concept.svg);
-    width:70%;
-    height:80vh;
-    @media all and (max-width: 1200px){
-        height:40vh;
-    }
-    @media all and (max-width: 768px){
-        height:40vh;
-    }  
-}
-
-#reviews-slide{
-    @include imgCover(cover);
-    background-image: url(../../public/images/reviews.webp);
-    height:55vh;
-    @media all and (max-width: 1200px){
-        height:40vh;
-    }
-    @media all and (max-width: 768px){
-        background-position: 75% 50%;
-        height:65vh;
-    }  
-}
-
-.swiper-container {
-    overflow-x: hidden;
-    .swiper-pagination-bullet{
-        background-color: transparent;
-        opacity: 1;
-        border: 2px solid $tertiaryDark;
-        &-active{
-            background-color: $tertiaryDark;
-            border: none;
-        }
-    }
-    &#review-swiper{
-        height: 35vh;
-        @media all and (max-width: 1200px){
-            height:25vh;
-        }
-        @media all and (max-width: 768px){
-            height:55vh;
-        }
-        .swiper-pagination-bullet{
-            border: 2px solid $background;
-                &-active{
-                    background-color: $background;
-            }
-        }
-    }
-}
-
-.swiper-width{
-    width:99%;
-}
-
-.swiper-button-prev, .swiper-button-next{
-    color: $tertiaryDark;
-}
-
-.rank{
-    @include imgCover(cover);
-    height:5vh;
-    width:77%!important;
-    @media all and (max-width: 1200px){
-        height:2vh;
-     }
-    &#rank1{
-        background-image: url(../../public/images/rank1.svg);
-    }
-    &#rank2{
-        background-image: url(../../public/images/rank2.svg);
-        @media all and (max-width: 768px){
-            // width:20%;
-            background-size: contain!important;
-         }
-    }
-}
-
 
 .flip-card{
     width: 80px;
@@ -662,60 +551,50 @@ to {
 }
 
 
-/*-----STORE-----*/
-#slide-store{
-    background-image: url(../../public/images/slide-store.webp);
-}
-
-#slide-community{
-    background-image: url(../../public/images/slide-community.webp);
-}
-
-/*-----POSTS-----*/
-#buy-it-img, #sketch-it-img, #share-it-img, #post-hero-1, #post-hero-2{
-    @include imgCover(contain);
-    width:395px;
-    height:395px;
-    @media all and (max-width: 768px){
-        width:325px;
-        height:325px;
-    }
-}
-
-#buy-it-img{
-    background-image: url(../../public/images/buy-it-img.svg);
-}
-#sketch-it-img{
-    background-image: url(../../public/images/sketch-it-img.svg);
-}
-#share-it-img{
-    background-image: url(../../public/images/share-it-img.svg);
-}
-
-#post-hero-1{
-    background-image: url(../../public/images/post-hero-1.png); 
-}
-
-#post-hero-2{
-    background-image: url(../../public/images/post-hero-2.png); 
-}
-
-
-
+//----------------------AWARDS----------------------
 .podium-step {
 transition: all 0.7s ease-in-out;
 }
   
-  
-
-.notification-indicator {
+.podium-badge {
     display: inline-block;
-    width: 10px;
-    height: 10px;
-    background-color: blue;
-    border-radius: 50%;
-    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 10px;
 }
+
+.animate-podium {
+    animation: grow-height 1s ease-in-out;
+  }
+  
+@keyframes grow-height {
+0% {
+    height: 0;
+}
+100% {
+    height: var(--height);
+}
+}
+
+.bg-gold {
+    background-color: $secondary;
+}
+
+.bg-silver {
+    background-color: $primaryDark;
+}
+
+.bg-bronze {
+    background-color: $background;
+}
+
+.podium-row{
+    height:500px!important;
+}
+
+//----------------------COMMENTS & MESSAGES----------------------
 
 .replies, .reply-form-container{
     max-height: 0;
@@ -728,7 +607,6 @@ transition: all 0.7s ease-in-out;
     max-height: 1000px;
     opacity: 1;
 }
-
 
 .not-user-message:after {
 	content: '';
@@ -752,52 +630,10 @@ transition: all 0.7s ease-in-out;
 	border-color: $secondary transparent;
 }
 
- #message_content{
-    width: 100%;
-    height:70px;
-    border-radius: 0.75rem;
-    outline:none;
-}
-
-.podium-badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 3px;
-    color: #fff;
-    font-size: 14px;
-    margin-left: 10px;
-}
 
 
-.animate-podium {
-    animation: grow-height 1s ease-in-out;
-  }
-  
-  @keyframes grow-height {
-    0% {
-      height: 0;
-    }
-    100% {
-      height: var(--height);
-    }
-  }
 
-
-.bg-gold {
-    background-color: $secondary;
-}
-
-.bg-silver {
-    background-color: $primaryDark;
-}
-
-.bg-bronze {
-    background-color: $background;
-}
-
-.podium-row{
-    height:500px!important;
-}
+//----------------------PRODUCT----------------------
 
 .color-choice label {
     display: flex;
@@ -829,9 +665,12 @@ transition: all 0.7s ease-in-out;
     overflow-y: auto;
 }
 
+
+//----------------------SEARCH BAR----------------------
 #search-input{
     border-radius: 80px;
 }
+
 #search-results ul li{
     border-bottom: 1px solid black;
     padding: 8px;
@@ -843,26 +682,5 @@ transition: all 0.7s ease-in-out;
     color: gray!important;
 }
 
-.payment-success{
-    @include imgCover(cover);
-    background-image: url(../../public/images/payment-success.svg);
-}
 
-.payment-error{
-    @include imgCover(cover);
-    background-image: url(../../public/images/payment-error.svg);
-}
 
-@keyframes twinkle {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
-  }
-  
-.star {
-opacity: 1;
-animation: twinkle 2s infinite ease-in-out;
-}

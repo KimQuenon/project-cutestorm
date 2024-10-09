@@ -21,6 +21,7 @@
 /node_modules/
 /public/build/
 # /public/uploads/
+/online/.env
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###

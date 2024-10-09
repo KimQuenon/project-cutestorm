@@ -39,13 +39,11 @@ class Conversation
 
     public function getLastMessage(): ?Message
     {
-        // Tri par timestamp décroissant
         $messages = $this->getMessages()->toArray();
         usort($messages, function($a, $b) {
             return $b->getTimestamp() <=> $a->getTimestamp();
         });
 
-        // Dernier message
         return count($messages) > 0 ? $messages[0] : null;
     }
 

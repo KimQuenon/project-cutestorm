@@ -33,7 +33,7 @@ class RegistrationType extends ApplicationType
             ->add('city', TextType::class, $this->getConfiguration("City", "London"))
             ->add('country', ChoiceType::class, [
                 'label' => 'Country',
-                'choices' => array_flip($countries), // Inverse les clés et les valeurs pour les choix
+                'choices' => array_flip($countries),
                 'placeholder' => 'Choose your country',
             ])
             ->add('bio', TextareaType::class, $this->getConfiguration("Description:", 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'))

@@ -18,6 +18,7 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * find unpaid order for user connected
      * @param User $user
      * @return Order[]
      */
@@ -31,6 +32,7 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    //replace user by deleted user entity
     public function replaceUserInOrders(User $userToReplace, User $replacementUser): void
     {
         $qb = $this->createQueryBuilder('o');

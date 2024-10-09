@@ -10,6 +10,12 @@ use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthentication
 
 class AdminAccountController extends AbstractController
 {
+    /**
+     * login admin
+     *
+     * @param AuthenticationUtils $utils
+     * @return Response
+     */
     #[Route('/admin/login', name: 'admin_account_login')]
     public function index(AuthenticationUtils $utils): Response
     {
@@ -21,7 +27,7 @@ class AdminAccountController extends AbstractController
 
         if($error instanceof TooManyLoginAttemptsAuthenticationException)
         {
-            $loginError = "Trop de tentatives de connexion. Réessayez plus tard";
+            $loginError = "Too many attempts, try again later...";
         }
 
         return $this->render('admin/login.html.twig', [
@@ -32,7 +38,7 @@ class AdminAccountController extends AbstractController
     }
 
     /**
-     * Permet de se déconnecter
+     * logout
      *
      * @return void
      */

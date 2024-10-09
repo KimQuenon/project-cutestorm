@@ -15,6 +15,13 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
+    /**
+     * get all notifications - all categories
+     *
+     * @param [type] $user
+     * @param [type] $limit
+     * @return void
+     */
     public function getAllNotifications($user, $limit = null)
     {
         $qb = $this->createQueryBuilder('n')
@@ -30,6 +37,13 @@ class NotificationRepository extends ServiceEntityRepository
     }
     
 
+    /**
+     * get notifications from likes on my posts
+     *
+     * @param array $posts
+     * @param array $comments
+     * @return void
+     */
     public function getLikesNotifications(array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
@@ -44,6 +58,12 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * get notifications from follows and follow requests
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function getFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -56,6 +76,12 @@ class NotificationRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    /**
+     * get notifications from my comments
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function getCommentsNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -68,6 +94,12 @@ class NotificationRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    /**
+     * count unread notifications
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function countUnreadNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -79,6 +111,14 @@ class NotificationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * count unread notifications - like type
+     *
+     * @param [type] $user
+     * @param array $posts
+     * @param array $comments
+     * @return void
+     */
     public function countUnreadLikesNotifications($user, array $posts, array $comments)
     {
         return $this->createQueryBuilder('n')
@@ -99,6 +139,12 @@ class NotificationRepository extends ServiceEntityRepository
     }
     
 
+    /**
+     * count unread notifications - user type
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function countUnreadFollowsNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -112,6 +158,12 @@ class NotificationRepository extends ServiceEntityRepository
         ->getSingleScalarResult();
     }
 
+    /**
+     * count unread notifications - comment type
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function countUnreadCommentsNotifications($user)
     {
         return $this->createQueryBuilder('n')
@@ -125,6 +177,12 @@ class NotificationRepository extends ServiceEntityRepository
         ->getSingleScalarResult();
     }
 
+    /**
+     * mark all as read
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function markAllNotificationsAsRead($user): void
     {
         $this->createQueryBuilder('n')
@@ -136,6 +194,12 @@ class NotificationRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /**
+     * mark all as read - like type
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function markLikesAsRead($user): void
     {
         $this->createQueryBuilder('n')
@@ -151,6 +215,12 @@ class NotificationRepository extends ServiceEntityRepository
             ->execute();
     }    
 
+    /**
+     * mark all as read - user type
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function markFollowsAsRead($user)
     {
         $this->createQueryBuilder('n')
@@ -165,6 +235,12 @@ class NotificationRepository extends ServiceEntityRepository
         ->execute();
     }
 
+    /**
+     * mark all as read - comment type
+     *
+     * @param [type] $user
+     * @return void
+     */
     public function markCommentsAsRead($user)
     {
         $this->createQueryBuilder('n')

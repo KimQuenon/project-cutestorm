@@ -89,6 +89,12 @@ class PostController extends AbstractController
         ]);
     }
     
+    /**
+     * Searchbar for posts
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/posts/search/ajax', name: 'posts_search_ajax', methods: ['GET'])]
     public function searchAjax(Request $request): JsonResponse
     {
@@ -103,6 +109,13 @@ class PostController extends AbstractController
         return new JsonResponse($results);
     }
 
+    /**
+     * Create post
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("/post/new", name:"post_create")]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $manager): Response
@@ -112,7 +125,7 @@ class PostController extends AbstractController
 
         $form->handleRequest($request);
 
-        //form complet et valid -> envoi bdd + message et redirection
+        //handle form
         if($form->isSubmitted() && $form->IsValid())
         {
             if (count($post->getPostImages()) < 1) {
@@ -168,6 +181,9 @@ class PostController extends AbstractController
 
     }
 
+    /**
+     * view post
+     */
     #[Route("/post/{slug}", name: "post_show")]
     public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, LikeRepository $likeRepo, LikeCommentRepository $likeCommentRepo, FollowingRepository $followingRepo, ReportRepository $reportRepo, Request $request, EntityManagerInterface $manager): Response {
         $user = $this->getUser();
@@ -187,6 +203,7 @@ class PostController extends AbstractController
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         $likedPostSlugs = array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
     
+        // Get liked comments for the current user
         $likedComments = $likeCommentRepo->findBy(['user' => $user]);
         $likedCommentIds = array_map(fn($like) => $like->getComment()->getId(), $likedComments);
     
@@ -215,7 +232,7 @@ class PostController extends AbstractController
             }
         }
 
-        
+        // generate form to reply
         $replyForms = [];
         foreach ($comments as $comment) {
             if ($comment->getParent() === null) {
@@ -269,6 +286,9 @@ class PostController extends AbstractController
     }
     
 
+    /**
+     * Edit post
+     */
     #[Route("/post/{slug}/edit", name: "post_edit")]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
@@ -306,6 +326,10 @@ class PostController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Delete post
+     */
     #[Route("/post/{slug}/delete", name:"post_delete")]
     #[IsGranted(
         attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'),
@@ -314,9 +338,8 @@ class PostController extends AbstractController
     )]
     public function delete(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, EntityManagerInterface $manager): Response
     {       
-            // Supprimer toutes les images associées au post
+            // delete all associated images
             foreach ($post->getPostImages() as $image) {
-                // Supprimer le fichier de l'image
                 if (!empty($image->getFilename())) {
                     $imagePath = $this->getParameter('uploads_directory') . '/' . $image->getFilename();
                     if (file_exists($imagePath)) {
@@ -324,7 +347,7 @@ class PostController extends AbstractController
                     }
                 }
 
-                // Supprimer l'image de la base de données
+                // remove it from db
                 $manager->remove($image);
             }
 
@@ -339,6 +362,9 @@ class PostController extends AbstractController
             return $this->redirectToRoute('posts_index');
     }
 
+    /**
+     * Add image to post
+     */
     #[Route("/post/{slug}/add-image", name: "post_add_image")]
     #[IsGranted('ROLE_USER')]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Post $post, Request $request, EntityManagerInterface $manager): Response

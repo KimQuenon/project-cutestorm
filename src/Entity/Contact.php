@@ -34,6 +34,11 @@ class Contact
     #[ORM\Column]
     private ?bool $isRead = false;
 
+    /**
+     * add u
+     *
+     * @return void
+     */
     #[ORM\PrePersist]
     public function prePersist(): void
     {

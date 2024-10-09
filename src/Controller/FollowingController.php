@@ -25,6 +25,9 @@ class FollowingController extends AbstractController
         $this->notificationService = $notificationService;
     }
     
+    /**
+     * Follow button
+     */
     #[Route('/toggle-follow/{slug}', name: 'toggle_follow')]
     #[IsGranted('ROLE_USER')]
     public function toggleFollow(#[MapEntity(mapping: ['slug' => 'slug'])] User $userToToggle, EntityManagerInterface $manager, FollowingRepository $followRepo, FollowRequestRepository $followRequestRepo, NotificationRepository $notificationRepo): RedirectResponse {
@@ -42,7 +45,6 @@ class FollowingController extends AbstractController
                     'relatedUser' => $userToToggle,
                     'user' => $user
                 ]);
-
 
                 if($notification){
                     $manager->remove($notification);

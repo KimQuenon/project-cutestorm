@@ -6,13 +6,28 @@
 
 {% block form_title %}New product{% endblock %}
 
-{% block form_text %}Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. {% endblock %}
+{% block form_text %}Something to share in the store ? What a refreshing start ! Let's fill this little form and add precise details to let the customer know about its fabric, its color, its different sizes... and don't forget to add some pictures ! ;){% endblock %}
 
 {% block form_content %}
     {% include "partials/form/_createContent.html.twig" with {type: 'product'} %}
 {% endblock %}
 
 {% block form_default %}
+
+        <div class="mb-5">
+            <div class="flex items-center justify-between relative" id="progressBar">
+                {% for i in 1..4 %}
+                    <div class="flex items-center relative z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 border-tertiary-dark font-bold text-tertiary-dark">{{ i }}</div>
+                        {% if i < 4 %}
+                            <div class="flex-1 h-1"></div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <hr class="absolute top-1/2 left-0 w-full h-[3px] bg-tertiary-dark"></hr>
+            </div>
+        </div>
+
         {{ form_start(myForm) }}
         <div id="step1" class="step active">
             {{ form_row(myForm.reference) }}

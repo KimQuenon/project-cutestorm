@@ -7,6 +7,7 @@
  */
 import './styles/app.scss';
 import './styles/fonts.scss';
+import './styles/images.scss';
 import './styles/variables.scss';
 import './styles/mixins.scss';
 // import './styles/bootstrap.min.css'

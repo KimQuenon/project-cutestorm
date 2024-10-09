@@ -4,90 +4,6 @@
 
 {% form_theme form _self %}
 
-{# {% block body %}
-<div class="container mt-5">
-    <h1>Create Order</h1>
-    {{app.user.address}}
-    {{app.user.postalcode}}{{app.user.city}}
-    {{app.user.country}}
-    <a href="{{ path('profile_edit') }}" class="btn btn-warning">Edit</a>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        
-        <h2 class="mt-5">Order Summary</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                        <td class="text-right">
-                            <strong id="order-total-price">{{ totalPrice|number_format(2, ',', '.') }} $</strong>
-                        </td>
-                    </tr>
-                    <tr id="delivery-row">
-                        <td colspan="4" class="text-right"><strong>Delivery Cost:</strong></td>
-                        <td class="text-right">
-                            <strong id="delivery-cost">0.00 $</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="text-right"><strong>Grand Total:</strong></td>
-                        <td class="text-right">
-                            <strong id="grand-total">{{ totalPrice|number_format(2, ',', '.') }} $</strong>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Pay my order</button>
-        <a href="{{ path('cart_show') }}" class="btn btn-warning">
-            Edit cart
-        </a>
-    {{ form_end(form) }}
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the total price
-    var totalPrice = parseFloat('{{ totalPrice }}');
-
-    // Find all delivery options
-    var deliveryOptions = document.querySelectorAll('input[name="order[delivery]"]');
-
-    // Initialize delivery cost to the first delivery option if available
-    var deliveryCost = 0;
-    if (deliveryOptions.length > 0) {
-        var firstDeliveryOption = deliveryOptions[0];
-        firstDeliveryOption.checked = true; // Set the first option as checked
-        deliveryCost = parseFloat(firstDeliveryOption.getAttribute('data-price'));
-    }
-
-    // Update the delivery cost display
-    document.getElementById('delivery-cost').textContent = deliveryCost.toFixed(2) + ' $';
-
-    // Update the grand total display
-    var grandTotal = totalPrice + deliveryCost;
-    document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' $';
-
-    deliveryOptions.forEach(function(option) {
-        option.addEventListener('change', function() {
-            // Update delivery cost based on selected option
-            var selectedDeliveryOption = document.querySelector('input[name="order[delivery]"]:checked');
-            if (selectedDeliveryOption) {
-                deliveryCost = parseFloat(selectedDeliveryOption.getAttribute('data-price'));
-            }
-            // Update total and grand total
-            grandTotal = totalPrice + deliveryCost;
-            document.getElementById('delivery-cost').textContent = deliveryCost.toFixed(2) + ' $';
-            document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' $';
-        });
-    });
-});
-</script>
-{% endblock %} #}
-
 {% block body %}
 <div class="slide min-h-screen bg-background">
     {% include "partials/_shoppingStep.html.twig" with {step:'order'} %}
@@ -108,19 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="w-full bg-secondary border-2 border-tertiary-dark shadow p-8 rounded-xl flex md:flex-row flex-col gap-5 items-start">
                 <img src="/images/cutestorm-logo.svg" alt="cutestorm-logo" class="w-12 object-contain">
                 <div>
-                    {% if cartItems %}
-                        <p class="subtitle">What's next ?</p>
-                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
-                        <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
-                            <a href="{{ path('cart_show') }}" class="btn btn-danger md:w-40 w-full">edit cart</a>
-                        </div>
-                    {% else %}
-                        <p class="subtitle">Empty cart</p>
-                        <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
-                        <div class="flex items-center justify-end mt-5 gap-3">
-                            <a href="{{ path('store') }}" class="btn btn-yellow w-40">back to store</a>
-                        </div>
-                    {% endif %}
+                    <p class="subtitle">What's next ?</p>
+                    <p>Did you select the delivery method that suits you the most ? Yes ? Now all you got to do is pay for your order... Thank you for thrusting CuteStorm for your purchase, see you soon !</p>
+                    <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
+                        <a href="{{ path('cart_show') }}" class="btn btn-danger md:w-40 w-full">edit cart</a>
+                    </div>
                 </div>
             </div>
             {% if cartItems %}

@@ -18,6 +18,12 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
+    /**
+     * sort by most recent messages
+     *
+     * @param User $user
+     * @return array
+     */
     public function sortConvByRecentMsg(User $user): array
     {
         return $this->createQueryBuilder('c')
@@ -31,6 +37,12 @@ class ConversationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * find ongoing conv
+     *
+     * @param User $user
+     * @return array
+     */
     public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('c')
@@ -45,11 +57,17 @@ class ConversationRepository extends ServiceEntityRepository
             ->getResult();
     }
     
+    /**
+     * find conv requests
+     *
+     * @param User $user
+     * @return array
+     */
     public function findPendingRequests(User $user): array
     {
         return $this->createQueryBuilder('c')
-            ->where('c.isAccepted = false') // Only pending requests
-            ->andWhere('c.recipient = :user') // Pending requests for the logged-in user
+            ->where('c.isAccepted = false')
+            ->andWhere('c.recipient = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
@@ -68,7 +86,7 @@ class ConversationRepository extends ServiceEntityRepository
 
     public function replaceUserInConversations(User $user, User $anonymousUser): void
     {
-        // Remplacer l'utilisateur en tant qu'expéditeur
+        // replace user as sender
         $this->createQueryBuilder('c')
             ->update()
             ->set('c.sender', ':anonymousUser')
@@ -78,7 +96,7 @@ class ConversationRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
         
-        // Remplacer l'utilisateur en tant que destinataire
+        // replace user as recipient
         $this->createQueryBuilder('c')
             ->update()
             ->set('c.recipient', ':anonymousUser')

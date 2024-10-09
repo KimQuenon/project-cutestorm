@@ -33,6 +33,12 @@ use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthentication
 
 class AccountController extends AbstractController
 {
+    /**
+     * Login
+     *
+     * @param AuthenticationUtils $utils
+     * @return Response
+     */
     #[Route('/login', name: 'account_login')]
     public function index(AuthenticationUtils $utils): Response
     {
@@ -43,7 +49,7 @@ class AccountController extends AbstractController
 
         if($error instanceof TooManyLoginAttemptsAuthenticationException)
         {
-            $loginError= "Trop de tentatives de connexion, réessayez plus tard...";
+            $loginError= "Too many attempts, try later...";
 
         }
 
@@ -54,12 +60,25 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Logout
+     *
+     * @return Void
+     */
     #[Route('/logout', name: 'account_logout')]
     public function logout(): Void
     {
     }
 
     
+    /**
+     * Create an account + handle avatar & banner
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param UserPasswordHasherInterface $hasher
+     * @return Response
+     */
     #[Route("/register", name:"account_register")]
     public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response
     {
@@ -67,7 +86,7 @@ class AccountController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
-
+        // handle registration form
         if($form->isSubmitted() && $form->isValid())
         {
             $hash = $hasher->hashPassword($user, $user->getPassword());
@@ -76,7 +95,7 @@ class AccountController extends AbstractController
             $user->setFirstname(ucwords($user->getFirstname()));
             $user->setLastname(ucwords($user->getLastname()));
 
-            $avatarFile = $form->get('avatar')->getData(); // Adaptez cette ligne si nécessaire
+            $avatarFile = $form->get('avatar')->getData();
             if ($avatarFile) {
                 $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
@@ -91,11 +110,11 @@ class AccountController extends AbstractController
                 }
                 $user->setAvatar($newFilename);
             } else {
-                // Assigner l'avatar par défaut
+                // if no avatar submitted => save the default one
                 $user->setAvatar('default-avatar.webp');
             }
 
-            $bannerFile = $form->get('banner')->getData(); // Adaptez cette ligne si nécessaire
+            $bannerFile = $form->get('banner')->getData();
             if ($bannerFile) {
                 $originalFilename = pathinfo($bannerFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
@@ -110,6 +129,7 @@ class AccountController extends AbstractController
                 }
                 $user->setBanner($newFilename);
             } else {
+                // if no avatar submitted => assign a random banner
                 $defaultBanners = ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.webp', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'];
                 $randomBanner = $defaultBanners[array_rand($defaultBanners)];
                 $user->setBanner($randomBanner);
@@ -127,6 +147,13 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Edit profile
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("/profile/edit", name:"profile_edit")]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, EntityManagerInterface $manager): Response
@@ -157,6 +184,12 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Display profile settings + edit options
+     *
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/profile/settings', name: 'account_settings')]
     #[IsGranted('ROLE_USER')]
     public function settings(EntityManagerInterface $manager): Response
@@ -169,6 +202,12 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Toggle between a public and a private account
+     *
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/toggle-private', name: 'toggle_private')]
     #[IsGranted('ROLE_USER')]
     public function togglePrivate(EntityManagerInterface $manager): Response
@@ -185,6 +224,14 @@ class AccountController extends AbstractController
         return $this->redirectToRoute('account_settings');
     }
 
+    /**
+     * edit password
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param UserPasswordHasherInterface $hasher
+     * @return Response
+     */
     #[Route("/profile/password-modify", name:"profile_password")]
     #[IsGranted('ROLE_USER')]
     public function modifyPassword(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher):Response
@@ -226,6 +273,13 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Add avatar
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("profile/avatar", name:"profile_avatar")]
     #[IsGranted('ROLE_USER')]
     public function avatar(Request $request, EntityManagerInterface $manager):Response
@@ -277,6 +331,12 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * replace current avatar by the default one
+     *
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse
+     */
     #[Route('/profile/avatar/delete', name: 'profile_avatar_delete')]
     #[IsGranted('ROLE_USER')]
     public function deleteAvatar(EntityManagerInterface $manager): RedirectResponse
@@ -297,7 +357,13 @@ class AccountController extends AbstractController
         return $this->redirectToRoute('profile_feed');
     }
 
-
+    /**
+     * add banner
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("profile/banner", name:"profile_banner")]
     #[IsGranted('ROLE_USER')]
     public function banner(Request $request, EntityManagerInterface $manager):Response
@@ -349,6 +415,12 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * generator of default banner
+     *
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse
+     */
     #[Route('/profile/banner/change', name: 'profile_banner_change')]
     #[IsGranted('ROLE_USER')]
     public function changeBanner(EntityManagerInterface $manager): RedirectResponse
@@ -357,18 +429,16 @@ class AccountController extends AbstractController
 
         $defaultBanners = ['banner1.webp', 'banner2.webp', 'banner3.webp', 'banner4.webp', 'banner5.webp', 'banner6.webp', 'banner7.webp', 'banner8.webp', 'banner9.webp', 'banner10.webp'];
 
-        // Vérifier si la bannière actuelle est dans les bannières par défaut
+        // if already a default one => choose another one
         if (in_array($user->getBanner(), $defaultBanners)) {
-            // Choisir une nouvelle bannière par défaut
             $availableBanners = array_diff($defaultBanners, [$user->getBanner()]);
             $randomBanner = $availableBanners[array_rand($availableBanners)];
         } else {
-            // Si la bannière actuelle n'est pas par défaut, choisir une bannière aléatoire
+            // if not, delete the old file and replace it by a random one
             unlink($this->getParameter('uploads_directory').'/'.$user->getBanner());
             $randomBanner = $defaultBanners[array_rand($defaultBanners)];
         }
 
-        // Réinitialiser la bannière de l'utilisateur
         $user->setBanner($randomBanner);
 
         $manager->persist($user);
@@ -379,6 +449,12 @@ class AccountController extends AbstractController
         return $this->redirectToRoute('profile_feed');
     }
 
+    /**
+     * delete banner and replace it by a random one
+     *
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse
+     */
     #[Route('/profile/banner/delete', name: 'profile_banner_delete')]
     #[IsGranted('ROLE_USER')]
     public function deleteBanner(EntityManagerInterface $manager): RedirectResponse
@@ -404,6 +480,20 @@ class AccountController extends AbstractController
         return $this->redirectToRoute('profile_feed');
     }
 
+    /**
+     * Delete profile
+     *
+     * @param UserRepository $userRepo
+     * @param ConversationRepository $convRepo
+     * @param ReportRepository $reportRepo
+     * @param CommentRepository $commentRepo
+     * @param OrderRepository $orderRepo
+     * @param Request $request
+     * @param UserPasswordHasherInterface $hasher
+     * @param EntityManagerInterface $manager
+     * @param TokenStorageInterface $tokenStorage
+     * @return Response
+     */
     #[Route("/profile/delete", name: "profile_delete")]
     #[IsGranted('ROLE_USER')]
     public function deleteAccount(UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, OrderRepository $orderRepo, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage): Response

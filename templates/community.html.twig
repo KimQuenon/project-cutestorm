@@ -19,7 +19,7 @@
                             <img src="/images/logo-transparent.svg" alt="cutestorm-logo-transparent" class="h-5">
                             <hr class="border-t border-2 border-tertiary-dark w-24">
                         </div>
-                        <p class="text-tertiary-dark mt-4 text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis iste magnam alias maiores ipsa ipsum dicta corrupti commodi eligendi ullam natus explicabo, minima excepturi? Culpa qui sunt libero fuga repudiandae!</p>
+                        <p class="text-tertiary-dark mt-4 text-center">Welcome to the social side of Cutestorm ! Meet new faces and new inspiration around a mutual passion for clothes. Unlash your creativity and see where it takes you...</p>
                         <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">BROWSE POSTS ></a>
                     </div>
                     <img src="/images/skotch.svg" class="w-40 absolute -top-6 bg-cover bg-center left-1/2 -translate-x-1/2"></img>
@@ -40,7 +40,7 @@
             <div class="flex justify-between items-center flex-row flex-wrap">
                 <div class="md:w-1/2 w-full">
                     <h2 class="title text-tertiary-dark">Popular posts</h2>
-                    <p class="text-tertiary-dark">Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+                    <p class="text-tertiary-dark">These creators wrote history by making those posts ! Who knows, maybe you are the next gem in the world of customization ? Join us and see how it goes...</p>
                 </div>
                 <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">SEE THEM ALL ></a>
             </div>
@@ -59,7 +59,7 @@
 
     {# ------------------------------SLIDE 3 - AWARDS------------------------------ #}
 
-    {% include 'partials/_podium.html.twig' with {'title': 'Awards time !', 'text': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique animi voluptatibus maxime soluta ipsa inventore labore officiis quo fugit dolor?', 'showButton': true, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
+    {% include 'partials/_podium.html.twig' with {'title': 'Awards time !', 'text': 'Bring the competitive side of yours in this battle through fashion and customization. Create, share, comment, do everything in your power to become the next big thing in the world of art.', 'showButton': true, 'items': topLikedUsers, 'itemType': 'user', 'itemCategory': 'likedUser'} %}
 
 
 {% endblock %}
@@ -82,13 +82,15 @@
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
                     },
+                    autoplay: {
+                        delay: 5000,
+                    },
                     breakpoints: {
-                        // Quand la largeur de la fenêtre est >= 640px
                         768: {
-                            slidesPerView: 2, // Afficher 1 slide par vue
+                            slidesPerView: 2,
                         },
                         1024: {
-                            slidesPerView: 3, // Afficher 1 slide par vue
+                            slidesPerView: 3,
                         },
 
                     }

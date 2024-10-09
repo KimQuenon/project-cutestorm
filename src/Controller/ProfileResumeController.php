@@ -15,6 +15,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProfileResumeController extends AbstractController
 {   
+    /**
+     * dashboard
+     *
+     * @param LikeRepository $likeRepo
+     * @param UserRepository $userRepo
+     * @param PostRepository $postRepo
+     * @param NotificationRepository $notificationRepo
+     * @return Response
+     */
     #[Route('/profile/resume/activities', name: 'resume_activities')]
     #[IsGranted('ROLE_USER')]
     public function index(LikeRepository $likeRepo, UserRepository $userRepo, PostRepository $postRepo, NotificationRepository $notificationRepo): Response
@@ -38,6 +47,14 @@ class ProfileResumeController extends AbstractController
         ]);
     }
 
+    /**
+     * liked posts
+     *
+     * @param integer $page
+     * @param PostRepository $postRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/resume/likes/{page<\d+>?1}', name: 'resume_likes')]
     #[IsGranted('ROLE_USER')]
     public function likes(int $page, PostRepository $postRepo, PaginationService $paginationService): Response
@@ -63,6 +80,14 @@ class ProfileResumeController extends AbstractController
         ]);
     }
 
+    /**
+     * followings
+     *
+     * @param integer $page
+     * @param UserRepository $userRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/resume/followings/{page<\d+>?1}', name: 'resume_followings')]
     #[IsGranted('ROLE_USER')]
     public function followings(int $page, UserRepository $userRepo, PaginationService $paginationService): Response
@@ -84,6 +109,14 @@ class ProfileResumeController extends AbstractController
         ]);
     }
 
+    /**
+     * followers
+     *
+     * @param integer $page
+     * @param UserRepository $userRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/resume/followers/{page<\d+>?1}', name: 'resume_followers')]
     #[IsGranted('ROLE_USER')]
     public function followers(int $page, UserRepository $userRepo, PaginationService $paginationService): Response
@@ -105,6 +138,4 @@ class ProfileResumeController extends AbstractController
             'totalPages' => $totalPages,
         ]);
     }
-
-
 }

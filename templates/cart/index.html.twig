@@ -12,7 +12,7 @@
                     <div class="w-full h-full bg-white border-2 border-tertiary-dark p-6 rounded-b-xl flex-1">
                         <div class="flex flex-col">
                             <h2 class="title title-second text-tertiary-dark">Your cart</h2>
-                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna.</p>
+                            <p>Here are listed every items of your dreams waiting to be completely yours. You can find them some friends on our store or confirm the cart and create an order...</p>
                             <a href="{{path('store')}}" class="btn btn-yellow w-40 mt-5">< Store</a>
                         </div>
                     </div>
@@ -24,14 +24,14 @@
                     <div>
                         {% if cartItems %}
                             <p class="subtitle">What's next ?</p>
-                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                            <p>Now that your shopping session comes to an end, you can either edit your cart or clear it to fill it later. You can also submit it to createa an order. Whatever you do for now is still fully editable so don't worry :)</p>
                             <div class="flex items-center justify-end mt-5 gap-3 md:flex-row flex-col">
                                 <a href="{{ path('cart_clear') }}" class="btn btn-danger md:w-40 w-full">clear cart</a>
                                 <a href="{{ path('order_create') }}" class="btn btn-success md:w-40 w-full">create order</a>
                             </div>
                         {% else %}
                             <p class="subtitle">Empty cart</p>
-                            <p>Curabitur accumsan sed risus vel faucibus. Vivamus dignissim elit elit, et sollicitudin augue fermentum id. Suspendisse sem dui, pulvinar eu suscipit ut, ultrices in urna. </p>
+                            <p>It seems like nothing is going on there... what about some assets to get, hm ?</p>
                             <div class="flex items-center justify-end mt-5 gap-3">
                                 <a href="{{ path('store') }}" class="btn btn-yellow w-40">back to store</a>
                             </div>

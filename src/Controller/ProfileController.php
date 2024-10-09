@@ -17,6 +17,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProfileController extends AbstractController
 {
+    /**
+     * Feed (posts by followed users)
+     *
+     * @param integer $page
+     * @param Request $request
+     * @param PostRepository $postRepo
+     * @param UserRepository $userRepo
+     * @param LikeRepository $likeRepo
+     * @param ReportRepository $reportRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/feed/{page<\d+>?1}', name: 'profile_feed')]
     #[IsGranted('ROLE_USER')]
     public function feed(
@@ -50,6 +62,18 @@ class ProfileController extends AbstractController
         );
     }
 
+    /**
+     * display user's posts
+     *
+     * @param integer $page
+     * @param Request $request
+     * @param PostRepository $postRepo
+     * @param UserRepository $userRepo
+     * @param LikeRepository $likeRepo
+     * @param ReportRepository $reportRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/posts/{page<\d+>?1}', name: 'profile_posts')]
     #[IsGranted('ROLE_USER')]
     public function userPosts(
@@ -86,6 +110,9 @@ class ProfileController extends AbstractController
     }
 
 
+    /**
+     * display user's profile + posts if not private
+     */
     #[Route('/profile/{slug}/{page<\d+>?1}', name: 'profile_show')]
     public function viewProfile(
         #[MapEntity(mapping: ['slug' => 'slug'])] User $profileUser,
@@ -129,6 +156,27 @@ class ProfileController extends AbstractController
         );
     }
 
+    /**
+     * Mutual fonctions
+     *
+     * @param User|null $user
+     * @param array $posts
+     * @param integer $page
+     * @param array $followers
+     * @param array $followings
+     * @param LikeRepository $likeRepo
+     * @param ReportRepository $reportRepo
+     * @param PaginationService $paginationService
+     * @param PostRepository $postRepo
+     * @param UserRepository $userRepo
+     * @param string $template
+     * @param User|null $profileUser
+     * @param boolean $isPrivate
+     * @param boolean $isFollowing
+     * @param boolean $hasReportedProfile
+     * @param string|null $podiumPosition
+     * @return Response
+     */
     private function renderProfilePage(
         ?User $user, // Accept null for cases where user is not authenticated
         array $posts,
@@ -188,12 +236,27 @@ class ProfileController extends AbstractController
         ]);
     }
 
+    /**
+     * Likes
+     *
+     * @param User $user
+     * @param LikeRepository $likeRepo
+     * @return array
+     */
     private function getLikedPostSlugs(User $user, LikeRepository $likeRepo): array
     {
         $likedPosts = $likeRepo->findBy(['user' => $user]);
         return array_map(fn($like) => $like->getPost()->getSlug(), $likedPosts);
     }
 
+    /**
+     * Reporting profiles
+     *
+     * @param User $user
+     * @param array $posts
+     * @param ReportRepository $reportRepo
+     * @return array
+     */
     private function getReportedPostIds(User $user, array $posts, ReportRepository $reportRepo): array
     {
         $reportedPostIds = [];
@@ -205,7 +268,14 @@ class ProfileController extends AbstractController
         return $reportedPostIds;
     }
 
-
+    /**
+     * display badges (awards)
+     *
+     * @param User $user
+     * @param array $items
+     * @param string $type
+     * @return string|null
+     */
     private function getPodiumPosition(User $user, array $items, string $type): ?string
     {
         foreach ($items as $index => $item) {

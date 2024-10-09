@@ -52,6 +52,11 @@ class Comment
     #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Notification::class)]
     private Collection $notifications;
 
+    /**
+     * init datetime
+     *
+     * @return void
+     */
     #[ORM\PrePersist]
     public function prePersist(): void
     {

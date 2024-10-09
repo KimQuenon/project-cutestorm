@@ -25,6 +25,7 @@ class SearchService
         }
     }
 
+    //search for product
     private function searchProducts(string $query): array
     {
         $repository = $this->entityManager->getRepository('App\Entity\Product');
@@ -41,6 +42,7 @@ class SearchService
         }, $results);
     }
 
+    //search for posts
     private function searchPosts(string $query): array
     {
         $repository = $this->entityManager->getRepository('App\Entity\Post');

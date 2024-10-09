@@ -13,16 +13,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class NotificationController extends AbstractController
 {
+    /**
+     * display all notifications
+     *
+     * @param integer $page
+     * @param NotificationRepository $notificationRepo
+     * @param PostRepository $postRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('profile/notifications/{page<\d+>?1}', name: 'notifications_index')]
     #[IsGranted('ROLE_USER')]
     public function index(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo, PaginationService $paginationService): Response
     {
         $user = $this->getUser();
 
-        // Récupérer tous les posts de l'utilisateur
         $posts = $postRepo->findBy(['author' => $user]);
         
-        // Récupérer les notifications associées aux posts et celles où l'utilisateur est relatedUser
         $notifications = $notificationRepo->getAllNotifications($user);
         
         $unreadCount = $notificationRepo->countUnreadNotifications($user);
@@ -42,6 +49,16 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    /**
+     * display notifications - like type
+     *
+     * @param integer $page
+     * @param NotificationRepository $notificationRepo
+     * @param PostRepository $postRepo
+     * @param CommentRepository $commentRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/notifications/likes/{page<\d+>?1}', name: 'notifications_likes')]
     #[IsGranted('ROLE_USER')]
     public function likes(int $page, NotificationRepository $notificationRepo, PostRepository $postRepo, CommentRepository $commentRepo, PaginationService $paginationService): Response
@@ -67,6 +84,14 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    /**
+     * display notifications - user type
+     *
+     * @param integer $page
+     * @param NotificationRepository $notificationRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('profile/notifications/follows/{page<\d+>?1}', name: 'notifications_follows')]
     #[IsGranted('ROLE_USER')]
     public function follows(int $page, NotificationRepository $notificationRepo, PaginationService $paginationService): Response
@@ -90,6 +115,14 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    /**
+     * display notifications - comment type
+     *
+     * @param integer $page
+     * @param NotificationRepository $notificationRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/profile/notifications/comments/{page<\d+>?1}', name: 'notifications_comments')]
     #[IsGranted('ROLE_USER')]
     public function comments(int $page, NotificationRepository $notificationRepo, PaginationService $paginationService): Response
@@ -113,6 +146,13 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    /**
+     * mark all notifications as read
+     *
+     * @param NotificationRepository $notificationRepo
+     * @param PostRepository $postRepo
+     * @return Response
+     */
     #[Route('/notifications/mark-read', name: 'mark_notifications_read')]
     #[IsGranted('ROLE_USER')]
     public function markRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
@@ -123,6 +163,13 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notifications_index');
     }
 
+    /**
+     * mark all notifications as read - like type
+     *
+     * @param NotificationRepository $notificationRepo
+     * @param PostRepository $postRepo
+     * @return Response
+     */
     #[Route('/notifications/mark-likes-read', name: 'mark_likes_read')]
     #[IsGranted('ROLE_USER')]
     public function markLikesRead(NotificationRepository $notificationRepo, PostRepository $postRepo): Response
@@ -133,6 +180,12 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notifications_likes');
     }
 
+    /**
+     * mark all notifications as read - user type
+     *
+     * @param NotificationRepository $notificationRepo
+     * @return Response
+     */
     #[Route('/notifications/mark-follows-read', name: 'mark_follows_read')]
     #[IsGranted('ROLE_USER')]
     public function markFollowsRead(NotificationRepository $notificationRepo): Response
@@ -144,6 +197,12 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notifications_follows');
     }
 
+    /**
+     * mark all notifications as read - comment type
+     *
+     * @param NotificationRepository $notificationRepo
+     * @return Response
+     */
     #[Route('/notifications/mark-comments-read', name: 'mark_comments_read')]
     #[IsGranted('ROLE_USER')]
     public function markCommentsRead(NotificationRepository $notificationRepo): Response

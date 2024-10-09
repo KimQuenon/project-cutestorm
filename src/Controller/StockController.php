@@ -14,6 +14,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class StockController extends AbstractController
 {
+    /**
+     * Admin - Stocks
+     *
+     * @param integer $page
+     * @param ProductVariantRepository $variantRepo
+     * @param ProductRepository $productRepo
+     * @param PaginationService $paginationService
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('admin/stock/{page<\d+>?1}', name: 'stock_index')]
     public function index(int $page, ProductVariantRepository $variantRepo, ProductRepository $productRepo, PaginationService $paginationService, Request $request, EntityManagerInterface $manager): Response
     {
@@ -24,6 +35,7 @@ class StockController extends AbstractController
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
 
+            // set new quantity
             foreach ($data['stocks'] as $id => $stockChange) {
                 $variant = $variantRepo->find($id);
                 if ($variant !== null) {

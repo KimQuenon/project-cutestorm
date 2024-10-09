@@ -30,6 +30,15 @@ class AdminProductController extends AbstractController
         $this->searchService = $searchService;
     }
     
+    /**
+     * Admin - Display products
+     *
+     * @param integer $page
+     * @param ProductRepository $productRepo
+     * @param OrderItemRepository $orderItemRepo
+     * @param PaginationService $paginationService
+     * @return Response
+     */
     #[Route('/admin/products/{page<\d+>?1}', name: 'products_index')]
     public function index(int $page, ProductRepository $productRepo, OrderItemRepository $orderItemRepo, PaginationService $paginationService): Response
     {
@@ -53,6 +62,12 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Search bar products
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/admin/products/search/ajax', name: 'admin_search_ajax', methods: ['GET'])]
     public function searchAjax(Request $request): JsonResponse
     {
@@ -67,6 +82,14 @@ class AdminProductController extends AbstractController
         return new JsonResponse($results);
     }
 
+    /**
+     * Admin - Add product
+     *
+     * @param ProductColorRepository $colorRepo
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('admin/product/new', name: 'product_new')]
     public function new(ProductColorRepository $colorRepo, Request $request, EntityManagerInterface $manager): Response
     {
@@ -164,6 +187,13 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Add color product
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route("admin/color/new", name: "color_new")]
     public function newColor(Request $request, EntityManagerInterface $manager): Response
     {
@@ -193,6 +223,9 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Edit product
+     */
     #[Route('admin/product/{slug}/edit', name: 'product_edit')]
     public function edit(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, Request $request, EntityManagerInterface $manager): Response
     {
@@ -258,6 +291,9 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Delete product
+     */
     #[Route("admin/product/{slug}/delete", name:"product_delete")]
     public function delete(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, ProductRepository $productRepo, ProductVariantRepository $productVariantRepo, EntityManagerInterface $manager, OrderItemRepository $orderItemRepository): Response
     {
@@ -307,6 +343,9 @@ class AdminProductController extends AbstractController
         return $this->redirectToRoute('products_index');
     }
 
+    /**
+     * Admin - Add image to product
+     */
     #[Route("admin/product/{slug}/add-image", name: "product_add_image")]
     public function addImage(#[MapEntity(mapping: ['slug' => 'slug'])] Product $product, Request $request, EntityManagerInterface $manager): Response
     {
@@ -352,6 +391,9 @@ class AdminProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Admin - Delete image from product
+     */
     #[Route("admin/product/picture-delete/{id}", name: "product_picture_delete")]
     #[IsGranted('ROLE_USER')]
     public function deletePicture(#[MapEntity(mapping: ['id' => 'id'])] ProductImage $productImage, EntityManagerInterface $manager): Response

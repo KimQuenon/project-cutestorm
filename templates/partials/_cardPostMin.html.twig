@@ -9,7 +9,7 @@
             <p class="text-[12px]">{{ post.timestamp|date('d-m-Y') }}</p>
         </div>
 
-        <div class="lg:h-[73%] h-full border-b-2 border-tertiary-dark">
+        <div class="lg:h-[73%] h-[90%] border-b-2 border-tertiary-dark">
             {% if post.postImages|length > 0 %}
                 {% set firstImage = post.postImages|first %}
                 {% if firstImage is not null and firstImage.filename is defined %}
@@ -25,7 +25,7 @@
                 </a>
             {% endif %}
         </div>
-        <div class="w-full flex items-center justify-center h-full">
+        <div class="w-full flex items-center justify-center lg:h-full">
             <div class="w-full px-4 flex items-center">
                 {% include 'partials/_like.html.twig' with {
                     'type': 'post',

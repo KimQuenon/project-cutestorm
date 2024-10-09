@@ -31,11 +31,7 @@ class PaymentController extends AbstractController
         $productStripe = [];
 
         foreach ($order->getOrderItems()->getValues() as $orderItem) {
-            // $productVariant = $orderItem->getProductVariant();
-            // $product = $productVariant->getProduct();
-            // $productData = $productRepo->findOneBy(['name' => $orderItem->getProductVariant()->getProduct()]);
             $productData = $productRepo->findOneBy(['name' => $orderItem->getProductVariant()->getProduct()->getName()]);
-            // dd($productData->getPrice());
 
             $productStripe[] = [
                 "price_data" => [
@@ -61,13 +57,7 @@ class PaymentController extends AbstractController
                 "quantity" => 1,
             ];
             
-        // dd($productStripe);
-
         Stripe::setApiKey('sk_test_51PkPygAPzfXxdZQct3F7TCdFgbR0MKHN1U1DT3HmzD9c95rGTPadyeEtvn6eeZbM0csfdeXDlzPSZxoH2b3u58pb00zFv496lV');
-        // header('Content-Type: application/json');
-
-        // $YOUR_DOMAIN = 'http://localhost:4242';
-
 
         $checkout_session = Session::create([
             'customer_email' => $this->getUser()->getEmail(),
@@ -87,9 +77,6 @@ class PaymentController extends AbstractController
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
-
-        // $order->setStripeSessionId($checkout_session->id);
-
         
         return new RedirectResponse($checkout_session->url);
 

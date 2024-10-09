@@ -17,6 +17,7 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
+    // replace user by deleted user entity
     public function replaceAuthorInComments(User $userToReplace, User $replacementUser): void
     {
         $qb = $this->createQueryBuilder('c');
