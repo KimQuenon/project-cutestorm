@@ -10,7 +10,7 @@
 {# ------------------------------SLIDE 1 - DISCOVER NEW PIECES------------------------------ #}
 <div class="slide lg:h-[100vh] h-[75vh] bg-primary">
     <div class="container flex flex-row flex-wrap h-full">
-        <div class="lg:w-3/5 w-full mt-auto" data-aos="fade-right" data-aos-duration="1000">
+        <div class="lg:w-3/5 w-full flex items-center" data-aos="fade-right" data-aos-duration="1000">
             <h1 class="font-gliker lg:text-[200px] md:text-[160px] text-[80px] leading-none text-background">Discover new pieces</h1>
         </div>
         <div class="lg:w-2/5 w-full flex flex-col justify-center lg:p-10 p-0" data-aos="fade-left" data-aos-duration="1000">
@@ -94,7 +94,7 @@
         </div>
         <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8 min-h-full">
             <div class="lg:col-span-2 lg:row-span-2 h-fit bg-red-200">
-                {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'lg:h-[280px] h-48'} %}
+                {% include "partials/_cardPost.html.twig" with {'post': posts[0], imgHeight : 'mediaQuery'} %}
             </div>
 
             {% for i in 1..6 %}
@@ -105,7 +105,7 @@
 
             <div class="lg:col-span-2 lg:row-span-2 lg:h-fit h-full">
                 <div class="flex-1">
-                    {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'lg:h-[280px] h-48'} %}
+                    {% include "partials/_cardPost.html.twig" with {'post': posts[9], imgHeight : 'mediaQuery'} %}
                 </div>
             </div>
 

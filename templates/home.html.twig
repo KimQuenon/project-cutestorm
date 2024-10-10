@@ -101,7 +101,7 @@
 
 	{# ------------------------------SLIDE 4 - ABOUT------------------------------ #}
     <div class="slide bg-background md:h-full h-[160vh]">
-        <div class="container flex items-center lg:flex-row flex-col-reverse gap-10">
+        <div class="container flex items-center lg:flex-row flex-col-reverse gap-10 h-[70vh]">
             <div class="lg:w-1/2 w-full linear-background flex flex-col h-full justify-between" data-aos="fade-right" data-aos-duration="1000">
                 <div class="container flex flex-col items-center">
                     {% include 'partials/_teamMember.html.twig' with { team: team1[0] } %}
@@ -283,7 +283,7 @@
                 <div class="container">
                     <img src="/images/paper-plane.svg" alt="paper plane" class="absolute top-20 right-2 w-2/3 bg-cover bg-no-repeat bg-center"></img>
                     <h2 class="title text-primary-dark text-end">Contact us</h2>
-                    <div class="mt-20">
+                    <div class="mt-20 lg:pt-20">
                     	{{form_start(myForm)}}
 
                         {{form_widget(myForm)}}

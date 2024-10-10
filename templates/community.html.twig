@@ -44,10 +44,10 @@
                 </div>
                 <a href="{{path('posts_index')}}" class="w-52 btn btn-yellow btn-squared mt-4">SEE THEM ALL ></a>
             </div>
-            <div class="swiper-container w-full lg:h-[80vh] md:h-[55vh] h-[70vh] relative mt-10">
+            <div class="swiper-container w-full lg:h-[75vh] md:h-[55vh] h-[70vh] relative mt-10 overflow-hidden">
                 <div class="swiper-wrapper lg:h-[65vh] md:h-[45vh] h-[60vh] mt-10">
                     {% for post in posts %}
-                        <div class="swiper-slide w-full">
+                        <div class="swiper-slide w-full h-[70vh]">
                             {% include "partials/_cardPost.html.twig" with {imgHeight: 'h-44'} %}
                         </div>
                     {% endfor %}
@@ -82,9 +82,7 @@
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
                     },
-                    autoplay: {
-                        delay: 5000,
-                    },
+
                     breakpoints: {
                         768: {
                             slidesPerView: 2,

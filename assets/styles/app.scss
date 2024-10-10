@@ -27,6 +27,17 @@
     scrollbar-color: $tertiary $tertiaryLight;
 }
 
+.mediaQuery{
+    @media all and (max-width: 1700px){
+        height:448px;
+    }
+    @media all and (max-width: 1600px){
+        height:280px;
+    }
+    @media all and (max-width: 768px){
+        height:192px;
+    }
+}
 //----------------------GENERAL SETTINGS----------------------
 body{
     color:$tertiary;
