@@ -1,13 +1,36 @@
-{% extends "base.html.twig" %}
+{% extends 'layouts/account_layout.html.twig' %}
 
 {% block title %}Your followers{% endblock %}
 
-{% block body %}
-    {% for following in followings %}
-        <a href="{{ path('profile_show', {'slug': following.slug}) }}">
-            <p>{{ following.pseudo }}</p>
-        </a>
-    {% endfor %}
+{% set currentTab = 'resume_followings' %}
+
+{% block content %}
+    <h2 class="title title-second text-tertiary-dark">Followings</h2>
+    {% if followings %}
+        <div class="w-full grid lg:grid-cols-4 grid-cols-2 gap-4">
+            {% for following in followings %}
+                <div class="flex flex-col items-center justify-center gap-2">
+                    <a href="{{ path('profile_show', {'slug': following.slug}) }}" class="flex justify-center">
+                        {% if following.avatar %}
+                            <img src="{{ asset('uploads/' ~ following.avatar) }}" alt="avatar of {{ following.pseudo }}" class="w-20 h-20 object-cover rounded-full border-2 border-tertiary-dark">
+                        {% else %}
+                            <div class="w-10 h-10 rounded-full bg-secondary border-2 border-tertiary-dark"></div>
+                        {% endif %}
+                    </a>
+                    <div class="subtitle">
+                        <a href="{{ path('profile_show', {'slug': following.slug}) }}">{{following.pseudo}}</a>
+                    </div>
+                    <a href="{{ path('profile_show', {'slug': following.slug}) }}" class="btn btn-yellow md:w-40 w-full">VIEW PROFILE</a>
+                    <a href="{{ path('conversation_new', {'slug': following.slug}) }}"  class="btn btn-purple md:w-40 w-full">Talk to them</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="w-full p-4 bg-background border-2 border-tertiary-dark rounded-xl text-tertiary-dark font-bold flex flex-row gap-2 items-center">
+            <i class="fas fa-info-circle"></i>
+            <p>You are not following anyone... for now !</p>
+        </div>
+    {% endif %}
     {% include "partials/_pagination.html.twig" with {
         'route': 'resume_followings',
         'parameters': {},
