@@ -98,7 +98,7 @@
             </div>
 
             {% for i in 1..6 %}
-                <div class="lg:h-[36vh]">
+                <div class="mediaQuery2">
                     {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
                 </div>
             {% endfor %}
@@ -110,7 +110,7 @@
             </div>
 
             {% for i in [8, 7] %}
-                <div class="lg:h-[36vh]">
+                <div class="mediaQuery2">
                     {% include "partials/_cardPostMin.html.twig" with {'post': posts[i]} %}
                 </div>
             {% endfor %}

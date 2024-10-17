@@ -38,6 +38,15 @@
         height:192px;
     }
 }
+
+.mediaQuery2{
+    @media all and (max-width: 1700px){
+        height:100%;
+    }
+    @media all and (max-width: 1600px){
+        height:36vh;
+    }
+}
 //----------------------GENERAL SETTINGS----------------------
 body{
     color:$tertiary;
