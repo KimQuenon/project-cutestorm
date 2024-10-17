@@ -46,6 +46,21 @@
     @media all and (max-width: 1600px){
         height:36vh;
     }
+    @media all and (max-width: 1200px){
+        height:100%;
+    }
+}
+
+.mediaQuery3{
+    @media all and (max-width: 1700px){
+        height:90%;
+    }
+    @media all and (max-width: 1600px){
+        height:72%;
+    }
+    @media all and (max-width: 1200px){
+        height:90%;
+    }
 }
 //----------------------GENERAL SETTINGS----------------------
 body{

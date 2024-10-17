@@ -9,7 +9,7 @@
             <p class="text-[12px]">{{ post.timestamp|date('d-m-Y') }}</p>
         </div>
 
-        <div class="lg:h-[73%] h-[90%] border-b-2 border-tertiary-dark">
+        <div class="mediaQuery3 border-b-2 border-tertiary-dark">
             {% if post.postImages|length > 0 %}
                 {% set firstImage = post.postImages|first %}
                 {% if firstImage is not null and firstImage.filename is defined %}
