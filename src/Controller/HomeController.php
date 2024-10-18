@@ -9,6 +9,7 @@ use App\Repository\TeamRepository;
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,7 +27,7 @@ class HomeController extends AbstractController
      * @return Response
      */
     #[Route('/', name: 'homepage')]
-    public function index(ReviewRepository $reviewRepo, TeamRepository $teamRepo, Request $request, EntityManagerInterface $manager): Response
+    public function index(ReviewRepository $reviewRepo, TeamRepository $teamRepo, Request $request, EntityManagerInterface $manager, MailerInterface $mailer): Response
     {
         $reviews = $reviewRepo->findTopRatedReviews();
         $teams = $teamRepo->findAll();
@@ -52,6 +53,8 @@ class HomeController extends AbstractController
                 ->html($this->renderView('mail/contactnotif.html.twig', [
                     'contact' => $contact,
                 ]));
+
+            $mailer->send($email);
 
             $form = $this->createForm(ContactType::class, new Contact());//clear form with a new one
 
