@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Form\ContactType;
+use Symfony\Component\Mime\Email;
 use App\Repository\TeamRepository;
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,6 +44,14 @@ class HomeController extends AbstractController
         {
             $manager->persist($contact);
             $manager->flush();
+            $email = (new Email())
+                ->from('info@cutestorm.kimberley-quenon.be')
+                ->to('kimberley.quenon.02@gmail.com')
+                ->replyTo($contact->getEmail())
+                ->subject("New message from contact form")
+                ->html($this->renderView('mail/contactnotif.html.twig', [
+                    'contact' => $contact,
+                ]));
 
             $form = $this->createForm(ContactType::class, new Contact());//clear form with a new one
 
