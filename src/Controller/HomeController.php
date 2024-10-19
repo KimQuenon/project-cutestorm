@@ -50,7 +50,7 @@ class HomeController extends AbstractController
                 ->to('kimberley.quenon.02@gmail.com')
                 ->replyTo($contact->getEmail())
                 ->subject("New message from contact form")
-                ->html($this->renderView('mail/contactnotif.html.twig', [
+                ->html($this->renderView('mail/contact.html.twig', [
                     'contact' => $contact,
                 ]));
 

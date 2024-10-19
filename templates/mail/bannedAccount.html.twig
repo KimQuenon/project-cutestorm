@@ -1,0 +1,11 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}Banned account{% endblock %}
+
+{% block text %}Your profile has been deleted for not meeting our terms of use.{% endblock %}
+
+{% block content %}
+    Your account has been deleted to our moderators because of {{report.reason}}. <br><br>
+
+    We are sorry to see you leave so soon, take this time as an opportunity to reflect on your behaviour.
+{% endblock %}

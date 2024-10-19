@@ -1,0 +1,54 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}New order: {{order.reference}} !{% endblock %}
+
+{% block text %}We have received your order !{% endblock %}
+
+{% block content %}
+    <h2>Customer Information</h2>
+    <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <br><br>
+
+    <h2>Order Reference: {{ order.reference }}</h2>
+    <p><strong>Delivery Method:</strong> {{ order.delivery.name }}</p>
+    <p><strong>Delivery Cost:</strong> {{ order.delivery.price|number_format(2, ',', '.') }} $</p>
+    <p><strong>Delivery Time:</strong> {{ order.delivery.deliveryTime }}</p>
+    <br><br>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orderItem in order.orderItems %}
+            <tr>
+                <td>{{ orderItem.productVariant.product.name }}</td>
+                <td>{{ orderItem.productVariant.size }}</td>
+                <td>{{ orderItem.quantity }}</td>
+                <td>{{ orderItem.productVariant.product.price|number_format(2, ',', '.') }} $</td>
+                <td>{{ (orderItem.productVariant.product.price * orderItem.quantity)|number_format(2, ',', '.') }} $</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                <td>{{ (order.totalPrice - order.delivery.price)|number_format(2, ',', '.') }} $</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Delivery:</strong></td>
+                <td>{{ order.delivery.price|number_format(2, ',', '.') }} $</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td>{{ order.totalPrice|number_format(2, ',', '.') }} $</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

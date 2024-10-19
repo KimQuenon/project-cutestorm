@@ -1,0 +1,18 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}Reported account{% endblock %}
+
+{% block text %}Your profile has been reported for not meeting our terms of use.{% endblock %}
+
+{% block content %}
+    Your account has been reported to our moderators because of {{report.reason}}. <br><br>
+
+    You still have
+    {% if report.reportedUser.reportCount == 1 %}
+        <strong>2</strong> chances.
+    {% elseif report.reportedUser.reportCount == 2 %}
+        <strong>1</strong> chance.
+    {% endif %}
+    <br><br>
+    Be careful with what you post please, this community does not tolerate this kind of behaviour...
+{% endblock %}

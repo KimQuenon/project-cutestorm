@@ -1,0 +1,10 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}Welcome to CustStorm, {{user.pseudo}} !{% endblock %}
+
+{% block text %}Your subscription has been registered.{% endblock %}
+
+{% block content %}
+    Thank you for joining our community ! Feel free to take a look at our mini store and share your inspirations to the world. Make some friends along the way too ! <br> <br>
+    <a href='{{path('post_create')}}'>Let's create your first post ever !</a>
+{% endblock %}

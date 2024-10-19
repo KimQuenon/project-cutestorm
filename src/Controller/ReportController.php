@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Report;
 use App\Form\ReportType;
+use Symfony\Component\Mime\Email;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Service\PaginationService;
@@ -13,6 +14,7 @@ use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -249,7 +251,8 @@ class ReportController extends AbstractController
         ReportRepository $reportRepo,
         CommentRepository $commentRepo,
         OrderRepository $orderRepo,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        MailerInterface $mailer
     ): RedirectResponse
     {
         if ($report->getReportedPost()) {
@@ -263,18 +266,45 @@ class ReportController extends AbstractController
                 }
                 $manager->remove($image);
             }
+            $email = (new Email())
+                ->from('info@cutestorm.kimberley-quenon.be')
+                ->to($report->getReportedPost()->getAuthor()->getEmail())
+                ->replyTo($report->getReportedPost()->getAuthor()->getEmail())
+                ->subject("Reported Post")
+                ->html($this->renderView('mail/reportedPost.html.twig', [
+                    'user' => $report->getReportedPost()->getAuthor(),
+                    'report' => $report
+            ]));
+            $mailer->send($email);
+
             $manager->remove($report->getReportedPost());
+            $manager->remove($report);
+            $manager->flush();
     
         } elseif ($report->getReportedComment()) {
             // handle reported comment
             $anon = $userRepo->findOneBy(['email'=>'anon@noreply.com']);
             $comment = $report->getReportedComment();
         
+            $email = (new Email())
+                ->from('info@cutestorm.kimberley-quenon.be')
+                ->to($comment->getAuthor()->getEmail())
+                ->replyTo($comment->getAuthor()->getEmail())
+                ->subject("Reported Comment")
+                ->html($this->renderView('mail/reportedComment.html.twig', [
+                    'user' => $comment->getAuthor(),
+                    'report' => $report
+            ]));
+            $mailer->send($email);
+
             $comment->setContent('This comment has been reported.')
-                    ->setAuthor($anon);
-        
+            ->setAuthor($anon);
+
+            $manager->remove($report);
+            
             $manager->persist($comment);
             $manager->flush();
+            
     
         } elseif ($report->getReportedUser()) {
             // handle reported user
@@ -286,8 +316,22 @@ class ReportController extends AbstractController
                 // add a report to the count
                 $user->incrementReportCount();
                 $manager->persist($user);
+
+                $email = (new Email())
+                    ->from('info@cutestorm.kimberley-quenon.be')
+                    ->to($user->getEmail())
+                    ->replyTo($user->getEmail())
+                    ->subject("Reported Account")
+                    ->html($this->renderView('mail/reportedAccount.html.twig', [
+                        'user' => $user,
+                        'report' => $report
+                ]));
+                $mailer->send($email);
+
                 $manager->remove($report);
                 $manager->flush();
+
+
     
                 $this->addFlash('success', 'Le signalement a été traité.');
             } else {
@@ -317,15 +361,17 @@ class ReportController extends AbstractController
                     if ($user->getBanner() && !in_array($user->getBanner(), ['banner1.jpg', 'banner2.jpg', 'banner3.jpg'])) {
                         unlink($this->getParameter('uploads_directory').'/'.$user->getBanner());
                     }
-    
-                    // Notify user before deleting
-                    // $email = (new Email())
-                    //     ->from('no-reply@yourdomain.com')
-                    //     ->to($user->getEmail())
-                    //     ->subject('Account Banned')
-                    //     ->text('Your account has been banned due to multiple reports and will be deleted shortly.');
-            
-                    // $mailer->send($email);
+
+                    $email = (new Email())
+                        ->from('info@cutestorm.kimberley-quenon.be')
+                        ->to($user->getEmail())
+                        ->replyTo($user->getEmail())
+                        ->subject("Banned account")
+                        ->html($this->renderView('mail/bannedAccount.html.twig', [
+                            'user' => $user,
+                    ]));
+        
+                    $mailer->send($email);
     
                     $manager->remove($user);
                     $manager->remove($report);

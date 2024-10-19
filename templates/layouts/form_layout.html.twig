@@ -23,14 +23,14 @@
             <div class="lg:!w-1/2 w-full min-h-full p-8 {{ block('defaultBackgroundClass') }}">
                 {% block form_content %}{% endblock %}
             </div>
-            <div class="lg:w-1/2 w-full flex flex-col justify-center items-center lg:p-20 md:p-10 p-8">
+            <div class="lg:w-1/2 w-full flex flex-col justify-center lg:p-20 md:p-10 p-8">
                 <div class="w-full flex md:flex-row flex-col justify-between md:items-center mb-4">
                     <h2 class="title title-second text-tertiary-dark">
                         {% block form_title %}{% endblock %}
                     </h2>
                     {% block additionalButton %}{% endblock %}
                 </div>
-                <p>
+                <p class="text-tertiary-dark">
                     {% block form_text %}{% endblock %}
                 </p>
                 <div class="w-full mt-10">

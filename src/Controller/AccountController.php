@@ -12,6 +12,7 @@ use App\Form\DeleteType;
 use App\Entity\PasswordEdit;
 use App\Form\PasswordEditType;
 use App\Form\RegistrationType;
+use Symfony\Component\Mime\Email;
 use App\Repository\UserRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ReportRepository;
@@ -20,6 +21,7 @@ use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -80,7 +82,7 @@ class AccountController extends AbstractController
      * @return Response
      */
     #[Route("/register", name:"account_register")]
-    public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response
+    public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher, MailerInterface $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
@@ -137,6 +139,17 @@ class AccountController extends AbstractController
 
             $manager->persist($user);
             $manager->flush();
+
+            $email = (new Email())
+                ->from('info@cutestorm.kimberley-quenon.be')
+                ->to($user->getEmail())
+                ->replyTo($user->getEmail())
+                ->subject("Welcome to CuteStorm !")
+                ->html($this->renderView('mail/register.html.twig', [
+                    'user' => $user,
+                ]));
+
+            $mailer->send($email);
 
 
             return $this->redirectToRoute('account_login');
@@ -496,7 +509,7 @@ class AccountController extends AbstractController
      */
     #[Route("/profile/delete", name: "profile_delete")]
     #[IsGranted('ROLE_USER')]
-    public function deleteAccount(UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, OrderRepository $orderRepo, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage): Response
+    public function deleteAccount(UserRepository $userRepo, ConversationRepository $convRepo, ReportRepository $reportRepo, CommentRepository $commentRepo, OrderRepository $orderRepo, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage, MailerInterface $mailer): Response
     {
         $user = $this->getUser();
         $form = $this->createForm(DeleteType::class);
@@ -546,6 +559,17 @@ class AccountController extends AbstractController
 
                     //set connexion token to null
                     $tokenStorage->setToken(null);
+
+                    $email = (new Email())
+                        ->from('info@cutestorm.kimberley-quenon.be')
+                        ->to($user->getEmail())
+                        ->replyTo($user->getEmail())
+                        ->subject("Deleted Account")
+                        ->html($this->renderView('mail/deletedAccount.html.twig', [
+                            'user' => $user
+                    ]));
+                    $mailer->send($email);
+
                     //remove
                     $manager->remove($user);
                     $manager->flush();

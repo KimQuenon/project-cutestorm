@@ -45,7 +45,11 @@
 	{% set user = report.reportedBy %}
 	{% set timestamp =  report.timestamp %}
 	{% set title =  'has reported ' %}
-	{% set item =  report.reportedPost %}
+    {% if category == 'post' %}
+	    {% set item =  report.reportedPost %}
+    {% elseif category == 'comment'  %}
+        {% set item =  report.reportedComment %}
+    {% endif %}
 	{% set validate =  path('report_reject', { id: report.id }) %}
 	{% set delete =  path('report_validate', { id: report.id }) %}
     {% if category == "user" %}
@@ -87,13 +91,15 @@
                     <a href="{{path('profile_show', { 'slug': user.slug })}}" class="font-bold text-tertiary-dark">{{ user.pseudo}}</a>
                     {{ title }}
                     {% if category in ['like', 'comment', 'likeComment', 'reply', 'post'] %}
-                        <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="underline">
                             {% if category in ['comment', 'likeComment', 'reply'] %}
+                            <a href="{{ path('post_show', { 'slug': item.post.slug }) }}" class="underline">
                                 this comment.
+                            </a>
                             {% elseif category == 'like' or category == 'post' %}
+                            <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="underline">
                                 this post.
+                            </a>
                             {% endif %}
-                        </a>
                     {% elseif type == "report" and category == "user"%}
                         <a href="{{ coverPath }}" class="underline">
                             this user.
@@ -133,13 +139,25 @@
                     class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
             </a>
         {% else %}
-            {% set firstImage = item.postImages|first %}
+            {% if category in ['post', 'like'] %}
+                {% set firstImage = item.postImages|first %}
+            {% else %}
+                {% set firstImage = item.post.postImages|first %}
+            {% endif %}
             {% if firstImage is not null and firstImage.filename is defined %}
-                <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="h-full">
-                    <img src="{{ asset('uploads/' ~ firstImage.filename) }}"
-                        alt="img of {{ item.title }}"
-                        class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
-                </a>
+                {% if category in ['post', 'like'] %}
+                    <a href="{{ path('post_show', { 'slug': item.slug }) }}" class="h-full">
+                        <img src="{{ asset('uploads/' ~ firstImage.filename) }}"
+                            alt="img of {{ item.title }}"
+                            class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
+                    </a>
+                {% else %}
+                    <a href="{{ path('post_show', { 'slug': item.post.slug }) }}" class="h-full">
+                        <img src="{{ asset('uploads/' ~ firstImage.filename) }}"
+                            alt="img of {{ item.post.title }}"
+                            class="w-40 h-full object-cover rounded-r-xl border-2 border-tertiary-dark">
+                    </a>
+                {% endif %}
             {% endif %}
         {% endif %}
 </div>

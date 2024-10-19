@@ -1,22 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends "layouts/form_layout.html.twig" %}
 
-{% block body %}
-    <h1>Report Issue</h1>
+{% block form_content %}
+    {% include "partials/form/_deleteContent.html.twig" %}
+{% endblock %}
 
-            {% if app.request.attributes.get('type') == 'user' %}
-            <p>User: {{ reportedEntity.pseudo }}</p>
-            <p>Email: {{ reportedEntity.email }}</p>
-        {% elseif app.request.attributes.get('type') == 'post' %}
-            <p>Post Title: {{ reportedEntity.title }}</p>
-            <p>Content: {{ reportedEntity.description }}</p>
-        {% elseif app.request.attributes.get('type') == 'comment' %}
-            <p>Comment: {{ reportedEntity.content }}</p>
-        {% endif %}
+{% block title %}Report mode{% endblock %}
 
-    {{ form_start(myForm) }}
-        {{ form_widget(myForm) }}
-        <button type="submit" class="btn btn-primary">Submit Report</button>
-    {{ form_end(myForm) }}
+{% block form_title %}Report element{% endblock %}
 
-    <a href="{{ path('posts_index') }}" class="btn btn-secondary">Cancel</a>
+{% block form_text %}
+    Why do you want to report this element ? Please explain it to us :)
+{% endblock %}
+
+{% block additionalButton %}
+    <a href="{{ path('posts_index')}}" class="btn btn-purple w-52">back to posts</a>
 {% endblock %}

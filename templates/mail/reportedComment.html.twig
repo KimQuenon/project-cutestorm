@@ -1,0 +1,13 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}Reported comment{% endblock %}
+
+{% block text %}One of your comment has been banned for not meeting our terms of use.{% endblock %}
+
+{% block content %}
+    <p>This comment: </p>
+    <strong>{{report.reportedComment.content}}</strong><br><br>
+    
+    <p>Has been deleted from our database for <strong>{{report.reason}}</strong></p>. <br><br>
+    Be careful with what you post please, this community does not tolerate this kind of behaviour...
+{% endblock %}

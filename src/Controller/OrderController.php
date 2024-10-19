@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderItem;
+use Symfony\Component\Mime\Email;
 use App\Service\PaginationService;
 use App\Repository\OrderRepository;
 use App\Service\PdfGeneratorService;
 use App\Repository\DeliveryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -60,7 +62,7 @@ class OrderController extends AbstractController
      */
     #[Route('/order/create', name: 'order_create')]
     #[IsGranted('ROLE_USER')]
-    public function create(Request $request, DeliveryRepository $deliveryRepo, OrderRepository $orderRepo, EntityManagerInterface $manager): Response
+    public function create(Request $request, DeliveryRepository $deliveryRepo, OrderRepository $orderRepo, EntityManagerInterface $manager, MailerInterface $mailer): Response
     {
         $user = $this->getUser();
         $cart = $user->getCart();
@@ -129,6 +131,17 @@ class OrderController extends AbstractController
 
             $manager->persist($order);
             $manager->flush();
+
+            $email = (new Email())
+                ->from('info@cutestorm.kimberley-quenon.be')
+                ->to($user->getEmail())
+                ->replyTo($user->getEmail())
+                ->subject("New order")
+                ->html($this->renderView('mail/order.html.twig', [
+                    'user' => $user,
+                    'order' => $order
+            ]));
+            $mailer->send($email);
     
             return $this->redirectToRoute('payment_stripe', [
                 'reference'=> $order->getReference()

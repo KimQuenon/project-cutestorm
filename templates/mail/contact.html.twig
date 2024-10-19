@@ -1,0 +1,16 @@
+{% extends "mail/layout.html.twig" %}
+
+{% block title %}New message{% endblock %}
+
+{% block text %}You just received a new message from the contact form :{% endblock %}
+
+{% block content %}
+    <strong>Nom :</strong>
+    <p>{{ contact.name }}</p>
+    
+    <strong>Email :</strong>
+    <p>{{ contact.email }}</p>
+
+    <strong>Message :</strong>
+    <p>{{ contact.message }}</p>
+{% endblock %}
