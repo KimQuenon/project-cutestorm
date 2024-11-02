@@ -12,13 +12,19 @@
                 {% include "partials/_socialMedia.html.twig" with { textColor: 'text-background' } %}
 			</div>
 		</div>
-		<div class="container relative" id="homepage-hero">
+		<div class="container relative lg:h-[80vh] h-[65vh] flex justify-center">
+            <div id="homepage-hero"></div>
 			<div class="lg:w-2/5 md:w-3/4 w-full absolute bottom-0 right-0 md:pl-6 lg:pt-6 md:pt-10 pt-4 rounded-xl bg-background flex flex-col md:items-end items-center">
-				<h1 class="title lg:text-7xl text-4xl mb-5 text-tertiary-dark">CUTESTORM</h1>
+				<h1 class="title lg:text-7xl !text-6xl mb-5 text-tertiary-dark">CUTESTORM</h1>
 				<p class="mb-5 md:text-end text-center">The space that gives you a <span class="font-bold">new perspective</span> in the fashion of today and tomorrow ! Browse through our <span class="font-bold">capsule collection</span>, find <span class="font-bold">inspiration and friends</span> along the way and don't forget to have fun ! </p>
 				<a href="{{path('store')}}" class="w-52 btn btn-purple">CHECK OUR STORE ></a>
 			</div>
-		</div>
+            <div class="animated-box animated-box-reverse absolute top-10 left-1/4 opacity-0 transition-opacity duration-500"></div>		
+            <div class="animated-box animated-box-reverse absolute top-20 left-40 opacity-0 transition-opacity duration-500"></div>		
+            <div class="animated-box animated-box-normal absolute top-32 right-16 opacity-0 transition-opacity duration-500"></div>		
+            <div class="animated-box animated-box-reverse absolute top-40 left-16 opacity-0 transition-opacity duration-500"></div>		
+            <div class="animated-box animated-box-normal absolute top-48 right-1/4 opacity-0 transition-opacity duration-500"></div>		
+        </div>
 	</div>
 
 	{# ------------------------------SLIDE 2 - CONCEPT------------------------------ #}
@@ -320,6 +326,55 @@
     <script>
         {# review slider #}
         document.addEventListener('DOMContentLoaded', function () {
+            const boxes = document.querySelectorAll(".animated-box");
+
+            const directions = [
+                { x: -100, y: 100 },
+                { x: 100, y: -100 },
+                { x: -100, y: -100 },
+                { x: 100, y: 100 }
+            ];
+
+            function animateBox(box) {
+                const direction = directions[Math.floor(Math.random() * directions.length)];
+
+                box.style.transform = `translate(${direction.x}px, ${direction.y}px)`;
+                box.style.opacity = "0";
+
+                setTimeout(() => {
+                    box.style.opacity = "1";
+
+                    box.style.transition = "transform 1s ease-in-out, opacity 0.5s ease-in-out";
+                    box.style.transform = "translate(0, 0)";
+
+                    setTimeout(() => {
+                        box.style.opacity = "0";
+                    }, 700);
+
+                }, 1000);
+            }
+
+            function randomAnimation() {
+                const numBoxesToAnimate = Math.floor(Math.random() * boxes.length) + 1;
+
+                const animatedIndices = [];
+
+                for (let i = 0; i < numBoxesToAnimate; i++) {
+                    let randomIndex;
+                    
+                    do {
+                        randomIndex = Math.floor(Math.random() * boxes.length);
+                    } while (animatedIndices.includes(randomIndex));
+                    
+                    animatedIndices.push(randomIndex);
+                    animateBox(boxes[randomIndex]);
+                }
+
+                setTimeout(randomAnimation, 2000);
+            }
+
+            randomAnimation();
+
             AOS.init();
 
             var swiper = new Swiper('.swiper-container', {
@@ -339,5 +394,6 @@
                 },
             });
         });
+
     </script>
 {% endblock %}
