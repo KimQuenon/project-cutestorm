@@ -28,6 +28,11 @@ class CartController extends AbstractController
 
         $cartItems = $cart->getCartItems();
 
+        if (!$cart) {
+            $this->addFlash('warning', 'Your cart is empty for now, just make some shopping...');
+            return $this->redirectToRoute('store');
+        }
+
         return $this->render('cart/index.html.twig', [
             'cartItems' => $cartItems,
         ]);
